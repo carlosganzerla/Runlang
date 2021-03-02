@@ -1,0 +1,55 @@
+<zero-to-five> ::= '0' | '1' | '2' | '3' | '4' | '5'
+<six-to-nine> ::= '6' | '7' | '8' | '9'
+
+<digit> ::= <zero-to-five> | <six-to-nine>
+
+<base-sixty> ::= <zero-to-five><digit>
+
+<integer> ::=
+| <digit>
+| <digit><integer>
+
+<decimal> ::=
+| <integer>'.'<digit>
+| <integer>
+
+<minute-time> ::= <base-sixty>':'<base-sixty>
+
+<time> ::=
+| <integer>':'<minute-time>
+| <minute-time>
+| <base-sixty>'min'
+| <base-sixty>'s'
+| <base-sixty>'min' <base-sixty>'s'
+| <integer>'h' <base-sixty>'min' <base-sixty>'s'
+
+<distance> ::= <integer>'m' | <decimal>'km'
+
+<pace> ::=
+| <minute-time>'/km'
+| 'CL'
+| 'CA'
+| 'CV'
+| 'TR'
+| 'LVS'
+| 'LE'
+| 'MO'
+| 'FO'
+| 'FTS'
+| 'MAX'
+
+<progression> ::= <pace>'~'<pace>
+
+<plus> ::= '+' | '/'
+
+<times> :: = 'x'
+
+<interval> ::=
+| <time> <pace>
+| <distance> <pace>
+| <distance> <progression>
+
+<repetition> :: =
+| <interval>
+| <repetition> <plus> <repetition>
+| <integer><times> '('<repetition>')'
