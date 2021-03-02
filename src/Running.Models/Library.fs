@@ -1,15 +1,15 @@
 ﻿module Types
 
 type Time = private {
-    Hours: int
-    Minutes: int
-    Seconds: int
+    Hours: uint
+    Minutes: uint
+    Seconds: uint
 }
 
 type Pace = Time
 
 type Distance =
-    | Meters of int
+    | Meters of uint
     | Kilometers of decimal
 
 type Interval = private {
@@ -27,30 +27,32 @@ let createDistance totalKm =
     if totalKm >= 1.0m then
         Kilometers totalKm
     else
-        (totalKm * 1000m) |> int |> Meters
+        (totalKm* 1000m) |> uint |> Meters
 
 let totalMinutes {Hours=h; Minutes=min; Seconds=s} =
    decimal h*60m + decimal min + (decimal s)/60m
 
 let totalTime mins =
-    let hours = int mins / 60
-    let minutes = (int mins) % 60
-    let seconds = int ((mins - truncate mins)*60m)
+    let hours = uint mins / 60u
+    let minutes = (uint mins) % 60u
+    let seconds = (mins - truncate mins)*60m |> round |> uint
     { Hours=hours; Minutes=minutes; Seconds=seconds}
 
-let private base60 num =
+let private check60 num =
     if num >= 0 && num < 60 then
         Ok num
     else
-        Error (sprintf "%i is not a base 60 number." num)
+        Error (sprintf "%i must be betwenn 0 and 59." num)
 
 let createTime h min s =
-    match base60 min, base60 s with
-    | Ok min, Ok s -> Ok {Hours=h; Minutes=min; Seconds=s;}
-    | Error e, _ ->  Error e
-    | _, Error e -> Error e
+    let realS = s % 60u
+    let extraMin = s / 60u
+    let realMin = (min + extraMin) % 60u
+    let extraH = (min + extraMin) / 60u
+    let realH = h + extraH
+    {Hours=realH; Minutes=realMin; Seconds=realS;}
 
-let createPace min s: Result<Pace,string> = createTime 0 min s
+let createPace min s: Pace = createTime 0u min s
 
 let totalKm = function
     | Meters m -> (decimal m) / 1000m
