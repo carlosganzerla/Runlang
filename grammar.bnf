@@ -13,20 +13,19 @@
 | <integer>'.'<digit>
 | <integer>
 
-<minute-time> ::= <base-sixty>':'<base-sixty>
-
 <time> ::=
-| <integer>':'<minute-time>
-| <minute-time>
-| <base-sixty>'min'
-| <base-sixty>'s'
-| <base-sixty>'min' <base-sixty>'s'
-| <integer>'h' <base-sixty>'min' <base-sixty>'s'
+| <integer>':'<base-sixty>':'<base-sixty>
+| <integer>':'<base-sixty>
+| <integer>'min'
+| <integer>'s'
+| <integer>'min' <integer>'s'
+| <integer>'h' <integer>'min' <integer>'s'
+| <integer>'h' <integer>'min'
 
 <distance> ::= <integer>'m' | <decimal>'km'
 
 <pace> ::=
-| <minute-time>'/km'
+| <integer>':'<base-sixty>'/km'
 | 'CL'
 | 'CA'
 | 'CV'
@@ -42,7 +41,7 @@
 
 <plus> ::= '+' | '/'
 
-<times> :: = 'x'
+<times> ::= 'x'
 
 <interval> ::=
 | <time> <pace>
