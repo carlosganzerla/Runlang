@@ -13,6 +13,8 @@
 | <integer>'.'<digit>
 | <integer>
 
+<distance> ::= <integer>'m' | <decimal>'km'
+
 <time> ::=
 | <integer>':'<base-sixty>':'<base-sixty>
 | <integer>':'<base-sixty>
@@ -21,8 +23,6 @@
 | <integer>'min' <integer>'s'
 | <integer>'h' <integer>'min' <integer>'s'
 | <integer>'h' <integer>'min'
-
-<distance> ::= <integer>'m' | <decimal>'km'
 
 <pace> ::=
 | <integer>':'<base-sixty>'/km'

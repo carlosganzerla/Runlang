@@ -1,4 +1,4 @@
-﻿module Types
+﻿module Models
 
 type Time = private {
     Hours: uint
