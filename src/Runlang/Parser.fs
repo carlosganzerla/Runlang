@@ -13,60 +13,64 @@ let ws = spaces1
 
 let pinteger = puint32
 
+let pwatchDigits = regex "[0-5][0-9]" |>> uint
+
+let pbaseSixty = regex "[0-5]?[0-9]" |>> uint
+
 let zero = preturn 0u
 
-let pbasesixty : Parser<_> =
-    let firstDigit = anyOf ['0' .. '5']
-    let toUint (d, u) = 10u*(charToUint d) + (charToUint u)
-    firstDigit .>>. digit |>> toUint
+let createTime ((h,min),s) = Time.create h min s
 
 let pdecimal =
     let dot = opt (pchar '.')
+
     let partsToDecimal intpart decpart =
         decimal $"{intpart}.{decpart}"
+
     let decimalPart (intpart, dot) =
         match dot with
         | Some _ -> pinteger |>> partsToDecimal intpart
         | None -> preturn intpart |>> decimal
+
     pinteger .>>. dot >>= decimalPart
 
-let pdistanceM =
-    let m = pchar 'm'
-    pinteger .>> m |>> Meters
-
-let pdistanceKm =
-    let km = pstring "km"
-    pdecimal .>> km  |>> Kilometers
-
 let pdistance : Parser<_> =
+    let pdistanceM =
+        let m = pchar 'm'
+        pinteger .>> m |>> Meters .>> ws
+
+    let pdistanceKm =
+        let km = pstring "km"
+        pdecimal .>> km  |>> Kilometers .>> ws
+
     attempt pdistanceM <|> pdistanceKm
 
 let pwatchtime: Parser<_> =
-    let phhmmss = regex "([0-9]+):([0-5][0-9]):([0-5][0-9])"
-    let pmmss = regex "([0-5]?[0-9]):([0-5][0-9])"
-    let ptimestr = phhmmss <|> pmmss
-    let toTime (str: string) =
-        let time =
-            str.Split [| ':' |]
-            |> Array.toList
-            |> List.map uint
-        match time with
-        | [h; m; s;] -> preturn (Time.create h m s)
-        | [m; s;] -> preturn (Time.create 0u m s)
-        | _ -> fail $"Bad time string: {str}"
-    ptimestr >>= toTime
+    let pcolon = pchar ':'
+    let phhmmss =
+        pinteger
+        .>> pcolon
+        .>>. pwatchDigits
+        .>> pcolon
+        .>>. pwatchDigits
+        .>> ws
+    let pmmss = zero .>>. pbaseSixty .>> pcolon .>>. pwatchDigits .>> ws
+    choice [
+        attempt phhmmss
+        pmmss
+    ] |>> createTime
 
 let pnumerictime: Parser<_> =
     let ph = pinteger .>> pchar 'h'
-    let pmin = pinteger .>> pstring "min"
-    let ps = pinteger .>> pchar 's'
-    let phmins = ph .>>. pmin .>>. ps
-    let phmin = ph .>>. pmin .>>. zero
-    let phs = ph .>>. zero .>>. ps
-    let pmins = zero .>>. pmin .>>. ps
-    let ph = ph .>>. zero .>>. zero
-    let pmin = zero .>>. pmin .>>. zero
-    let ps = zero .>>. zero .>>. ps
+    let pmin = pbaseSixty .>> pstring "min"
+    let ps = pbaseSixty .>> pchar 's'
+    let phmins = ph .>>. pmin .>>. ps .>> ws
+    let phmin = ph .>>. pmin .>>. zero .>> ws
+    let phs = ph .>>. zero .>>. ps .>> ws
+    let pmins = zero .>>. pmin .>>. ps .>> ws
+    let ph = ph .>>. zero .>>. zero .>> ws
+    let pmin = zero .>>. pmin .>>. zero .>> ws
+    let ps = zero .>>. zero .>>. ps .>> ws
     choice [
         attempt phmins
         attempt phmin
@@ -75,7 +79,7 @@ let pnumerictime: Parser<_> =
         attempt ph
         attempt pmin
         ps
-    ]
+    ] |>> createTime
 
 let test p str =
     match run p str with

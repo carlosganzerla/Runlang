@@ -11,6 +11,6 @@ let from whom =
 let rec main argv =
     Console.WriteLine "Time:"
     |> Console.ReadLine
-    |> test pnumerictime
+    |> test pwatchtime
     main argv |> ignore
     0 // return an integer exit code
