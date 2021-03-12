@@ -9,8 +9,8 @@ let from whom =
 
 [<EntryPoint>]
 let rec main argv =
-    Console.WriteLine "Distance:"
+    Console.WriteLine "Time:"
     |> Console.ReadLine
-    |> test pdistance
+    |> test pnumerictime
     main argv |> ignore
     0 // return an integer exit code

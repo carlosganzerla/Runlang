@@ -24,6 +24,8 @@ module Time =
         let realH = h + extraH
         {Hours=realH; Minutes=realMin; Seconds=realS;}
 
+    let Zero = {Hours=0u; Minutes=0u; Seconds=0u;}
+
 type Pace = Time
 
 module Pace =

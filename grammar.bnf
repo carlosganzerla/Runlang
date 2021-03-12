@@ -20,9 +20,9 @@
 | <integer>':'<base-sixty>
 | <integer>'min'
 | <integer>'s'
-| <integer>'min' <integer>'s'
-| <integer>'h' <integer>'min' <integer>'s'
-| <integer>'h' <integer>'min'
+| <integer>'min'<integer>'s'
+| <integer>'h'<integer>'min'<integer>'s'
+| <integer>'h'<integer>'min'
 
 <pace> ::=
 | <integer>':'<base-sixty>'/km'
