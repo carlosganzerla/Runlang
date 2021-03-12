@@ -13,9 +13,14 @@ let ws = spaces1
 
 let pinteger = puint32
 
-let pwatchDigits = regex "[0-5][0-9]" |>> uint
+let pwatchDigits =
+    regex "[0-5][0-9]" |>> uint
+    <?> "Expected 00 to 59"
 
-let pbaseSixty = regex "[0-5]?[0-9]" |>> uint
+let pbaseSixty =
+     regex "[0-5]?[0-9]" |>> uint
+    <?> "Expected a number betwenn 0 and 59"
+
 
 let zero = preturn 0u
 
@@ -60,6 +65,7 @@ let pwatchtime: Parser<_> =
         pmmss
     ] |>> createTime
 
+
 let pnumerictime: Parser<_> =
     let ph = pinteger .>> pchar 'h'
     let pmin = pbaseSixty .>> pstring "min"
@@ -80,6 +86,9 @@ let pnumerictime: Parser<_> =
         attempt pmin
         ps
     ] |>> createTime
+
+
+let ppace = pwatchtime .>> pstring "/km"
 
 let test p str =
     match run p str with
