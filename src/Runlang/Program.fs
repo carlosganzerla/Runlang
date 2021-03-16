@@ -9,8 +9,8 @@ let from whom =
 
 [<EntryPoint>]
 let rec main argv =
-    Console.WriteLine "Time:"
+    Console.WriteLine "Interval:"
     |> Console.ReadLine
-    |> test pwatchtime
+    |> test interval
     main argv |> ignore
     0 // return an integer exit code

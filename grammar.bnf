@@ -3,7 +3,9 @@
 
 <digit> ::= <zero-to-five> | <six-to-nine>
 
-<base-sixty> ::= <zero-to-five><digit>
+<watch-digits> ::= <zero-to-five><digit>
+<base-sixty> ::= <watch-digits> | <digit>
+
 
 <integer> ::=
 | <digit>
@@ -16,13 +18,15 @@
 <distance> ::= <integer>'m' | <decimal>'km'
 
 <time> ::=
-| <integer>':'<base-sixty>':'<base-sixty>
-| <integer>':'<base-sixty>
-| <integer>'min'
-| <integer>'s'
-| <integer>'min'<integer>'s'
-| <integer>'h'<integer>'min'<integer>'s'
-| <integer>'h'<integer>'min'
+| <integer>':'<watch-digits>':'<watch-digits>
+| <base-sixty>':'<watch-digits>
+| <base-sixty>'min'
+| <base-sixty>'s'
+| <base-sixty>'min'<base-sixty>'s'
+| <integer>'h'<base-sixty>'min'<base-sixty>'s'
+| <integer>'h'<base-sixty>'min'
+| <integer>'h'<base-sixty>'s'
+
 
 <pace> ::=
 | <integer>':'<base-sixty>'/km'
@@ -44,6 +48,7 @@
 <times> ::= 'x'
 
 <interval> ::=
+| <time> <distance>
 | <time> <pace>
 | <distance> <pace>
 | <distance> <progression>

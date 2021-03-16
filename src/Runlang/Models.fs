@@ -14,22 +14,20 @@ module Time =
         let hours = uint mins / 60u
         let minutes = (uint mins) % 60u
         let seconds = (mins - truncate mins)*60m |> round |> uint
-        { Hours=hours; Minutes=minutes; Seconds=seconds}
+        {Hours=hours; Minutes=minutes; Seconds=seconds}
 
     let create h min s =
-        let realS = s % 60u
-        let extraMin = s / 60u
-        let realMin = (min + extraMin) % 60u
-        let extraH = (min + extraMin) / 60u
-        let realH = h + extraH
-        {Hours=realH; Minutes=realMin; Seconds=realS;}
+        if min > 59u || s > 59u then
+            Error $"Invalid minutes and seconds: {min}, {s}"
+        else
+            Ok {Hours=h; Minutes=min; Seconds=s;}
 
-    let Zero = {Hours=0u; Minutes=0u; Seconds=0u;}
-
-type Pace = Time
+type Pace = TimePerKm of Time
 
 module Pace =
-    let create min s: Pace = Time.create 0u min s
+    let create min s = Time.create 0u min s |> Result.map TimePerKm
+
+    let value (TimePerKm pace) = pace
 
 
 type Distance =
@@ -53,28 +51,27 @@ type Interval = private {
     Pace: Pace
 }
 
+type IntervalType =
+    | TimeAndPace of Time*Pace
+    | TimeAndDistance of Time*Distance
+    | DistanceAndPace of Distance*Pace
+
 module Interval =
-
-    type Type =
-        | TimeAndPace of Time*Pace
-        | TimeAndDistance of Time*Distance
-        | DistanceAndPace of Distance*Pace
-
     let private timeInterval distance (pace:Pace) =
         let km = Distance.totalKm distance
-        let minPerKm = Time.totalMinutes pace
+        let minPerKm = pace |> Pace.value |> Time.totalMinutes
         let time = Time.totalTime (km * minPerKm)
         {Distance=distance; Time=time; Pace=pace}
 
     let private paceInterval time distance =
         let minutes = Time.totalMinutes time
         let km = Distance.totalKm distance
-        let pace = Time.totalTime (minutes/ km)
+        let pace = Time.totalTime (minutes/ km) |> TimePerKm
         {Distance=distance; Time=time; Pace=pace}
 
-    let private distanceInterval time (pace:Pace) =
+    let private distanceInterval time pace =
         let timeMinutes = Time.totalMinutes time
-        let paceMinutes = Time.totalMinutes pace
+        let paceMinutes = pace |> Pace.value |> Time.totalMinutes
         let distance = Distance.create (timeMinutes / paceMinutes)
         {Distance=distance; Time=time; Pace=pace}
 
@@ -82,3 +79,9 @@ module Interval =
         | TimeAndPace (time,pace) -> distanceInterval time pace
         | TimeAndDistance (time,dist)-> paceInterval time dist
         | DistanceAndPace (dist,pace) -> timeInterval dist pace
+
+
+type Repetition =
+    | Interval of Interval
+    | RepList of Repetition list
+    | RepCount of uint*Repetition

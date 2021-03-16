@@ -2,25 +2,27 @@ module Parser
 
 open FParsec
 open Models
-open System
-open System.Text.RegularExpressions
 
 type Parser<'t> = Parser<'t, unit>
 
-let inline charToUint c = uint c - uint '0'
+let ws1 = spaces1
 
-let ws = spaces1
+let ws = spaces
 
-let pinteger = puint32
+let integer = puint32
 
-let pwatchDigits =
+let result = function
+    | Result.Ok ok -> preturn ok
+    | Result.Error err -> fail err
+
+let watchDigits =
     regex "[0-5][0-9]" |>> uint
-    <?> "Expected 00 to 59"
 
-let pbaseSixty =
+let baseSixty =
      regex "[0-5]?[0-9]" |>> uint
-    <?> "Expected a number betwenn 0 and 59"
 
+let tryMany parsers =
+    parsers |> List.map attempt |> choice
 
 let zero = preturn 0u
 
@@ -34,61 +36,81 @@ let pdecimal =
 
     let decimalPart (intpart, dot) =
         match dot with
-        | Some _ -> pinteger |>> partsToDecimal intpart
+        | Some _ -> integer |>> partsToDecimal intpart
         | None -> preturn intpart |>> decimal
 
-    pinteger .>>. dot >>= decimalPart
+    integer .>>. dot >>= decimalPart
 
-let pdistance : Parser<_> =
-    let pdistanceM =
+let distance : Parser<_> =
+    let distanceM =
         let m = pchar 'm'
-        pinteger .>> m |>> Meters .>> ws
+        integer .>> m |>> Meters
 
-    let pdistanceKm =
+    let distanceKm =
         let km = pstring "km"
-        pdecimal .>> km  |>> Kilometers .>> ws
+        pdecimal .>> km  |>> Kilometers
 
-    attempt pdistanceM <|> pdistanceKm
+    tryMany [ distanceM; distanceKm ]
 
-let pwatchtime: Parser<_> =
+let watchtime: Parser<_> =
     let pcolon = pchar ':'
-    let phhmmss =
-        pinteger
-        .>> pcolon
-        .>>. pwatchDigits
-        .>> pcolon
-        .>>. pwatchDigits
-        .>> ws
-    let pmmss = zero .>>. pbaseSixty .>> pcolon .>>. pwatchDigits .>> ws
-    choice [
-        attempt phhmmss
+    let phhmmss = integer .>> pcolon .>>. watchDigits .>> pcolon .>>. watchDigits
+    let pmmss = zero .>>. baseSixty .>> pcolon .>>. watchDigits
+    tryMany [
+        phhmmss
         pmmss
-    ] |>> createTime
+    ] |>> createTime >>= result
 
 
-let pnumerictime: Parser<_> =
-    let ph = pinteger .>> pchar 'h'
-    let pmin = pbaseSixty .>> pstring "min"
-    let ps = pbaseSixty .>> pchar 's'
-    let phmins = ph .>>. pmin .>>. ps .>> ws
-    let phmin = ph .>>. pmin .>>. zero .>> ws
-    let phs = ph .>>. zero .>>. ps .>> ws
-    let pmins = zero .>>. pmin .>>. ps .>> ws
-    let ph = ph .>>. zero .>>. zero .>> ws
-    let pmin = zero .>>. pmin .>>. zero .>> ws
-    let ps = zero .>>. zero .>>. ps .>> ws
-    choice [
-        attempt phmins
-        attempt phmin
-        attempt phs
-        attempt pmins
-        attempt ph
-        attempt pmin
+let numerictime: Parser<_> =
+    let ph = integer .>> pchar 'h'
+    let pmin = baseSixty .>> pstring "min"
+    let ps = baseSixty .>> pchar 's'
+    let phmins = ph .>>. pmin .>>. ps
+    let phmin = ph .>>. pmin .>>. zero
+    let phs = ph .>>. zero .>>. ps
+    let pmins = zero .>>. pmin .>>. ps
+    let ph = ph .>>. zero .>>. zero
+    let pmin = zero .>>. pmin .>>. zero
+    let ps = zero .>>. zero .>>. ps
+    tryMany [
+        phmins
+        phmin
+        phs
+        pmins
+        ph
+        pmin
         ps
-    ] |>> createTime
+    ] |>> createTime >>= result
 
+let time =
+    tryMany [ numerictime; watchtime ]
+    <?> """Format <Hours>h<Minutes>min<Seconds>s or 0:00:00"""
 
-let ppace = pwatchtime .>> pstring "/km"
+let pace =
+     watchtime .>> pstring "/km" |>> TimePerKm
+     <?> "Format 00:00/km"
+
+let distanceAndPace =
+    distance .>> ws1 .>>. pace
+    |>> (DistanceAndPace >> Interval.create)
+
+let timeAndPace =
+    time .>> ws1 .>>. pace
+    |>> (TimeAndPace >> Interval.create)
+
+let timeAndDistance =
+    time .>> ws1 .>>. distance
+    |>> (TimeAndDistance >> Interval.create)
+
+let interval =
+    ws >>. tryMany [
+        distanceAndPace;
+        timeAndPace;
+        timeAndDistance;
+    ] .>> ws .>> eof
+
+// let plus = pchar '/' <|> pchar '+'
 
 let test p str =
     match run p str with
