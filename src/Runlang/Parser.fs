@@ -108,9 +108,24 @@ let interval =
         distanceAndPace;
         timeAndPace;
         timeAndDistance;
-    ] .>> ws .>> eof
+    ] .>> ws |>> Interval
 
-// let plus = pchar '/' <|> pchar '+'
+let plus = pchar '/' <|> pchar '+'
+
+let times = pchar 'x'
+
+let repetitionValue, repetitionRef = createParserForwardedToRef<Repetition, unit>()
+
+let repcount =
+    let reptimes = attempt (integer .>> times)
+    reptimes .>> ws .>>. between (pchar '(') (pchar ')') repetitionValue
+    .>> ws |>> RepCount
+
+let replist = sepBy (repcount <|> interval) plus |>> RepList
+
+do repetitionRef := replist;
+
+let repetition = ws >>. repetitionValue .>> ws .>> eof
 
 let test p str =
     match run p str with

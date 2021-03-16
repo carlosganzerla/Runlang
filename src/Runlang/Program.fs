@@ -9,8 +9,8 @@ let from whom =
 
 [<EntryPoint>]
 let rec main argv =
-    Console.WriteLine "Interval:"
+    Console.WriteLine "Repetition:"
     |> Console.ReadLine
-    |> test interval
+    |> test repetition
     main argv |> ignore
     0 // return an integer exit code
