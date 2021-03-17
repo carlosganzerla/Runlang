@@ -104,28 +104,28 @@ let timeAndDistance =
     |>> (TimeAndDistance >> Interval.create)
 
 let interval =
-    ws >>. tryMany [
+    tryMany [
         distanceAndPace;
         timeAndPace;
         timeAndDistance;
     ] .>> ws |>> Interval
 
-let plus = pchar '/' <|> pchar '+'
+let plus = (pchar '/' <|> pchar '+') .>> ws
 
-let times = pchar 'x'
+let times = pchar 'x' .>> ws
 
 let repetitionValue, repetitionRef = createParserForwardedToRef<Repetition, unit>()
 
 let repcount =
     let reptimes = attempt (integer .>> times)
-    reptimes .>> ws .>>. between (pchar '(') (pchar ')') repetitionValue
+    reptimes .>>. between (pchar '(') (pchar ')') repetitionValue
     .>> ws |>> RepCount
 
 let replist = sepBy (repcount <|> interval) plus |>> RepList
 
 do repetitionRef := replist;
 
-let repetition = ws >>. repetitionValue .>> ws .>> eof
+let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 
 let test p str =
     match run p str with
