@@ -91,27 +91,32 @@ module Interval =
         | TimeAndDistance (time,dist)-> paceInterval time dist
         | DistanceAndPace (dist,pace) -> timeInterval dist pace
 
-    let fromProgression distance (TimePerKm first) (TimePerKm last) =
-        let totalKm  = Distance.totalKm distance
-        let count, split, dist =
-            if totalKm >= 2.0m then
-                totalKm |> floor |> int, 1m, Kilometers
-            else 2, totalKm/2m, uint >> Meters
-        let firstMinutes = Time.totalMinutes first
-        let ratio = (Time.totalMinutes last - firstMinutes) / (decimal count)
-        let range = [0 .. count - 1]
-        let paces = range |> List.map decimal |> List.map (fun i ->
-            firstMinutes + i*ratio |> Time.totalTime |> TimePerKm)
-        let distances = range |> List.fold (fun i splits ->
-            let remaining = distance - List.sum splits
-            if remaining >= split then
-                split::splits
-            else
-                remaining::splits) []
-                |> List.rev
-                |> List.map dist
-        List.zip distances paces |> List.map (DistanceAndPace >> create)
+    // let fromProgression distance (TimePerKm first) (TimePerKm last) =
+    //     let totalKm  = Distance.totalKm distance
+    //     let count, split, dist =
+    //         if totalKm >= 2.0m then
+    //             totalKm |> floor |> int, 1m, Kilometers
+    //         else 2, totalKm/2m, uint >> Meters
+    //     let firstMinutes = Time.totalMinutes first
+    //     let ratio = (Time.totalMinutes last - firstMinutes) / (decimal count)
+    //     let range = [0 .. count - 1]
+    //     let paces = createPaces range firstMinutes ratio
+    //     let distances = createDistances range totalKm split
+    //     List.zip distances paces |> List.map (DistanceAndPace >> create)
 
+        // let private createPaces range firstMinutes ratio =
+        //     range
+        //     |> List.map decimal
+        //     |> List.map (fun i ->
+        //         firstMinutes + i*ratio |> Time.totalTime |> TimePerKm)
+
+        let private getSplits range (totalKm:decimal) (split:decimal) =
+        //    let getNextSplit _ splits =
+        //         let remaining = totalKm - List.sum splits
+        //         let next = if remaining >= split then split else remaining
+        //         next::splits
+        //    range |> List.fold getNextSplit []
+            []
 
 type Repetition =
     | Interval of Interval
