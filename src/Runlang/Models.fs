@@ -91,27 +91,30 @@ module Interval =
         | TimeAndDistance (time,dist)-> paceInterval time dist
         | DistanceAndPace (dist,pace) -> timeInterval dist pace
 
-    let private createPaces count firstMinutes ratio =
+    let private applyProgression count firstMinutes ratio =
         let getPace idx =
-            firstMinutes + (decimal idx)*ratio |> Time.totalTime |> TimePerKm
-        [0 .. count - 1] |> List.map getPace
+            firstMinutes + (decimal (idx - 1) * ratio)
+            |> Time.totalTime
+            |> TimePerKm
+        [1 .. count] |> List.map getPace
 
     let inline private getSplits count totalKm split =
         let getNextSplit splits _ =
             let remaining = totalKm - List.sum splits
             let next = if remaining >= split then split else remaining
             next::splits
-        [0 .. count - 1] |> List.fold getNextSplit []
+        [2 .. count] |> List.fold getNextSplit [ split ] |> List.rev
 
     let fromProgression distance (TimePerKm first) (TimePerKm last) =
         let totalKm  = Distance.totalKm distance
         let count, split, dist =
             if totalKm >= 2.0m then
-                totalKm |> floor |> int, 1m, Kilometers
-            else 2, totalKm/2m, uint >> Meters
+                int (ceil totalKm), 1m, Kilometers
+            else 2, totalKm/2m, (*) 1000m >> uint >> Meters
         let firstMinutes = Time.totalMinutes first
-        let ratio = (Time.totalMinutes last - firstMinutes) / (decimal count)
-        let paces = createPaces count firstMinutes ratio
+        let ratio =
+            (Time.totalMinutes last - firstMinutes) / (decimal (count - 1))
+        let paces = applyProgression count firstMinutes ratio
         let distances = getSplits count totalKm split |> List.map dist
         List.zip distances paces |> List.map (DistanceAndPace >> create)
 
