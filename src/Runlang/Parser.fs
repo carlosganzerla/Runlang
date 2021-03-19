@@ -91,26 +91,34 @@ let pace =
      <?> "Format 00:00/km"
 
 let progression =
-    pace .>> ws .>>. pace
+    distance .>> ws1 .>>. pace .>> pchar '~' .>>. pace
+    |>> fun ((dist, first), last) -> Interval.fromProgression dist first last
 
 let distanceAndPace =
     distance .>> ws1 .>>. pace
     |>> (DistanceAndPace >> Interval.create)
+    |>> List.singleton
 
 let timeAndPace =
     time .>> ws1 .>>. pace
     |>> (TimeAndPace >> Interval.create)
+    |>> List.singleton
 
 let timeAndDistance =
     time .>> ws1 .>>. distance
     |>> (TimeAndDistance >> Interval.create)
+    |>> List.singleton
 
 let interval =
     tryMany [
+        progression;
         distanceAndPace;
         timeAndPace;
         timeAndDistance;
-    ] .>> ws |>> Interval
+    ]
+    |>> List.map Interval
+    |>> RepList
+    .>> ws
 
 let plus = (pchar '/' <|> pchar '+') .>> ws
 
