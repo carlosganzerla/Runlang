@@ -61,7 +61,6 @@ let watchtime: Parser<_> =
         pmmss
     ] |>> createTime >>= result
 
-
 let numerictime: Parser<_> =
     let ph = integer .>> pchar 'h'
     let pmin = baseSixty .>> pstring "min"
@@ -90,6 +89,9 @@ let time =
 let pace =
      watchtime .>> pstring "/km" |>> TimePerKm
      <?> "Format 00:00/km"
+
+let progression =
+    pace .>> ws .>>. pace
 
 let distanceAndPace =
     distance .>> ws1 .>>. pace

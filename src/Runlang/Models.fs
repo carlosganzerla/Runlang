@@ -22,13 +22,24 @@ module Time =
         else
             Ok {Hours=h; Minutes=min; Seconds=s;}
 
+type RunningTerm =
+    | CL
+    | CA
+    | CV
+    | TR
+    | LVS
+    | LE
+    | MO
+    | FO
+    | FTS
+    | MAX
+
 type Pace = TimePerKm of Time
 
 module Pace =
     let create min s = Time.create 0u min s |> Result.map TimePerKm
 
     let value (TimePerKm pace) = pace
-
 
 type Distance =
     | Meters of uint
@@ -79,6 +90,27 @@ module Interval =
         | TimeAndPace (time,pace) -> distanceInterval time pace
         | TimeAndDistance (time,dist)-> paceInterval time dist
         | DistanceAndPace (dist,pace) -> timeInterval dist pace
+
+    let fromProgression distance (TimePerKm first) (TimePerKm last) =
+        let totalKm  = Distance.totalKm distance
+        let count, split, dist =
+            if totalKm >= 2.0m then
+                totalKm |> floor |> int, 1m, Kilometers
+            else 2, totalKm/2m, uint >> Meters
+        let firstMinutes = Time.totalMinutes first
+        let ratio = (Time.totalMinutes last - firstMinutes) / (decimal count)
+        let range = [0 .. count - 1]
+        let paces = range |> List.map decimal |> List.map (fun i ->
+            firstMinutes + i*ratio |> Time.totalTime |> TimePerKm)
+        let distances = range |> List.fold (fun i splits ->
+            let remaining = distance - List.sum splits
+            if remaining >= split then
+                split::splits
+            else
+                remaining::splits) []
+                |> List.rev
+                |> List.map dist
+        List.zip distances paces |> List.map (DistanceAndPace >> create)
 
 
 type Repetition =
