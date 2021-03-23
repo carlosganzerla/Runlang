@@ -3,7 +3,9 @@ module Parser
 open FParsec
 open Models
 
-type Parser<'t> = Parser<'t, unit>
+type Parser<'t> = Parser<'t, PaceTable>
+
+let paceTable : Parser<_> = getUserState
 
 let ws1 = spaces1
 
@@ -84,11 +86,23 @@ let numerictime: Parser<_> =
 
 let time =
     tryMany [ numerictime; watchtime ]
-    <?> """Format <Hours>h<Minutes>min<Seconds>s or 0:00:00"""
 
 let pace =
-     watchtime .>> pstring "/km" |>> TimePerKm
-     <?> "Format 00:00/km"
+    let timePace = watchtime .>> pstring "/km" |>> TimePerKm
+    //  let termPace =
+    //     tryMany [
+    //         stringReturn "CL" CL
+    //         stringReturn "CA" CA
+    //         stringReturn "CV" CV
+    //         stringReturn "TR" TR
+    //         stringReturn "LVS" LVS
+    //         stringReturn "LE" LE
+    //         stringReturn "MO" MO
+    //         stringReturn "FO" FO
+    //         stringReturn "FTS" FTS
+    //         stringReturn "MAX" MAX
+    //     ]
+    timePace
 
 let progression =
     distance .>> ws1 .>>. pace .>> pchar '~' .>>. pace
@@ -124,7 +138,7 @@ let plus = (pchar '/' <|> pchar '+') .>> ws
 
 let times = pchar 'x' .>> ws
 
-let repetitionValue, repetitionRef = createParserForwardedToRef<Repetition, unit>()
+let repetitionValue, repetitionRef = createParserForwardedToRef ()
 
 let repcount =
     let reptimes = attempt (integer .>> times)
@@ -137,7 +151,8 @@ do repetitionRef := replist;
 
 let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 
-let test p str =
-    match run p str with
+let run parser paceTable input =
+    let output = runParserOnString parser paceTable "" input
+    match output with
     | Success(result, _, _)   -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
