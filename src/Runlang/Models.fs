@@ -22,6 +22,9 @@ module Time =
         else
             Ok {Hours=h; Minutes=min; Seconds=s;}
 
+    let toString {Hours=h; Minutes=min; Seconds=s} =
+        sprintf "%02d:%02d:%02d" h min s
+
 type RunningTerm =
     | CL
     | CA
@@ -45,6 +48,9 @@ module Pace =
 
     let value (TimePerKm pace) = pace
 
+    let toString (TimePerKm pace) =
+        Time.toString pace + "/km"
+
 type Distance =
     | Meters of uint
     | Kilometers of decimal
@@ -59,6 +65,10 @@ module Distance =
     let totalKm = function
         | Meters m -> (decimal m) / 1000m
         | Kilometers km -> km
+
+    let toString = function
+        | Meters m -> sprintf "%im" m
+        | Kilometers km -> sprintf "%.2fkm" km
 
 type Interval = private {
     Distance: Distance
@@ -121,6 +131,13 @@ module Interval =
         let paces = applyProgression count firstMinutes ratio
         let distances = getSplits count totalKm split |> List.map dist
         List.zip distances paces |> List.map (DistanceAndPace >> create)
+
+    let toString count {Time=time; Distance=dist; Pace=pace;} =
+        let timeStr, distStr, paceStr =
+            Time.toString time,
+            Distance.toString dist,
+            Pace.toString pace
+        $"#{count} Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
 
 type Repetition =
     | Interval of Interval

@@ -154,5 +154,5 @@ let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 let run parser paceTable input =
     let output = runParserOnString parser paceTable "" input
     match output with
-    | Success(result, _, _)   -> printfn "Success: %A" result
-    | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
+    | Success(intervals, _, _)  -> Result.Ok intervals
+    | Failure(errorMsg, _, _) -> Result.Error errorMsg

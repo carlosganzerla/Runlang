@@ -21,10 +21,18 @@ let paceTable pace =
     | Ok ok -> ok
     | Error err -> raise (InvalidPace err)
 
+let print = function
+    | Ok intervals ->
+        intervals
+        |> List.mapi Interval.toString
+        |> List.iter (printfn "%s")
+    | Error err -> printfn "Failure: %s" err
+
 [<EntryPoint>]
 let rec main argv =
     Console.WriteLine "Repetition:"
     |> Console.ReadLine
     |> run repetition paceTable
+    |> print
     main argv |> ignore
     0 // return an integer exit code
