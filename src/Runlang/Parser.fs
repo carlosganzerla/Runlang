@@ -89,20 +89,20 @@ let time =
 
 let pace =
     let timePace = watchtime .>> pstring "/km" |>> TimePerKm
-    //  let termPace =
-    //     tryMany [
-    //         stringReturn "CL" CL
-    //         stringReturn "CA" CA
-    //         stringReturn "CV" CV
-    //         stringReturn "TR" TR
-    //         stringReturn "LVS" LVS
-    //         stringReturn "LE" LE
-    //         stringReturn "MO" MO
-    //         stringReturn "FO" FO
-    //         stringReturn "FTS" FTS
-    //         stringReturn "MAX" MAX
-    //     ]
-    timePace
+    let termPace =
+        tryMany [
+            stringReturn "CL" CL
+            stringReturn "CA" CA
+            stringReturn "CV" CV
+            stringReturn "TR" TR
+            stringReturn "LVS" LVS
+            stringReturn "LE" LE
+            stringReturn "MO" MO
+            stringReturn "FO" FO
+            stringReturn "FTS" FTS
+            stringReturn "MAX" MAX
+        ] .>>. paceTable |>> fun (term, table) -> table term
+    timePace <|> termPace
 
 let progression =
     distance .>> ws1 .>>. pace .>> pchar '~' .>>. pace
