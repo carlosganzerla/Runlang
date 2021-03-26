@@ -151,8 +151,9 @@ do repetitionRef := replist;
 
 let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 
-let run parser paceTable input =
-    let output = runParserOnString parser paceTable "" input
+let parseWorkout paceTable input =
+    let output = runParserOnString repetition paceTable "" input
     match output with
     | Success(intervals, _, _)  -> Result.Ok intervals
     | Failure(errorMsg, _, _) -> Result.Error errorMsg
+

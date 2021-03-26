@@ -41,7 +41,7 @@ type Pace = TimePerKm of Time
 
 type PaceTable = RunningTerm -> Pace
 
-exception InvalidPace of string
+exception InvalidPaceException of string
 
 module Pace =
     let create min s = Time.create 0u min s |> Result.map TimePerKm
@@ -50,6 +50,10 @@ module Pace =
 
     let toString (TimePerKm pace) =
         Time.toString pace + "/km"
+
+    let createOrThrow min s = create min s |> function
+        | Ok ok -> ok
+        | Error err -> raise (InvalidPaceException err)
 
 type Distance =
     | Meters of uint
