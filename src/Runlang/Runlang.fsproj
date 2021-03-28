@@ -6,9 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Models.fs" />
+    <Compile Include="Time.fs" />
+    <Compile Include="Pace.fs" />
+    <Compile Include="Distance.fs" />
+    <Compile Include="Interval.fs" />
+    <Compile Include="Repetition.fs" />
     <Compile Include="Parser.fs" />
-    <Compile Include="Test.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

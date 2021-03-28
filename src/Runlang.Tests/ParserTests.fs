@@ -2,7 +2,7 @@
 
 open FsUnit.Xunit
 open Xunit
-open Models
+open Pace
 open Parser
 
 let paceTable = function

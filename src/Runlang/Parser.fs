@@ -1,7 +1,10 @@
 module Parser
 
 open FParsec
-open Models
+open Pace
+open Distance
+open Interval
+open Repetition
 
 type Parser<'t> = Parser<'t, PaceTable>
 
