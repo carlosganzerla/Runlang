@@ -4,6 +4,7 @@ open FsUnit.Xunit
 open Xunit
 open Pace
 open Parser
+open Interval
 
 let paceTable = function
     | MAX -> Pace.createOrThrow 03u 0u
