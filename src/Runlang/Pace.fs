@@ -25,7 +25,7 @@ let create min s = Time.create 0u min s |> Result.map TimePerKm
 let value (TimePerKm pace) = pace
 
 let toString (TimePerKm pace) =
-    Time.toString pace + "/km"
+    sprintf "%d:%02d/km" (minutes pace) (seconds pace)
 
 let createOrThrow min s = create min s |> function
     | Ok ok -> ok

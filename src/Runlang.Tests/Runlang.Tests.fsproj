@@ -7,7 +7,10 @@
         <ProjectReference Include="../Runlang/Runlang.fsproj" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Utils.fs" />
         <Compile Include="TimeTests.fs" />
+        <Compile Include="DistanceTests.fs" />
+        <Compile Include="PaceTests.fs" />
         <Compile Include="ParserTests.fs" />
     </ItemGroup>
     <ItemGroup>
