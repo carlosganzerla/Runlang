@@ -23,3 +23,7 @@ let create h min s =
 
 let toString {Hours=h; Minutes=min; Seconds=s} =
     sprintf "%02d:%02d:%02d" h min s
+
+let minutes time = time.Minutes
+let hours time = time.Hours
+let seconds time = time.Seconds

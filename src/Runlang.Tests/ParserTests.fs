@@ -23,11 +23,6 @@ let parseOk = parseWorkout paceTable >> function
     | Ok intervals -> List.mapi Interval.toString intervals
     | Error err-> raise (System.Exception err)
 
-let parseErr = parseWorkout paceTable >> function
-    | Error _-> ()
-    | Ok _-> raise (System.Exception "An exception should have been thrown")
-
-
 [<Fact>]
 let ``Distance and term pace interval in km`` () =
     let input = "1km MO"
