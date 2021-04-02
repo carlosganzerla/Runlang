@@ -20,13 +20,14 @@ type PaceTable = RunningTerm -> Pace
 
 exception InvalidPaceException of string
 
-let create min s = Time.create 0u min s |> Result.map TimePerKm
+module Pace =
+    let create min s = Time.create 0u min s |> Result.map TimePerKm
 
-let value (TimePerKm pace) = pace
+    let value (TimePerKm pace) = pace
 
-let toString (TimePerKm pace) =
-    sprintf "%d:%02d/km" (minutes pace) (seconds pace)
+    let toString (TimePerKm pace) =
+        sprintf "%d:%02d/km" (Time.minutes pace) (Time.seconds pace)
 
-let createOrThrow min s = create min s |> function
-    | Ok ok -> ok
-    | Error err -> raise (InvalidPaceException err)
+    let createOrThrow min s = create min s |> function
+        | Ok ok -> ok
+        | Error err -> raise (InvalidPaceException err)

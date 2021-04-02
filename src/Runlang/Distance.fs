@@ -4,16 +4,17 @@ type Distance =
     | Meters of uint
     | Kilometers of decimal
 
-let create totalKm =
-    if totalKm >= 1.0m then
-        Kilometers totalKm
-    else
-        (totalKm* 1000m) |> uint |> Meters
+module Distance =
+    let create totalKm =
+        if totalKm >= 1.0m then
+            Kilometers totalKm
+        else
+            (totalKm* 1000m) |> uint |> Meters
 
-let totalKm = function
-    | Meters m -> (decimal m) / 1000m
-    | Kilometers km -> km
+    let totalKm = function
+        | Meters m -> (decimal m) / 1000m
+        | Kilometers km -> km
 
-let toString = function
-    | Meters m -> sprintf "%im" m
-    | Kilometers km -> sprintf "%.2fkm" km
+    let toString = function
+        | Meters m -> sprintf "%im" m
+        | Kilometers km -> sprintf "%.2fkm" km

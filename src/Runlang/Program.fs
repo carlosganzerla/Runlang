@@ -3,18 +3,19 @@
 open System
 open Parser
 open Pace
+open Interval
 
 let paceTable = function
-    | CL -> createOrThrow 08u 52u
-    | CA -> createOrThrow 09u 51u
-    | CV -> createOrThrow 11u 05u
-    | TR -> createOrThrow 04u 47u
-    | LVS -> createOrThrow 04u 31u
-    | LE -> createOrThrow 04u 14u
-    | MO -> createOrThrow 04u 01u
-    | FO -> createOrThrow 03u 42u
-    | FTS -> createOrThrow 03u 25u
-    | MAX -> createOrThrow 02u 57u
+    | CL -> Pace.createOrThrow 08u 52u
+    | CA -> Pace.createOrThrow 09u 51u
+    | CV -> Pace.createOrThrow 11u 05u
+    | TR -> Pace.createOrThrow 04u 47u
+    | LVS -> Pace.createOrThrow 04u 31u
+    | LE -> Pace.createOrThrow 04u 14u
+    | MO -> Pace.createOrThrow 04u 01u
+    | FO -> Pace.createOrThrow 03u 42u
+    | FTS -> Pace.createOrThrow 03u 25u
+    | MAX -> Pace.createOrThrow 02u 57u
 
 let print = function
     | Ok intervals ->

@@ -3,6 +3,7 @@ module Parser
 open FParsec
 open Pace
 open Distance
+open Time
 open Interval
 open Repetition
 
