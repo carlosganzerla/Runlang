@@ -9,11 +9,11 @@ module Time =
     let totalMinutes {Hours=h; Minutes=min; Seconds=s} =
        decimal h*60m + decimal min + (decimal s)/60m
 
-    let totalTime mins =
-        let hours = uint mins / 60u
-        let minutes = (uint mins) % 60u
-        let seconds = (mins - truncate mins)*60m |> round |> uint
-        {Hours=hours; Minutes=minutes; Seconds=seconds}
+    let totalTime (mins: decimal) =
+        let seconds = (mins - floor mins)*60m |> round |> uint
+        let minutes = (uint mins) % 60u + seconds / 60u
+        let hours = uint mins / 60u + minutes / 60u
+        {Hours=hours; Minutes=minutes % 60u; Seconds=seconds % 60u}
 
     let create h min s =
         if min > 59u || s > 59u then

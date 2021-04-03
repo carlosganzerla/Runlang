@@ -12,6 +12,7 @@
         <Compile Include="DistanceTests.fs" />
         <Compile Include="PaceTests.fs" />
         <Compile Include="ParserTests.fs" />
+        <Compile Include="IntervalTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />

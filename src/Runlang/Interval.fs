@@ -72,3 +72,9 @@ module Interval =
             Distance.toString dist,
             Pace.toString pace
         $"#{count} Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
+
+    let time interval = interval.Time
+    let pace interval = interval.Pace
+    let distance interval = interval.Distance
+
+
