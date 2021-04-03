@@ -66,12 +66,18 @@ module Interval =
         let distances = getSplits count totalKm split |> List.map dist
         List.zip distances paces |> List.map (DistanceAndPace >> create)
 
-    let toString count {Time=time; Distance=dist; Pace=pace;} =
+    let toString {Time=time; Distance=dist; Pace=pace;} =
         let timeStr, distStr, paceStr =
             Time.toString time,
             Distance.toString dist,
             Pace.toString pace
-        $"#{count} Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
+        $"Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
+
+    let listToString list = 
+        let withCount count interval  = 
+            sprintf "#%d %s" count (toString interval)
+        list |> List.mapi withCount
+
 
     let time interval = interval.Time
     let pace interval = interval.Pace

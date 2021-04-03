@@ -69,10 +69,54 @@ let ``Negative progression should create intervals according to splits`` () =
     let (Ok first) = Pace.create 4u 0u
     let distance = Kilometers 7m
     let intervals = Interval.fromProgression distance first last
-    let expectedPaceValues = 
+    let expectedPaceValues =
         [
             (5u,0u); (4u, 50u); (4u, 40u); (4u, 30u); (4u, 20u); (4u, 10u);
             (4u, 0u);
         ] |> List.rev
     let expectedIntervals = replicateProgression expectedPaceValues
     intervals |> should equal expectedIntervals
+
+
+[<Fact>]
+let ``Progression with non integer km value uses last split as remainder`` () =
+    let (Ok first) = Pace.create 5u 0u
+    let (Ok last) = Pace.create 4u 0u
+    let distance = Kilometers 6.5m
+    let intervals = Interval.fromProgression distance first last
+    let fullKmPaceValues =
+        [
+            (5u,0u); (4u, 50u); (4u, 40u); (4u, 30u); (4u, 20u); (4u, 10u);
+        ]
+    let fullKmIntervals = replicateProgression fullKmPaceValues
+    let (Ok pace) = Pace.create 4u 0u
+    let expectedIntervals =
+        (Kilometers 0.5m, pace)
+        |> DistanceAndPace
+        |> Interval.create
+        |> List.singleton
+        |> List.append fullKmIntervals
+    intervals |> should equal expectedIntervals
+
+
+[<Fact>]
+let ``Progression lower than 2km will yield two half distance intervals`` () =
+    let (Ok first) = Pace.create 5u 0u
+    let (Ok last) = Pace.create 4u 0u
+    let distance = Kilometers 1.5m
+    let intervals = Interval.fromProgression distance first last
+    let intervalDistance = Meters 750u
+    let expectedIntervals =
+        [
+            (intervalDistance, first); (intervalDistance, last);
+        ] |> List.map (DistanceAndPace >> Interval.create)
+    intervals |> should equal expectedIntervals
+
+
+[<Fact>]
+let ``To string must yield the correct string representation`` () =
+    let (Ok pace) = Pace.create 6u 0u
+    let distance = Kilometers 1m
+    let interval = (distance, pace) |> DistanceAndPace |> Interval.create
+    let expected = "Time: 00:06:00, Distance: 1.00km, Pace: 6:00/km"
+    interval |> Interval.toString |> should equal expected

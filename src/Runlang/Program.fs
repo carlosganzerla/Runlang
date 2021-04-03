@@ -20,7 +20,7 @@ let paceTable = function
 let print = function
     | Ok intervals ->
         intervals
-        |> List.mapi Interval.toString
+        |> Interval.listToString
         |> List.iter (printfn "%s")
     | Error err -> printfn "Failure: %s" err
 

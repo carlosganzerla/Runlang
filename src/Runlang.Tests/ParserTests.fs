@@ -21,7 +21,7 @@ let paceTable = function
 let parse = parseWorkout paceTable
 
 let parseOk = parseWorkout paceTable >> function
-    | Ok intervals -> List.mapi Interval.toString intervals
+    | Ok intervals -> Interval.listToString intervals
     | Error err-> raise (System.Exception err)
 
 [<Fact>]
