@@ -26,7 +26,7 @@ let print = function
 
 [<EntryPoint>]
 let rec main argv =
-    Console.WriteLine "Repetition:"
+    Console.WriteLine "Enter repetition:"
     |> Console.ReadLine
     |> parseWorkout paceTable
     |> print

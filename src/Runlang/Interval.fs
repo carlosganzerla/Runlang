@@ -75,7 +75,7 @@ module Interval =
 
     let listToString list = 
         let withCount count interval  = 
-            sprintf "#%d %s" count (toString interval)
+            sprintf "#%d %s" (count + 1) (toString interval)
         list |> List.mapi withCount
 
 
