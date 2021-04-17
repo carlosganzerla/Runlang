@@ -105,3 +105,26 @@ module Interval =
         let time = Time.sum int1.Time int2.Time
         create (TimeAndDistance (time, distance))
 
+    let private splitByDistance distance interval =
+        let splitSize = Distance.totalKm distance
+        let totalKm = Distance.totalKm interval.Distance
+        let splits = getSplits totalKm splitSize 
+        splits
+        |> List.map Distance.create
+        |> List.map (fun d -> d, interval.Pace)
+        |> List.map DistanceAndPace
+        |> List.map create
+
+    let private splitByTime time interval =
+        let splitSize = Time.totalMinutes time
+        let totalMinutes = Time.totalMinutes interval.Time
+        let splits = getSplits totalMinutes splitSize
+        splits
+        |> List.map Time.totalTime
+        |> List.map (fun t -> t, interval.Pace)
+        |> List.map TimeAndPace
+        |> List.map create
+
+    let split interval = function
+        | Time time -> splitByTime time interval
+        | Distance dist -> splitByDistance dist interval
