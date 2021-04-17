@@ -36,3 +36,11 @@ let ``Total time should parse the time correctly from minutes`` () =
 let ``To string must return the correct representation`` () =
      let (Ok time) = Time.create 1u 30u 30u
      time |> Time.toString |> should equal "01:30:30"
+
+
+[<Fact>]
+let ``Summing time must yield the correct result`` () =
+     let (Ok time1) = Time.create 1u 30u 30u
+     let (Ok time2) = Time.create 2u 45u 39u
+     let time = Time.sum time1 time2
+     time |> Time.toString |> should equal "04:16:09"

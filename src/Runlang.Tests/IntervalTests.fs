@@ -120,3 +120,16 @@ let ``To string must yield the correct string representation`` () =
     let interval = (distance, pace) |> DistanceAndPace |> Interval.create
     let expected = "Time: 00:06:00, Distance: 1.00km, Pace: 6:00/km"
     interval |> Interval.toString |> should equal expected
+
+
+[<Fact>]
+let ``Summing intervals must yield the correct result`` () =
+    let (Ok pace1) = Pace.create 5u 0u
+    let distance1 = Kilometers 1m
+    let interval1 = (distance1, pace1) |> DistanceAndPace |> Interval.create
+    let (Ok time2) = Time.create 0u 10u 0u 
+    let distance2 = Distance.create 2.5m
+    let interval2 =  (time2, distance2) |> TimeAndDistance |> Interval.create
+    let interval = Interval.sum interval1 interval2
+    let expected = "Time: 00:15:00, Distance: 3.50km, Pace: 4:17/km"
+    interval |> Interval.toString |> should equal expected

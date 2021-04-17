@@ -5,6 +5,7 @@ type Time = private {
     Minutes: uint
     Seconds: uint
 }
+
 module Time =
     let totalMinutes {Hours=h; Minutes=min; Seconds=s} =
        decimal h*60m + decimal min + (decimal s)/60m
@@ -27,3 +28,7 @@ module Time =
     let minutes time = time.Minutes
     let hours time = time.Hours
     let seconds time = time.Seconds
+
+    let sum t1 t2 = 
+        let minutesSum = (totalMinutes t1) + (totalMinutes t2)
+        totalTime minutesSum 

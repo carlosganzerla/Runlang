@@ -26,3 +26,11 @@ let ``Total km should get the distance value in km`` () =
 let ``To string must yield correct representation`` () =
     Meters 500u |> Distance.toString |> should equal "500m"
     Kilometers 1.854m |> Distance.toString |> should equal "1.85km"
+    
+
+[<Fact>]
+let ``Summing distances must yield the correct result`` () =
+    let d1 = Distance.create 2.55m
+    let d2 = Distance.create 0.57m
+    let distance = Distance.sum d1 d2
+    distance |> Distance.toString |> should equal "3.12km"
