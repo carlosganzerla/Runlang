@@ -56,13 +56,13 @@ module Interval =
         let count = int (ceil (value / splitSize))
 
         let inline getNextSplit (splits, remaining) _ =
-            if remaining >= splitSize then 
+            if remaining >= splitSize then
                 (splitSize::splits, remaining - splitSize)
-            else 
+            else
                 (remaining::splits, remaining)
 
-        [1 .. count] 
-        |> List.fold getNextSplit ([], value) 
+        [1 .. count]
+        |> List.fold getNextSplit ([], value)
         |> fst
         |> List.rev
 
@@ -91,8 +91,8 @@ module Interval =
             Pace.toString pace
         $"Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
 
-    let listToString list = 
-        let withCount count interval  = 
+    let listToString list =
+        let withCount count interval  =
             sprintf "#%d %s" (count + 1) (toString interval)
 
         list |> List.mapi withCount
@@ -101,7 +101,7 @@ module Interval =
     let pace interval = interval.Pace
     let distance interval = interval.Distance
 
-    let sum int1 int2 = 
+    let sum int1 int2 =
         let distance = Distance.sum int1.Distance int2.Distance
         let time = Time.sum int1.Time int2.Time
         create (TimeAndDistance (time, distance))
@@ -109,7 +109,7 @@ module Interval =
     let private splitByDistance distance interval =
         let splitSize = Distance.totalKm distance
         let totalKm = Distance.totalKm interval.Distance
-        let splits = getSplits totalKm splitSize 
+        let splits = getSplits totalKm splitSize
         splits
         |> List.map Distance.create
         |> List.map (fun d -> d, interval.Pace)
@@ -126,6 +126,7 @@ module Interval =
         |> List.map TimeAndPace
         |> List.map create
 
-    let split interval = function
+    let split split interval =
+        match split with
         | Time time -> splitByTime time interval
         | Distance dist -> splitByDistance dist interval
