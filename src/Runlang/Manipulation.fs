@@ -34,7 +34,7 @@ module Manipulation =
 
     let join = run joiner
 
-    let splitter split (a, b) (manipulation: Manipulation) length =
+    let private splitter split (a, b) (manipulation: Manipulation) length =
         let before =
             manipulation.[0 .. a - 1]
             |> List.map List.singleton
