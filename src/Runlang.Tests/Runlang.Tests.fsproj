@@ -15,6 +15,7 @@
         <Compile Include="IntervalTests.fs" />
         <Compile Include="RepetitionTests.fs" />
         <Compile Include="RootListTests.fs" />
+        <Compile Include="ManipulationTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />

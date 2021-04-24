@@ -4,6 +4,7 @@ type RootList<'T> =
     | Root of 'T
     | Cons of 'T * RootList<'T>
 
+[<RequireQualifiedAccess>]
 module RootList =
     let create = Root
 

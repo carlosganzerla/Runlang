@@ -3,11 +3,7 @@ module RootListTests
 open FsUnit.Xunit
 open Xunit
 open RootList
-
-let invalidIndex<'T> : Result<'T, string> = Error "Invalid index"
-
-let cannotRemoveRoot<'T> : Result<'T, string> = 
-    Error "Cannot remove root"
+open Utils
 
 let addToRootList list e = RootList.add e list
 
@@ -44,7 +40,7 @@ let ``Get at index lower than 0 must return an Error`` () =
     let root = RootList.create 11
     let rest = [1 .. 10] |> List.fold addToRootList root
     let element = RootList.get -3 rest
-    element |> should equal invalidIndex<int>
+    element |> shouldBeError
 
 
 [<Fact>]
@@ -52,7 +48,7 @@ let ``Get at index higher than length must return an Error`` () =
     let root = RootList.create 11
     let rest = [1 .. 10] |> List.fold addToRootList root
     let element = RootList.get 12 rest
-    element |> should equal invalidIndex<int>
+    element |> shouldBeError
 
 
 [<Fact>]
@@ -72,7 +68,7 @@ let ``Get index inside the list must return corresponding element`` () =
 let ``Remove the root element must return an error`` () =
     let root = RootList.create 4
     let removed = RootList.remove 0 root
-    removed |> should equal cannotRemoveRoot<RootList<int>>
+    removed |> shouldBeError
     
 
 [<Fact>]
@@ -80,7 +76,7 @@ let ``Removing and index higher than the length must return an Error`` () =
     let root = RootList.create 11
     let rest = [1 .. 10] |> List.fold addToRootList root
     let removed = RootList.remove 12 rest
-    removed |> should equal invalidIndex<RootList<int>>
+    removed |> shouldBeError
 
 
 [<Fact>]

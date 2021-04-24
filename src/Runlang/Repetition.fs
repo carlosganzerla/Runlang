@@ -7,6 +7,7 @@ type Repetition =
     | RepList of Repetition list
     | RepCount of uint*Repetition
 
+[<RequireQualifiedAccess>]
 module Repetition =
     let toList repetition =
         let rec toList acc = function

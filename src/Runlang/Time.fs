@@ -6,6 +6,7 @@ type Time = private {
     Seconds: uint
 }
 
+[<RequireQualifiedAccess>]
 module Time =
     let totalMinutes {Hours=h; Minutes=min; Seconds=s} =
        decimal h*60m + decimal min + (decimal s)/60m

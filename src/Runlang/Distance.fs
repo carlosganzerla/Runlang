@@ -4,6 +4,7 @@ type Distance =
     | Meters of uint
     | Kilometers of decimal
 
+[<RequireQualifiedAccess>]
 module Distance =
     let create totalKm =
         if totalKm >= 1.0m then

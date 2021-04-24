@@ -127,7 +127,7 @@ let ``Summing intervals must yield the correct result`` () =
     let (Ok pace1) = Pace.create 5u 0u
     let distance1 = Kilometers 1m
     let interval1 = (distance1, pace1) |> DistanceAndPace |> Interval.create
-    let (Ok time2) = Time.create 0u 10u 0u 
+    let (Ok time2) = Time.create 0u 10u 0u
     let distance2 = Distance.create 2.5m
     let interval2 =  (time2, distance2) |> TimeAndDistance |> Interval.create
     let interval = Interval.sum interval1 interval2
@@ -138,7 +138,7 @@ let ``Summing intervals must yield the correct result`` () =
 [<Fact>]
 let ``Splitting interval by non divisible distance will yield an extra interval`` () =
     let (Ok pace) = Pace.create 4u 30u
-    let distance = Kilometers 3.2m 
+    let distance = Kilometers 3.2m
     let splitSize = Distance (Meters 500u)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split interval splitSize
@@ -157,7 +157,7 @@ let ``Splitting interval by non divisible distance will yield an extra interval`
 [<Fact>]
 let ``Splitting interval by a divisible distance will yield the exact quantity of intervals`` () =
     let (Ok pace) = Pace.create 4u 30u
-    let distance = Kilometers 3m 
+    let distance = Kilometers 3m
     let splitSize = Distance (Kilometers 1m)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split interval splitSize
@@ -172,7 +172,7 @@ let ``Splitting interval by a divisible distance will yield the exact quantity o
 [<Fact>]
 let ``Splitting interval by a bigger distance will yield the interval itself`` () =
     let (Ok pace) = Pace.create 4u 30u
-    let distance = Kilometers 1m 
+    let distance = Kilometers 1m
     let splitSize = Distance (Kilometers 2.5m)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split interval splitSize
@@ -216,7 +216,7 @@ let ``Splitting interval by a divisible time will yield the exact quantity of in
         "#5 Time: 00:05:00, Distance: 1.25km, Pace: 4:00/km";
     ]
     splits |> Interval.listToString |> should equal expected
-    
+
 
 [<Fact>]
 let ``Splitting interval by a bigger time will yield the interval itself`` () =

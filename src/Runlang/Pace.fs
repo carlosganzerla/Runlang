@@ -20,6 +20,7 @@ type PaceTable = RunningTerm -> Pace
 
 exception InvalidPaceException of string
 
+[<RequireQualifiedAccess>]
 module Pace =
     let create min s = Time.create 0u min s |> Result.map TimePerKm
 

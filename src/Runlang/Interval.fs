@@ -19,6 +19,7 @@ type IntervalSplit =
     | Time of Time
     | Distance of Distance
 
+[<RequireQualifiedAccess>]
 module Interval =
     let private timeInterval distance (pace:Pace) =
         let km = Distance.totalKm distance
