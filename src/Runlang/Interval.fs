@@ -16,8 +16,8 @@ type IntervalType =
     | DistanceAndPace of Distance*Pace
 
 type IntervalSplit =
-    | Time of Time
-    | Distance of Distance
+    | TimeSplit of Time
+    | DistanceSplit of Distance
 
 [<RequireQualifiedAccess>]
 module Interval =
@@ -128,5 +128,5 @@ module Interval =
 
     let split split interval =
         match split with
-        | Time time -> splitByTime time interval
-        | Distance dist -> splitByDistance dist interval
+        | TimeSplit time -> splitByTime time interval
+        | DistanceSplit dist -> splitByDistance dist interval

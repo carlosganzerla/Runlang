@@ -7,8 +7,8 @@ type Manipulation = Interval list
 
 type ManipulationList = RootList<Manipulation>
 
-type JoinScope =
-    | Interval of int
+type OperationScope =
+    | Index of int
     | Range of int * int
     | EntireList
 
@@ -18,7 +18,7 @@ module Manipulation =
         let length = List.length manipulation
         let (a, b) =
             match scope with
-            | Interval x -> (x, x)
+            | Index x -> (x, x)
             | Range (a, b) -> (a, b)
             | EntireList -> (0, (length - 1))
         if a <= b && a >= 0 && b < length then

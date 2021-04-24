@@ -139,7 +139,7 @@ let ``Summing intervals must yield the correct result`` () =
 let ``Splitting interval by non divisible distance will yield an extra interval`` () =
     let (Ok pace) = Pace.create 4u 30u
     let distance = Kilometers 3.2m
-    let splitSize = Distance (Meters 500u)
+    let splitSize = DistanceSplit (Meters 500u)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split splitSize interval 
     let expected = [
@@ -158,7 +158,7 @@ let ``Splitting interval by non divisible distance will yield an extra interval`
 let ``Splitting interval by a divisible distance will yield the exact quantity of intervals`` () =
     let (Ok pace) = Pace.create 4u 30u
     let distance = Kilometers 3m
-    let splitSize = Distance (Kilometers 1m)
+    let splitSize = DistanceSplit (Kilometers 1m)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split splitSize interval
     let expected = [
@@ -173,7 +173,7 @@ let ``Splitting interval by a divisible distance will yield the exact quantity o
 let ``Splitting interval by a bigger distance will yield the interval itself`` () =
     let (Ok pace) = Pace.create 4u 30u
     let distance = Kilometers 1m
-    let splitSize = Distance (Kilometers 2.5m)
+    let splitSize = DistanceSplit (Kilometers 2.5m)
     let interval = Interval.create (DistanceAndPace (distance, pace))
     let splits = Interval.split splitSize interval 
     let expected = [
@@ -186,7 +186,7 @@ let ``Splitting interval by a bigger distance will yield the interval itself`` (
 let ``Splitting interval by non divisible time will yield an extra interval`` () =
     let (Ok pace) = Pace.create 4u 0u
     let (Ok time) = Time.create 0u 25u 0u
-    let splitSize = Time (Time.totalTime 4m)
+    let splitSize = TimeSplit (Time.totalTime 4m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval
     let expected = [
@@ -205,7 +205,7 @@ let ``Splitting interval by non divisible time will yield an extra interval`` ()
 let ``Splitting interval by a divisible time will yield the exact quantity of intervals`` () =
     let (Ok pace) = Pace.create 4u 0u
     let (Ok time) = Time.create 0u 25u 0u
-    let splitSize = Time (Time.totalTime 5m)
+    let splitSize = TimeSplit (Time.totalTime 5m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval 
     let expected = [
@@ -222,7 +222,7 @@ let ``Splitting interval by a divisible time will yield the exact quantity of in
 let ``Splitting interval by a bigger time will yield the interval itself`` () =
     let (Ok pace) = Pace.create 4u 25u
     let (Ok time) = Time.create 0u 4u 25u
-    let splitSize = Time (Time.totalTime 5m)
+    let splitSize = TimeSplit (Time.totalTime 5m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval 
     let expected = [

@@ -10,7 +10,7 @@ module Distance =
         if totalKm >= 1.0m then
             Kilometers totalKm
         else
-            (totalKm * 1000m) |> uint |> Meters
+            (totalKm * 1000m) |> round |> uint |> Meters
 
     let totalKm = function
         | Meters m -> (decimal m) / 1000m
