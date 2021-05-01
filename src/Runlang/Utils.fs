@@ -7,6 +7,11 @@ let fromResultList list =
         ) list
     List.fold folder (Ok []) list
 
+let foldResult folder state list =
+    let resultFolder result next =
+        Result.bind (folder next) result
+    List.fold resultFolder (Ok state) list
+
 type OperationScope =
     | Range of int * int
     | EntireList

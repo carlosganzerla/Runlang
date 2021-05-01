@@ -29,6 +29,10 @@ module RootList =
     let toList list = 
         cata (fun (e, es) -> e::es) List.singleton list |> List.rev
 
+    let fromList = function
+        | [] -> Error "List cannot be empty!"
+        | list -> list.[1..] |> List.fold add (create list.[0]) |> Ok
+
     let get idx list =
         let length = length list
 
@@ -68,3 +72,10 @@ module RootList =
 
     let move idx list =
         list |> copy idx |> Result.bind (remove idx) 
+
+    let removeScope scope list =
+        let removeIdxs (a, b) _ = 
+            [a..b] |> foldResult remove list
+        list
+        |> toList
+        |> execScope removeIdxs scope
