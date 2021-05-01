@@ -75,7 +75,8 @@ module RootList =
 
     let removeScope scope list =
         let removeIdxs (a, b) _ = 
-            [a..b] |> foldResult remove list
+            List.replicate (b - a + 1) a |> foldResult remove list
         list
         |> toList
         |> execScope removeIdxs scope
+        |> Result.bind id

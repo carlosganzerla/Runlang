@@ -138,3 +138,12 @@ let ``To list must yield the equivalent list`` () =
     let rest = [1 .. 10] |> List.fold RootList.add root
     let list = RootList.toList rest
     list |> should equal [0..10]
+
+
+[<Fact>]
+let ``Removing scope inside length range must return a list without those elements`` () =
+    let root = RootList.create 0
+    let list = [1 .. 15] |> List.fold RootList.add root
+    let removed = RootList.removeScope (Range (7,12)) list |> ok
+    let expected = [1 .. 6] @ [13 .. 15] |> List.fold RootList.add root 
+    removed |> should equal expected
