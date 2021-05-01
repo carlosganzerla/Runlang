@@ -8,7 +8,7 @@ type RootList<'T> =
 module RootList =
     let create = Root
 
-    let add manipulation list = Cons (manipulation, list)
+    let add list manipulation = Cons (manipulation, list)
 
     let rec cata fCons fRoot = function
         | Cons (e, list) ->
@@ -20,7 +20,9 @@ module RootList =
 
     let length list = cata (snd >> (+) 1) (k 1) list
 
-    let rec root list = cata (snd >> id) id list
+    let root list = cata (snd >> id) id list
+
+    let top list = cata (fst >> id) id list
 
     let get idx list =
         let length = length list

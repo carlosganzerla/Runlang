@@ -23,22 +23,22 @@ let ``Joining intervals outside manipulation or with wrong indexing must yield e
 
 [<Fact>]
 let ``Joining the entire manipulation should result in a single interval`` () =
-    let (Ok join) = Manipulation.join EntireList intervals 
+    let join = Manipulation.join EntireList intervals  |> ok
     let expected = ["#1 Time: 00:39:00, Distance: 6.00km, Pace: 6:30/km"]
     join |> Interval.listToString |> should equal expected
 
 
 [<Fact>]
 let ``Joining by index or equal range is a no op`` () =
-    let (Ok join1) = Manipulation.join (Index 5) intervals 
-    let (Ok join2) = Manipulation.join (Range (2,2)) intervals 
+    let join1 = Manipulation.join (Index 5) intervals |> ok
+    let join2 = Manipulation.join (Range (2,2)) intervals |> ok
     join1 |> should equal intervals
     join2 |> should equal intervals
 
 
 [<Fact>]
 let ``Joining a range manipulation should covert it to a single interval`` () =
-    let (Ok join) = Manipulation.join (Range (1,3)) intervals 
+    let join = Manipulation.join (Range (1,3)) intervals  |> ok
     let expected = [
         "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
         "#2 Time: 00:21:00, Distance: 3.00km, Pace: 7:00/km";
@@ -68,7 +68,7 @@ let ``Splitting intervals outside manipulation or with wrong indexing must yield
 [<Fact>]
 let ``Splitting an index should split the interval accordingly`` () =
     let splitValue = Meters 300u |> DistanceSplit
-    let (Ok split) = Manipulation.split splitValue (Index 1) intervals
+    let split = Manipulation.split splitValue (Index 1) intervals |> ok
     let expected = [
         "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
         "#2 Time: 00:02:24, Distance: 300m, Pace: 8:00/km";
@@ -85,9 +85,9 @@ let ``Splitting an index should split the interval accordingly`` () =
 
 [<Fact>]
 let ``Splitting by range should split the intervals accordingly`` () =
-    let (Ok time) = Time.create 0u 4u 0u
+    let time = Time.create 0u 4u 0u |> ok
     let splitValue = TimeSplit time
-    let (Ok split) = Manipulation.split splitValue (Range (1,3)) intervals
+    let split = Manipulation.split splitValue (Range (1,3)) intervals |> ok
     let expected = [
         "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
         "#2 Time: 00:04:00, Distance: 500m, Pace: 8:00/km";
@@ -105,7 +105,7 @@ let ``Splitting by range should split the intervals accordingly`` () =
 [<Fact>]
 let ``Splitting entire list should split the intervals accordingly`` () =
     let splitValue = Meters 500u |> DistanceSplit
-    let (Ok split) = Manipulation.split splitValue EntireList intervals
+    let split = Manipulation.split splitValue EntireList intervals |> ok
     let expected = [
         "#1 Time: 00:04:30, Distance: 500m, Pace: 9:00/km";
         "#2 Time: 00:04:30, Distance: 500m, Pace: 9:00/km";

@@ -14,7 +14,7 @@ type OperationScope =
 
 [<RequireQualifiedAccess>]
 module Manipulation =
-    let run f scope manipulation =
+    let private run f scope manipulation =
         let length = List.length manipulation
         let (a, b) =
             match scope with
@@ -47,3 +47,17 @@ module Manipulation =
         before @ target @ after |> List.reduce (@)
 
     let split split = run (splitter split)
+
+[<RequireQualifiedAccess>]
+module ManipulationList = 
+    let private getManipulation selected list =
+        match selected with
+        | Some x -> RootList.get x list
+        | None -> RootList.top list |> Ok
+
+    let join selected scope list =
+        match getManipulation selected list with
+        | Ok m -> 
+            Manipulation.join scope m
+            |> Result.map (RootList.add list)
+        | Error err -> Error err

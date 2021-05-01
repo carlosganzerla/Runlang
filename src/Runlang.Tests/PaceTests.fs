@@ -13,7 +13,7 @@ let ``Create pace arguments must be base sixty`` () =
 
 [<Fact>]
 let ``Pace must be craeted correcty`` () =
-     let (Ok (TimePerKm pace)) = Pace.create 5u 30u
+     let (TimePerKm pace) = Pace.create 5u 30u |> ok
      pace |> Time.hours |> should equal 0u
      pace |> Time.minutes |> should equal 5u
      pace |> Time.seconds |> should equal 30u
@@ -21,5 +21,5 @@ let ``Pace must be craeted correcty`` () =
 
 [<Fact>]
 let ``To string must yield the correct pace representation`` () =
-     let (Ok pace) = Pace.create 5u 30u
+     let pace = Pace.create 5u 30u |> ok
      pace |> Pace.toString |> should equal "5:30/km"
