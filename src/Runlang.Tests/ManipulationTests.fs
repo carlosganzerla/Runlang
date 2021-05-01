@@ -4,6 +4,7 @@ open FsUnit.Xunit
 open Utils
 open Xunit
 open ParserTests
+open RootList
 open Interval
 open Manipulation
 open Distance

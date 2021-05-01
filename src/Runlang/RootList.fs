@@ -1,5 +1,10 @@
 module RootList
 
+type OperationScope =
+    | Index of int
+    | Range of int * int
+    | EntireList
+
 type RootList<'T> =
     | Root of 'T
     | Cons of 'T * RootList<'T>
@@ -58,3 +63,8 @@ module RootList =
         else
             Ok (removeFn list) 
 
+    let copy idx list =
+        list |> get idx |> Result.map (add list)
+
+    let move idx list =
+        list |> copy idx |> Result.bind (remove idx) 

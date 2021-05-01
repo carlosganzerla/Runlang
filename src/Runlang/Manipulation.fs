@@ -7,11 +7,6 @@ type Manipulation = Interval list
 
 type ManipulationList = RootList<Manipulation>
 
-type OperationScope =
-    | Index of int
-    | Range of int * int
-    | EntireList
-
 [<RequireQualifiedAccess>]
 module Manipulation =
     let private run f scope manipulation =
@@ -61,3 +56,4 @@ module ManipulationList =
             Manipulation.join scope m
             |> Result.map (RootList.add list)
         | Error err -> Error err
+
