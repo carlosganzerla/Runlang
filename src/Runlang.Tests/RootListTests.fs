@@ -131,3 +131,10 @@ let ``Moving root element must return an error`` () =
     let rest = [1 .. 10] |> List.fold RootList.add root
     let moved = RootList.move 0 rest
     moved |> shouldBeError
+
+[<Fact>]
+let ``To list must yield the equivalent list`` () =
+    let root = RootList.create 0
+    let rest = [1 .. 10] |> List.fold RootList.add root
+    let list = RootList.toList rest
+    list |> should equal [0..10]

@@ -1,9 +1,6 @@
 module RootList
 
-type OperationScope =
-    | Index of int
-    | Range of int * int
-    | EntireList
+open Utils
 
 type RootList<'T> =
     | Root of 'T
@@ -28,6 +25,9 @@ module RootList =
     let root list = cata (snd >> id) id list
 
     let top list = cata (fst >> id) id list
+
+    let toList list = 
+        cata (fun (e, es) -> e::es) List.singleton list |> List.rev
 
     let get idx list =
         let length = length list

@@ -4,7 +4,6 @@ open FsUnit.Xunit
 open Utils
 open Xunit
 open ParserTests
-open RootList
 open Interval
 open Manipulation
 open Distance
@@ -31,10 +30,8 @@ let ``Joining the entire manipulation should result in a single interval`` () =
 
 [<Fact>]
 let ``Joining by index or equal range is a no op`` () =
-    let join1 = Manipulation.join (Index 5) intervals |> ok
-    let join2 = Manipulation.join (Range (2,2)) intervals |> ok
-    join1 |> should equal intervals
-    join2 |> should equal intervals
+    let join = Manipulation.join (Range (2,2)) intervals |> ok
+    join |> should equal intervals
 
 
 [<Fact>]
@@ -69,7 +66,7 @@ let ``Splitting intervals outside manipulation or with wrong indexing must yield
 [<Fact>]
 let ``Splitting an index should split the interval accordingly`` () =
     let splitValue = Meters 300u |> DistanceSplit
-    let split = Manipulation.split splitValue (Index 1) intervals |> ok
+    let split = Manipulation.split splitValue (Range (1, 1)) intervals |> ok
     let expected = [
         "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
         "#2 Time: 00:02:24, Distance: 300m, Pace: 8:00/km";
