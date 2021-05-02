@@ -16,7 +16,7 @@ module Manipulation =
         [ sum ] @
         manipulation.[b + 1..]
 
-    let join = execScope joiner
+    let join = execRange joiner
 
     let private splitter split (a, b) (manipulation: Manipulation) =
         let before =
@@ -30,4 +30,4 @@ module Manipulation =
             |> List.map List.singleton
         before @ target @ after |> List.reduce (@)
 
-    let split split = execScope (splitter split)
+    let split split = execRange (splitter split)

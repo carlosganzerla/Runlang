@@ -26,7 +26,7 @@ module RootList =
 
     let top list = cata (fst >> id) id list
 
-    let toList list = 
+    let toList list =
         cata (fun (e, es) -> e::es) List.singleton list |> List.rev
 
     let fromList = function
@@ -56,7 +56,7 @@ module RootList =
             if idx = count then (list, count + 1)
             else (Cons (e, list), count + 1)
 
-        let fRoot r = (Root r, 1) 
+        let fRoot r = (Root r, 1)
 
         let removeFn = cata removeOnIdx fRoot >> fst
 
@@ -65,18 +65,31 @@ module RootList =
         elif idx = 0 then
             Error "Cannot remove root"
         else
-            Ok (removeFn list) 
+            Ok (removeFn list)
 
     let copy idx list =
         list |> get idx |> Result.map (add list)
 
     let move idx list =
-        list |> copy idx |> Result.bind (remove idx) 
+        list |> copy idx |> Result.bind (remove idx)
 
-    let removeScope scope list =
-        let removeIdxs (a, b) _ = 
-            List.replicate (b - a + 1) a |> foldResult remove list
+    let execRange f range list =
         list
         |> toList
-        |> execScope removeIdxs scope
+        |> execRange f range
         |> Result.bind id
+
+    let removeRange range list =
+        let removeIdxs (a, b) _ =
+            List.replicate (b - a + 1) a |> foldResult remove list
+        execRange removeIdxs range list 
+
+    let copyRange range list =
+        let copyIdxs (a, b) _ =
+            [a .. b] |> foldResult copy list
+        execRange copyIdxs range list
+
+    let moveRange range list =
+        let moveIdxs (a, b) _ =
+            List.replicate (b - a + 1) a |> foldResult move list
+        execRange moveIdxs range list
