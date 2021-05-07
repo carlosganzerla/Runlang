@@ -1,4 +1,4 @@
-module Parser
+module LangParser
 
 open FParsec
 open Pace
@@ -7,9 +7,9 @@ open Time
 open Interval
 open Repetition
 
-type Parser<'t> = Parser<'t, PaceTable>
+type LangParser<'t> = Parser<'t, PaceTable>
 
-let paceTable : Parser<_> = getUserState
+let paceTable : LangParser<_> = getUserState
 
 let ws1 = spaces1
 
@@ -47,7 +47,7 @@ let pdecimal =
 
     integer .>>. dot >>= decimalPart
 
-let distance : Parser<_> =
+let distance : LangParser<_> =
     let distanceM =
         let m = pchar 'm'
         integer .>> m |>> Meters
@@ -58,7 +58,7 @@ let distance : Parser<_> =
 
     tryMany [ distanceM; distanceKm ]
 
-let watchtime: Parser<_> =
+let watchtime: LangParser<_> =
     let pcolon = pchar ':'
     let phhmmss = integer .>> pcolon .>>. watchDigits .>> pcolon .>>. watchDigits
     let pmmss = zero .>>. baseSixty .>> pcolon .>>. watchDigits
@@ -67,7 +67,7 @@ let watchtime: Parser<_> =
         pmmss
     ] |>> createTime >>= result
 
-let numerictime: Parser<_> =
+let numerictime: LangParser<_> =
     let ph = integer .>> pchar 'h'
     let pmin = baseSixty .>> pstring "min"
     let ps = baseSixty .>> pchar 's'
