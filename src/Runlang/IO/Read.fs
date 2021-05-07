@@ -7,34 +7,37 @@ open RootList
 open Manipulation
 
 type AppState =
-    | Quit
-    | New of unit
+    | New 
     | Updated of ManipulationList
 
 let createState table = state {
     let parsed =
-        Console.WriteLine "Enter workout string:"
+        printfn "Enter workout string:"
         |> Console.ReadLine
         |> parseWorkout table
     let newState =
         match parsed with
-        | Ok intervals -> intervals |> RootList.create |> Updated
-        | Error err -> err |> Console.WriteLine |> New
+        | Ok intervals -> 
+            let state = intervals |> RootList.create
+            do state |> ManipulationList.toString |>  printfn "%s" 
+            Updated state
+        | Error err -> 
+            do printfn "%s" err
+            New
     do! putState newState
 }
 
 let updateState = state {
-    do Console.WriteLine "Enter Command:"
-    do Console.WriteLine "NOT IMPLEMENTED YET"
-    let! state = getState
-    let newState =
-        match state with
-        | Updated m -> Updated m
-        | _ -> New ()
-    do! putState newState
+    do printf "Enter Command:"
+    do printfn " NOT IMPLEMENTED YET"
+    do! putState New
 }
 
-let run table = state {
-    while getState () do
+let app table = state {
+    while true do
+        let! state = getState
+        do! match state with
+            | Updated _ -> updateState
+            | New -> createState table
 
 }

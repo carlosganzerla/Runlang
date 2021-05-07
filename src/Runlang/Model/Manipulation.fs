@@ -46,6 +46,7 @@ module ManipulationList =
 
             manipulation 
             |> Interval.listToString
+            |> List.map (sprintf "%s\n")
             |> cons header
             |> String.concat ""
 
