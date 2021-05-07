@@ -31,3 +31,28 @@ module Manipulation =
         before @ target @ after |> List.reduce (@)
 
     let split split = execRange (splitter split)
+
+[<RequireQualifiedAccess>]
+module ManipulationList =
+
+    let toString manipulations = 
+        let count = RootList.length manipulations
+
+        let header = sprintf "******%s(%d)******\n"
+
+        let createString manipulation alias count = 
+            let cons h t = h::t
+            let header = header alias count
+
+            manipulation 
+            |> Interval.listToString
+            |> cons header
+            |> String.concat ""
+
+        let rec loop count acc = function
+            | Root m -> (createString m "ROOT" count)::acc
+            | Cons (m, tail) -> 
+                let str = (createString m "MANIPULATION" count)
+                loop (count - 1) (str::acc) tail
+
+        loop (count - 1) [] manipulations |> String.concat ""
