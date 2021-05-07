@@ -8,6 +8,7 @@ open Interval
 open Manipulation
 open Distance
 open Time
+open RootList
 
 let intervals = parse "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
 
@@ -128,3 +129,18 @@ let ``Splitting empty list should be a no op`` () =
     let splitValue = Meters 500u |> DistanceSplit
     let split = Manipulation.split splitValue (0, 0) []
     split |> shouldBeError
+
+
+[<Fact>]
+let ``Manipulation List to string must yield the correct representation`` () =
+    let manipulations: RootList<Manipulation> = 
+        List.replicate 5 [] |> RootList.fromList |> ok
+    let expected = """******ROOT(0)******
+******MANIPULATION(1)******
+******MANIPULATION(2)******
+******MANIPULATION(3)******
+******MANIPULATION(4)******
+"""
+    manipulations |> ManipulationList.toString |> should equal expected
+
+

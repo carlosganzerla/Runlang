@@ -11,7 +11,7 @@
         <Compile Include="TimeTests.fs" />
         <Compile Include="DistanceTests.fs" />
         <Compile Include="PaceTests.fs" />
-        <Compile Include="ParserTests.fs" />
+        <Compile Include="LangParserTests.fs" />
         <Compile Include="IntervalTests.fs" />
         <Compile Include="RepetitionTests.fs" />
         <Compile Include="RootListTests.fs" />
