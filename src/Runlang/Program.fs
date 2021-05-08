@@ -1,7 +1,6 @@
 // Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
 
 open System
-open LangParser
 open Pace
 open Cli
 
@@ -20,5 +19,5 @@ let paceTable = function
 
 [<EntryPoint>]
 let rec main argv =
-    app paceTable New |> ignore
+    app paceTable |> ignore
     0 // return an integer exit code

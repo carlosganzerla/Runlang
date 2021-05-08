@@ -6,20 +6,11 @@ open Distance
 open Time
 open Interval
 open Repetition
+open ParserCommons
 
 type LangParser<'t> = Parser<'t, PaceTable>
 
 let paceTable : LangParser<_> = getUserState
-
-let ws1 = spaces1
-
-let ws = spaces
-
-let integer = puint32
-
-let result = function
-    | Result.Ok ok -> preturn ok
-    | Result.Error err -> fail err
 
 let watchDigits =
     regex "[0-5][0-9]" |>> uint
@@ -27,30 +18,12 @@ let watchDigits =
 let baseSixty =
      regex "[0-5]?[0-9]" |>> uint
 
-let tryMany parsers =
-    parsers |> List.map attempt |> choice
-
-let zero = preturn 0u
-
 let createTime ((h,min),s) = Time.create h min s
-
-let pdecimal =
-    let dot = opt (pchar '.')
-
-    let partsToDecimal intpart decpart =
-        decimal $"{intpart}.{decpart}"
-
-    let decimalPart (intpart, dot) =
-        match dot with
-        | Some _ -> integer |>> partsToDecimal intpart
-        | None -> preturn intpart |>> decimal
-
-    integer .>>. dot >>= decimalPart
 
 let distance : LangParser<_> =
     let distanceM =
         let m = pchar 'm'
-        integer .>> m |>> Meters
+        uinteger .>> m |>> Meters
 
     let distanceKm =
         let km = pstring "km"
@@ -60,24 +33,24 @@ let distance : LangParser<_> =
 
 let watchtime: LangParser<_> =
     let pcolon = pchar ':'
-    let phhmmss = integer .>> pcolon .>>. watchDigits .>> pcolon .>>. watchDigits
-    let pmmss = zero .>>. baseSixty .>> pcolon .>>. watchDigits
+    let phhmmss = uinteger .>> pcolon .>>. watchDigits .>> pcolon .>>. watchDigits
+    let pmmss = uzero .>>. baseSixty .>> pcolon .>>. watchDigits
     tryMany [
         phhmmss
         pmmss
     ] |>> createTime >>= result
 
 let numerictime: LangParser<_> =
-    let ph = integer .>> pchar 'h'
+    let ph = uinteger .>> pchar 'h'
     let pmin = baseSixty .>> pstring "min"
     let ps = baseSixty .>> pchar 's'
     let phmins = ph .>>. pmin .>>. ps
-    let phmin = ph .>>. pmin .>>. zero
-    let phs = ph .>>. zero .>>. ps
-    let pmins = zero .>>. pmin .>>. ps
-    let ph = ph .>>. zero .>>. zero
-    let pmin = zero .>>. pmin .>>. zero
-    let ps = zero .>>. zero .>>. ps
+    let phmin = ph .>>. pmin .>>. uzero
+    let phs = ph .>>. uzero .>>. ps
+    let pmins = uzero .>>. pmin .>>. ps
+    let ph = ph .>>. uzero .>>. uzero
+    let pmin = uzero .>>. pmin .>>. uzero
+    let ps = uzero .>>. uzero .>>. ps
     tryMany [
         phmins
         phmin
@@ -145,7 +118,7 @@ let times = pchar 'x' .>> ws
 let repetitionValue, repetitionRef = createParserForwardedToRef ()
 
 let repcount =
-    let reptimes = attempt (integer .>> times)
+    let reptimes = attempt (uinteger .>> times)
     reptimes .>>. between (pchar '(') (pchar ')') repetitionValue
     .>> ws |>> RepCount
 
@@ -155,9 +128,4 @@ do repetitionRef := replist;
 
 let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 
-let parseWorkout paceTable input =
-    let output = runParserOnString repetition paceTable "" input
-    match output with
-    | Success(intervals, _, _)  -> Result.Ok intervals
-    | Failure(errorMsg, _, _) -> Result.Error errorMsg
-
+let parseWorkout = runParser repetition

@@ -1,33 +1,35 @@
 module Cli
 
+open CommandParser
 open System
 open LangParser
 open RootList
 open Manipulation
 
-type AppState =
-    | New
-    | Updated of ManipulationList
-
 let createState table =
-    let parsed =
-        printfn "Enter workout string:"
-        |> Console.ReadLine
-        |> parseWorkout table
-    match parsed with
-    | Ok intervals ->
-        let state = intervals |> RootList.create
-        do state |> ManipulationList.toString |>  printfn "%s"
-        Updated state
-    | Error err ->
-        do printfn "%s" err
-        New
+    printfn "Enter workout string:"
+    |> Console.ReadLine
+    |> parseWorkout table
+    |> Result.map (RootList.create >> Updated)
 
-let updateState m =
-    do printf "Enter Command:"
-    do printfn " NOT IMPLEMENTED YET"
-    New
+let updateState manipulations =
+    printf "Enter Command:"
+    |> Console.ReadLine
+    |> parseCommand manipulations
 
-let rec app table = function
-    | New -> table |> createState |> app table
-    | Updated m -> m |> updateState |> app table
+let getNextState table = function
+    | Updated m -> 
+        do m |> ManipulationList.toString |>  printfn "%s"
+        updateState m
+    | New -> createState table
+
+let app table =
+    let rec loop table prevState nextState =
+        match nextState with
+        | Ok current ->
+            do if prevState <> current then Console.Clear ()
+            current |> getNextState table |> loop table current
+        | Error err ->
+            do printfn "%s" err
+            loop table prevState (Ok prevState)
+    loop table New (Ok New)

@@ -1,6 +1,7 @@
 module ManipulationTests
 
 open FsUnit.Xunit
+open System
 open Utils
 open Xunit
 open ParserTests
@@ -141,6 +142,5 @@ let ``Manipulation List to string must yield the correct representation`` () =
 ******MANIPULATION(3)******
 ******MANIPULATION(4)******
 """
-    manipulations |> ManipulationList.toString |> should equal expected
-
-
+    let expectedLF = expected.Replace("\r", "") // Windows workaround
+    manipulations |> ManipulationList.toString |> should equal expectedLF
