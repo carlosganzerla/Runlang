@@ -1,10 +1,9 @@
 // Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
 
 open System
-open FSharpx.State
 open LangParser
 open Pace
-open Read
+open Cli
 
 let paceTable = function
     | CL -> Pace.createOrThrow 08u 52u
@@ -21,6 +20,5 @@ let paceTable = function
 
 [<EntryPoint>]
 let rec main argv =
-    let appM = app paceTable
-    do eval appM New
+    app paceTable New |> ignore
     0 // return an integer exit code

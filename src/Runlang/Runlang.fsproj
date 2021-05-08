@@ -17,13 +17,12 @@
     <Compile Include="Model/Manipulation.fs" />
     <Compile Include="Parser/LangParser.fs" />
     <Compile Include="Parser/CommandParser.fs" />
-    <Compile Include="IO/Read.fs" />
+    <Compile Include="Cli.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
-    <PackageReference Include="FSharpx.Extras" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
