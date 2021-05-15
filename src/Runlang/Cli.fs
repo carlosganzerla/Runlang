@@ -17,9 +17,10 @@ let updateState manipulations =
     |> Console.ReadLine
     |> parseCommand manipulations
 
-let getNextState table = function
-    | Updated m -> 
-        do m |> ManipulationList.toString |>  printfn "%s"
+let getNextState table =
+    function
+    | Updated m ->
+        do m |> ManipulationList.toString |> printfn "%s"
         updateState m
     | New -> createState table
 
@@ -32,4 +33,5 @@ let app table =
         | Error err ->
             do printfn "%s" err
             loop table prevState (Ok prevState)
+
     loop table New (Ok New)

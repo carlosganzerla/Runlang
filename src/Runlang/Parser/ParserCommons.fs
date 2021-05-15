@@ -18,22 +18,22 @@ let uzero input = preturn 0u input
 
 let runParser parser state input =
     let output = runParserOnString parser state "" input
+
     match output with
-    | Success (result, _, _)  -> Result.Ok result
+    | Success (result, _, _) -> Result.Ok result
     | Failure (errorMsg, _, _) -> Result.Error errorMsg
 
-let tryMany parsers =
-    parsers |> List.map attempt |> choice
+let tryMany parsers = parsers |> List.map attempt |> choice
 
-let result = function
+let result =
+    function
     | Result.Ok ok -> preturn ok
     | Result.Error err -> fail err
 
 let pdecimal input =
     let dot = opt (pchar '.')
 
-    let partsToDecimal intpart decpart =
-        decimal $"{intpart}.{decpart}"
+    let partsToDecimal intpart decpart = decimal $"{intpart}.{decpart}"
 
     let decimalPart (intpart, dot) =
         match dot with
@@ -41,4 +41,3 @@ let pdecimal input =
         | None -> preturn intpart |>> decimal
 
     (uinteger .>>. dot >>= decimalPart) input
-

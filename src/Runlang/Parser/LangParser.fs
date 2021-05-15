@@ -11,20 +11,20 @@ let paceTable = getUserState
 
 let pace =
     let timePace = watchtime .>> pstring "/km" |>> TimePerKm
+
     let termPace =
-        paceTable <*>
-        tryMany [
-            stringReturn "CL" CL
-            stringReturn "CA" CA
-            stringReturn "CV" CV
-            stringReturn "TR" TR
-            stringReturn "LVS" LVS
-            stringReturn "LE" LE
-            stringReturn "MO" MO
-            stringReturn "FO" FO
-            stringReturn "FTS" FTS
-            stringReturn "MAX" MAX
-        ]
+        paceTable
+        <*> tryMany [ stringReturn "CL" CL
+                      stringReturn "CA" CA
+                      stringReturn "CV" CV
+                      stringReturn "TR" TR
+                      stringReturn "LVS" LVS
+                      stringReturn "LE" LE
+                      stringReturn "MO" MO
+                      stringReturn "FO" FO
+                      stringReturn "FTS" FTS
+                      stringReturn "MAX" MAX ]
+
     timePace <|> termPace
 
 let progression =
@@ -47,12 +47,10 @@ let timeAndDistance =
     |>> List.singleton
 
 let interval =
-    tryMany [
-        progression;
-        distanceAndPace;
-        timeAndPace;
-        timeAndDistance;
-    ]
+    tryMany [ progression
+              distanceAndPace
+              timeAndPace
+              timeAndDistance ]
     |>> List.map Interval
     |>> RepList
     .>> ws
@@ -66,14 +64,13 @@ let repetitionValue, repetitionRef = createParserForwardedToRef ()
 let repcount =
     let reptimes = attempt (uinteger .>> times)
 
-    reptimes 
+    reptimes
     .>>. between (pchar '(') (pchar ')') repetitionValue
-    .>> ws 
+    .>> ws
     |>> RepCount
 
 let replist = sepBy (repcount <|> interval) plus |>> RepList
-
-do repetitionRef := replist;
+do repetitionRef := replist
 
 let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
 

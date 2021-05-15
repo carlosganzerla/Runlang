@@ -29,6 +29,8 @@ module Pace =
     let toString (TimePerKm pace) =
         sprintf "%d:%02d/km" (Time.minutes pace) (Time.seconds pace)
 
-    let createOrThrow min s = create min s |> function
+    let createOrThrow min s =
+        create min s
+        |> function
         | Ok ok -> ok
         | Error err -> raise (InvalidPaceException err)

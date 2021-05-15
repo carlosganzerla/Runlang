@@ -4,7 +4,8 @@ open System
 open Pace
 open Cli
 
-let paceTable = function
+let paceTable =
+    function
     | CL -> Pace.createOrThrow 08u 52u
     | CA -> Pace.createOrThrow 09u 51u
     | CV -> Pace.createOrThrow 11u 05u

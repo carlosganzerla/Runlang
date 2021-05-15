@@ -12,11 +12,13 @@ module Distance =
         else
             (totalKm * 1000m) |> round |> uint |> Meters
 
-    let totalKm = function
+    let totalKm =
+        function
         | Meters m -> (decimal m) / 1000m
         | Kilometers km -> km
 
-    let toString = function
+    let toString =
+        function
         | Meters m -> sprintf "%im" m
         | Kilometers km -> sprintf "%.2fkm" km
 
