@@ -1,6 +1,12 @@
 module ParserCommons
 
 open FParsec
+open Distance
+open Time
+
+let (<*>) pf px = pf >>= (|>>) px
+
+let (|*>) px pf = pf .>>. px |>> fun (f, (x, y)) -> f x y
 
 let ws1 = spaces1
 

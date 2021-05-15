@@ -76,7 +76,7 @@ module RootList =
     let execRange f range list =
         list
         |> toList
-        |> execRange f range
+        |> execRange f (Some range)
         |> Result.bind id
 
     let removeRange range list =
