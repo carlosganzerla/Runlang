@@ -3,7 +3,7 @@
 open FsUnit.Xunit
 open Xunit
 open Pace
-open Parser
+open LangParser
 open Interval
 
 let paceTable = function

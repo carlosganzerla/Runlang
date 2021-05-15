@@ -12,9 +12,13 @@ let foldResult folder state list =
         Result.bind (folder next) result
     List.fold resultFolder (Ok state) list
 
-let execRange f (a, b) list =
+let execRange f rangeOpt list =
     let length = List.length list
+    let (a, b) =
+        match rangeOpt with
+        | Some x -> x
+        | None -> (0, length - 1)
     if a <= b && a >= 0 && b < length then
         Ok (f (a, b) list)
     else
-        Error $"Invalid indexes {a}, {b}. Indexes go from 0 to {length - 1}"
+        Error $"Invalid index"
