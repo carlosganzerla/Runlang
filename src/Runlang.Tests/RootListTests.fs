@@ -149,7 +149,7 @@ let ``From list using a non empty list must return an equal root list to`` () =
 let ``Removing range inside length range must return a list without those elements`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let removed = RootList.removeRange (Some (7, 12)) list |> ok
+    let removed = RootList.removeRange (7, 12) list |> ok
     let expected = [1 .. 6] @ [13 .. 15] |> List.fold RootList.add root
     removed |> should equal expected
 
@@ -158,9 +158,9 @@ let ``Removing range outside length range or with wrong indexing must return an 
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
     let removed = [
-        RootList.removeRange (Some (11, 17)) list
-        RootList.removeRange (Some (-1, 4)) list
-        RootList.removeRange (Some (6, 4)) list
+        RootList.removeRange (11, 17) list
+        RootList.removeRange (-1, 4) list
+        RootList.removeRange (6, 4) list
     ]
     removed |> List.iter shouldBeError
 
@@ -168,14 +168,14 @@ let ``Removing range outside length range or with wrong indexing must return an 
 let ``Removing range from root must return an error`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let removed = RootList.removeRange (Some (0, 3)) list
+    let removed = RootList.removeRange (0, 3) list
     removed |> shouldBeError
 
 [<Fact>]
 let ``Copying range inside length range must return a list with those elements at the head`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let copied = RootList.copyRange (Some (7, 12)) list |> ok
+    let copied = RootList.copyRange (7, 12) list |> ok
     let expected = [1 .. 15] @ [7 .. 12] |> List.fold RootList.add root
     copied |> should equal expected
 
@@ -184,9 +184,9 @@ let ``Copying range outside length range or with wrong indexing must return an e
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
     let copied = [
-        RootList.copyRange (Some (11, 17)) list
-        RootList.copyRange (Some (-1, 4)) list
-        RootList.copyRange (Some (6, 4)) list
+        RootList.copyRange (11, 17) list
+        RootList.copyRange (-1, 4) list
+        RootList.copyRange (6, 4) list
     ]
     copied |> List.iter shouldBeError
 
@@ -194,7 +194,7 @@ let ``Copying range outside length range or with wrong indexing must return an e
 let ``Copying range from root must add elements to head`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let copied = RootList.copyRange (Some (0, 3)) list |> ok
+    let copied = RootList.copyRange (0, 3) list |> ok
     let expected = [1 .. 15] @ [0 .. 3] |> List.fold RootList.add root
     copied |> should equal expected
 
@@ -202,7 +202,7 @@ let ``Copying range from root must add elements to head`` () =
 let ``Moving range inside length range must return a list with those elements in head`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let moved = RootList.moveRange (Some (7, 12)) list |> ok
+    let moved = RootList.moveRange (7, 12) list |> ok
     let expected = 
         [1 .. 6] @ [13 .. 15] @ [7 .. 12] |> List.fold RootList.add root
     moved |> should equal expected
@@ -212,9 +212,9 @@ let ``Moving range outside length range or with wrong indexing must return an er
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
     let moved = [
-        RootList.moveRange (Some (11, 17)) list
-        RootList.moveRange (Some (-1, 4)) list
-        RootList.moveRange (Some (6, 4)) list
+        RootList.moveRange (11, 17) list
+        RootList.moveRange (-1, 4) list
+        RootList.moveRange (6, 4) list
     ]
     moved |> List.iter shouldBeError
 
@@ -222,5 +222,5 @@ let ``Moving range outside length range or with wrong indexing must return an er
 let ``Moving range from root must return an error`` () =
     let root = RootList.create 0
     let list = [1 .. 15] |> List.fold RootList.add root
-    let moved = RootList.removeRange (Some (0, 3)) list
+    let moved = RootList.removeRange (0, 3) list
     moved |> shouldBeError

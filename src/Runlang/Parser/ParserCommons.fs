@@ -6,7 +6,7 @@ open Time
 
 let (<*>) pf px = pf >>= (|>>) px
 
-let (|*>) px pf = pf .>>. px |>> fun (f, (x, y)) -> f x y
+let (|*>) px f = preturn f .>>. px |>> fun (f, (x, y)) -> f x y
 
 let ws1 = spaces1
 

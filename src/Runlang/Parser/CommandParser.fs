@@ -17,22 +17,22 @@ let currentList = getUserState
 
 let list = pstring "list" >>. currentList |>> Updated
 
-let rangeScope = 
+let rangeScope offset = 
     pint32 .>> pchar '-' .>>. pint32 
-    |>> fun (x, y) -> (x - 1, y - 1)
+    |>> fun (x, y) -> (x - offset, y - offset)
     |>> Some
 
-let listScope start = pchar '.' >>% fun m -> (start, List.length m - 1)
+let listScope = pchar '.' >>% None
 
-let indexScope: CommandParser<_> = 
-    pint32 |>> (+) -1 |>> fun x -> konst (x, x)
+let indexScope offset = 
+    pint32 |>> (+) -offset |>> fun x -> Some (x, x)
 
-let scope firstIdx =
+let scope offset =
     tryMany [
-        listScope firstIdx;
-        rangeScope;
-        indexScope;
-    ]
+        listScope;
+        rangeScope offset;
+        indexScope offset;
+    ] .>> ws
 
 let rootSwitch = pstring "-r" >>% (RootList.root >> Result.Ok)
 
@@ -47,36 +47,33 @@ let switch =
     <*> currentList
     >>= result
 
+let manipulationCommand pcommand =
+    let execCommand = 
+        pcommand 
+        <*> scope 1
+        <*> switch 
+        >>= result
+    currentList .>>. execCommand |*> RootList.add |>> Updated 
 
-let rangeCommand pcommand firstIdx = 
-    pcommand .>> ws1 .>>. scope firstIdx
-
-// let manipulationCommand pcommand =
-//     let applyFunction =
-//         rangeCommand pcommand 0 
-//         .>> ws
-//         |*> switch 
-//         |>> fun (range, m) -> (range m, m)
-//         |*> f
-//         >>= result
-//         
-//     currentList .>>. applyFunction |*> RootList.add |>> Updated
-
-let join: CommandParser<_> = 
-    let join = pstring "join" >>% Manipulation.join
-    join
+let join =
+    let join = pstring "join" >>% Manipulation.join .>> ws1
+    manipulationCommand join
 
 let split: CommandParser<_> =
     let splitTime = time |>> TimeSplit
     let splitDistance = distance |>> DistanceSplit
     let splitValue = tryMany [ splitTime; splitDistance; ]
-    let split = pstring "split" .>> ws1 >>% Manipulation.split <*> splitValue
-    split
-    
+    let split = 
+        pstring "split"
+        .>> ws1 
+        >>% Manipulation.split 
+        <*> splitValue
+        .>> ws1
+    manipulationCommand split
 
-let pnew: CommandParser<_> = stringReturn "new" New  
+let pnew = stringReturn "new" New  
 
-let commands = pnew
+let commands = join <|> split <|> pnew
 
 let command = ws >>. commands .>> ws .>> eof
 
