@@ -205,7 +205,6 @@ let ``Copying range from root must add elements to head`` () =
     let expected = [1 .. 15] @ [0 .. 3] |> List.fold RootList.add root
     copied |> should equal expected
 
-
 [<Fact>]
 let ``Copying without specifying a range must duplicate the list`` () =
     let root = RootList.create 0

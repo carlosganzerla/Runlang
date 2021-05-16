@@ -5,13 +5,13 @@ open Xunit
 open Distance
 
 [<Fact>]
-let ``Created distance should be in km if total km is not lower than 1`` () =
+let ``Created distance should be in km if total km is not lower than one`` () =
     let distance = Distance.create 1.01m
     distance |> should equal (Kilometers 1.01m)
 
 
 [<Fact>]
-let ``Created distance should be in m if total km is lower than 1`` () =
+let ``Created distance should be in m if total km is lower than one`` () =
     let distance = Distance.create 0.5m
     distance |> should equal (Meters 500u)
 

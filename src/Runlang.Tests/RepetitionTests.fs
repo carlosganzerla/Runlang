@@ -13,15 +13,16 @@ let ``Repetition to yields a interval list from a recursive fold`` () =
     let distance = Kilometers 1.5m
     let pace = Pace.create 4u 0u |> ok
     let interval = (distance, pace) |> DistanceAndPace |> Interval.create
-    let repetition = 
-        RepCount (5u, RepList [ 
-            RepCount (2u, Interval interval);
-            Interval interval;
-            Interval interval;
-            RepList [
-                Interval interval;
-                Interval interval;
-            ];
-        ]) 
-    let expected = interval |> List.replicate 30 
+
+    let repetition =
+        RepCount (
+            5u,
+            RepList [ RepCount (2u, Interval interval)
+                      Interval interval
+                      Interval interval
+                      RepList [ Interval interval
+                                Interval interval ] ]
+        )
+
+    let expected = interval |> List.replicate 30
     repetition |> Repetition.toList |> should equal expected
