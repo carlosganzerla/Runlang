@@ -95,6 +95,6 @@ module RootList =
 
     let moveRange range list =
         let moveIdxs (a, b) _ =
-           List.replicate (b - a + 1) a |> foldResult move list
+            List.replicate (b - a + 1) a |> foldResult move list
 
         range |> fixRange list |> execRange moveIdxs <| list

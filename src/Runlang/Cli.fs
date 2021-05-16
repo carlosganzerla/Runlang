@@ -10,15 +10,14 @@ let printList = ManipulationList.toString >> printf "%s"
 
 let printState =
     function
-    | Updated m -> 
-        do Console.Clear()
+    | Updated m ->
+        do Console.Clear ()
         printList m
     | New -> ()
 
 let printResult fprint =
     function
-    | Ok ok ->
-        do fprint ok 
+    | Ok ok -> do fprint ok
     | Error err -> do printfn "%s" err
 
 let rec createState table =
@@ -27,7 +26,9 @@ let rec createState table =
         |> Console.ReadLine
         |> parseWorkout table
         |> Result.map RootList.create
+
     do printResult printList result
+
     match result with
     | Ok manipulations -> Updated manipulations
     | Error _ -> createState table
@@ -37,7 +38,9 @@ let rec updateState manipulations =
         printf "Enter Command:"
         |> Console.ReadLine
         |> parseCommand manipulations
+
     do printResult printState result
+
     match result with
     | Ok state -> state
     | Error _ -> updateState manipulations
@@ -48,5 +51,5 @@ let app table =
         | Updated m -> updateState m |> loop table
         | New -> createState table |> loop table
 
-    do Console.Clear()
+    do Console.Clear ()
     loop table New
