@@ -64,6 +64,15 @@ let split : CommandParser<_> =
 
 let pnew = stringReturn "new" New
 
+let plist = pstring "list" >>. currentList |>> Updated
+
+// let cp = 
+//     pstring "cp"
+//     >> ws1
+//     >>. scope 0
+//     .>>. currentList
+//     |*> RootList.copyRange 
+
 let commands = join <|> split <|> pnew
 
 let command = ws >>. commands .>> ws .>> eof

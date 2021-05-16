@@ -75,14 +75,19 @@ module RootList =
 
     let move idx list = list |> copy idx |> Result.bind (remove idx)
 
-    let execRange f range list =
-        list |> toList |> execRange f (Some range) |> Result.bind id
+    let private execRange f range list =
+        list |> toList |> execRange f range |> Result.bind id
+
+    let private fixRange list =
+        function
+        | None -> Some (1, length list - 1)
+        | some -> some
 
     let removeRange range list =
         let removeIdxs (a, b) _ =
             List.replicate (b - a + 1) a |> foldResult remove list
 
-        execRange removeIdxs range list
+        range |> fixRange list |> execRange removeIdxs <| list
 
     let copyRange range list =
         let copyIdxs (a, b) _ = [ a .. b ] |> foldResult copy list
@@ -90,6 +95,6 @@ module RootList =
 
     let moveRange range list =
         let moveIdxs (a, b) _ =
-            List.replicate (b - a + 1) a |> foldResult move list
+           List.replicate (b - a + 1) a |> foldResult move list
 
-        execRange moveIdxs range list
+        range |> fixRange list |> execRange moveIdxs <| list
