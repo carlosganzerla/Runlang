@@ -66,14 +66,29 @@ let pnew = stringReturn "new" New
 
 let plist = pstring "list" >>. currentList |>> Updated
 
-// let cp = 
-//     pstring "cp"
-//     >> ws1
-//     >>. scope 0
-//     .>>. currentList
-//     |*> RootList.copyRange 
+let listCommand str fList =
+    pstring str
+    .>>. ws1
+    >>. scope 0
+    .>>. currentList
+    |*> fList
+    >>= result
+    |>> Updated
 
-let commands = join <|> split <|> pnew
+let cp = listCommand "cp" RootList.copyRange 
+
+let mv = listCommand "mv" RootList.moveRange 
+
+let rm = listCommand "rm" RootList.removeRange 
+
+let commands = 
+    join 
+    <|> split
+    <|> cp
+    <|> mv
+    <|> rm
+    <|> plist
+    <|> pnew
 
 let command = ws >>. commands .>> ws .>> eof
 

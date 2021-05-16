@@ -6,32 +6,47 @@ open LangParser
 open RootList
 open Manipulation
 
-let createState table =
-    printfn "Enter workout string:"
-    |> Console.ReadLine
-    |> parseWorkout table
-    |> Result.map (RootList.create >> Updated)
+let printList = ManipulationList.toString >> printf "%s"
 
-let updateState manipulations =
-    printf "Enter Command:"
-    |> Console.ReadLine
-    |> parseCommand manipulations
-
-let getNextState table =
+let printState =
     function
-    | Updated m ->
-        do m |> ManipulationList.toString |> printfn "%s"
-        updateState m
-    | New -> createState table
+    | Updated m -> 
+        do Console.Clear()
+        printList m
+    | New -> ()
+
+let printResult fprint =
+    function
+    | Ok ok ->
+        do fprint ok 
+    | Error err -> do printfn "%s" err
+
+let rec createState table =
+    let result =
+        printfn "Enter workout string:"
+        |> Console.ReadLine
+        |> parseWorkout table
+        |> Result.map RootList.create
+    do printResult printList result
+    match result with
+    | Ok manipulations -> Updated manipulations
+    | Error _ -> createState table
+
+let rec updateState manipulations =
+    let result =
+        printf "Enter Command:"
+        |> Console.ReadLine
+        |> parseCommand manipulations
+    do printResult printState result
+    match result with
+    | Ok state -> state
+    | Error _ -> updateState manipulations
 
 let app table =
-    let rec loop table prevState nextState =
-        match nextState with
-        | Ok current ->
-            do if prevState <> current then Console.Clear ()
-            current |> getNextState table |> loop table current
-        | Error err ->
-            do printfn "%s" err
-            loop table prevState (Ok prevState)
+    let rec loop table =
+        function
+        | Updated m -> updateState m |> loop table
+        | New -> createState table |> loop table
 
-    loop table New (Ok New)
+    do Console.Clear()
+    loop table New
