@@ -1,5 +1,7 @@
 module Utils
 
+open System
+
 let fromResultList list =
     let folder list next =
         Result.bind
@@ -24,3 +26,8 @@ let execRange f rangeOpt list =
         Ok (f (a, b) list)
     else
         Error $"Invalid index"
+
+let ok =
+    function
+    | Ok ok -> ok
+    | Error err -> raise (new Exception ($"{err}"))

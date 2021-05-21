@@ -1,6 +1,3 @@
-// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
-
-open System
 open Pace
 open Cli
 
@@ -20,5 +17,5 @@ let paceTable =
 
 [<EntryPoint>]
 let rec main argv =
-    app paceTable |> ignore
-    0 // return an integer exit code
+    app argv |> ignore
+    0

@@ -3,8 +3,20 @@ module Cli
 open CommandParser
 open System
 open LangParser
+open Utils
+open PaceFileParser
 open RootList
 open Manipulation
+
+let parseArgs args =
+    match args |> Array.truncate 1 with
+    | [| paceFileName |] -> paceFileName
+    | _ -> ".pacetable"
+
+let getPaceTable fileName =
+    let contents = System.IO.File.ReadAllText fileName
+    let termMap = parseTerms contents |> ok
+    fun term -> Map.find term termMap
 
 let printList manipulations =
     do Console.Clear ()
@@ -45,7 +57,9 @@ let rec updateState manipulations =
     | Ok state -> state
     | Error _ -> updateState manipulations
 
-let app table =
+let app args =
+    let table = args |> parseArgs |> getPaceTable
+
     let rec loop table =
         function
         | Updated m -> updateState m |> loop table

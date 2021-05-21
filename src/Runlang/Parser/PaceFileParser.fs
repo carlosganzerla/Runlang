@@ -4,10 +4,7 @@ open FParsec
 open ParserCommons
 open LangParserPrimitives
 
-let termAndPace term =
-    ws >>. term .>> pchar '=' .>> ws .>>. timePace
-    .>> ws
-    .>> newline
+let termAndPace term = term .>> pchar '=' .>>. timePace .>> newline
 
 let terms =
     sequence [ termAndPace pCL
@@ -20,6 +17,7 @@ let terms =
                termAndPace pFO
                termAndPace pFTS
                termAndPace pMAX ]
+    .>> eof
     |>> Map.ofList
 
-let parseFile = runParser terms ()
+let parseTerms = runParser terms ()
