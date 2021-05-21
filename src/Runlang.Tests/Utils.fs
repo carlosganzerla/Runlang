@@ -1,6 +1,10 @@
 module Utils
 
 open System
+open Utils
+open Pace
+open Interval
+open LangParser
 
 let shouldBeError =
     function

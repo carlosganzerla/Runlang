@@ -3,7 +3,7 @@ module ManipulationTests
 open FsUnit.Xunit
 open Utils
 open Xunit
-open ParserTests
+open LangParserTests
 open Interval
 open Manipulation
 open Distance

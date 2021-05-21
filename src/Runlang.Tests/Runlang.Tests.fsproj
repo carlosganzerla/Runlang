@@ -17,6 +17,7 @@
         <Compile Include="RootListTests.fs" />
         <Compile Include="ManipulationTests.fs" />
         <Compile Include="PaceFileParserTests.fs" />
+        <Compile Include="CommandParserTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />

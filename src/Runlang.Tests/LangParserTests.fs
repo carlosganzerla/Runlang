@@ -1,7 +1,8 @@
-﻿module ParserTests
+﻿module LangParserTests
 
 open FsUnit.Xunit
 open Xunit
+open Utils
 open Pace
 open LangParser
 open Interval
@@ -19,11 +20,7 @@ let paceTable =
     | CA -> Pace.createOrThrow 11u 0u
     | CL -> Pace.createOrThrow 12u 0u
 
-let parse =
-    parseWorkout paceTable
-    >> function
-    | Ok intervals -> intervals
-    | Error err -> raise (System.Exception err)
+let parse = parseWorkout paceTable >> ok
 
 let parseToString = parse >> Interval.listToString
 
