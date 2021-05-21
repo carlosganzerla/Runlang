@@ -86,6 +86,7 @@ let ``Joining with -r switch joins the root manipulation`` () =
 [<Fact>]
 let ``Joining with -m switch joins the selected manipulation index`` () =
     let workout = RootList.get 2 extraState |> ok
+
     let expected =
         workout
         |> Manipulation.join (Some (0, 2))
@@ -103,11 +104,13 @@ let ``Joining with -m switch with index out range must return error`` () =
 [<Fact>]
 let ``Splitting by time with dot splits the whole manipulation`` () =
     let split = Time.create 0u 3u 0u |> ok |> TimeSplit
+
     let expected =
         workout
         |> Manipulation.split split None
         |> ok
         |> RootList.add initState
+
     runCommand initState "split 3:00 ."
     |> ok
     |> should equal (Updated expected)
@@ -115,11 +118,13 @@ let ``Splitting by time with dot splits the whole manipulation`` () =
 [<Fact>]
 let ``Splitting by distance with dot splits the whole manipulation`` () =
     let split = Meters 250u |> DistanceSplit
+
     let expected =
         workout
         |> Manipulation.split split None
         |> ok
         |> RootList.add initState
+
     runCommand initState "split 250m  ."
     |> ok
     |> should equal (Updated expected)
@@ -127,11 +132,13 @@ let ``Splitting by distance with dot splits the whole manipulation`` () =
 [<Fact>]
 let ``Splitting by index just splits the index minus one of the interval`` () =
     let split = Kilometers 1.3m |> DistanceSplit
+
     let expected =
         workout
-        |> Manipulation.split split (Some (3,3))
+        |> Manipulation.split split (Some (3, 3))
         |> ok
         |> RootList.add initState
+
     runCommand initState "split 1,3km 4"
     |> ok
     |> should equal (Updated expected)
@@ -139,11 +146,13 @@ let ``Splitting by index just splits the index minus one of the interval`` () =
 [<Fact>]
 let ``Splitting by range splits the range minus one of the intervals`` () =
     let split = Time.create 0u 0u 35u |> ok |> TimeSplit
+
     let expected =
         workout
-        |> Manipulation.split split (Some (1,15))
+        |> Manipulation.split split (Some (1, 15))
         |> ok
         |> RootList.add initState
+
     runCommand initState "split 35s 2-16"
     |> ok
     |> should equal (Updated expected)
@@ -159,9 +168,10 @@ let ``Splitting by outside of bounds range return error`` () =
 [<Fact>]
 let ``Split with -r switch splits the root manipulation`` () =
     let split = Time.create 0u 1u 20u |> ok |> TimeSplit
+
     let expected =
         workout
-        |> Manipulation.split split (Some (2,5))
+        |> Manipulation.split split (Some (2, 5))
         |> ok
         |> RootList.add extraState
 
@@ -173,6 +183,7 @@ let ``Split with -r switch splits the root manipulation`` () =
 let ``Split with -m switch splits the selected manipulation`` () =
     let workout = RootList.get 1 extraState |> ok
     let split = Time.create 1u 0u 5u |> ok |> TimeSplit
+
     let expected =
         workout
         |> Manipulation.split split None
@@ -190,6 +201,7 @@ let ``Split with -m switch outside of bounds returns an error`` () =
 [<Fact>]
 let ``Copy dot duplicates the list`` () =
     let expected = RootList.copyRange None extraState |> ok
+
     runCommand extraState "cp ."
     |> ok
     |> should equal (Updated expected)
@@ -197,6 +209,7 @@ let ``Copy dot duplicates the list`` () =
 [<Fact>]
 let ``Copy range duplicates selected elements to the top`` () =
     let expected = RootList.copyRange (Some (0, 2)) extraState |> ok
+
     runCommand extraState "cp 0-2"
     |> ok
     |> should equal (Updated expected)
@@ -204,6 +217,7 @@ let ``Copy range duplicates selected elements to the top`` () =
 [<Fact>]
 let ``Copy index duplicates selected element to the top`` () =
     let expected = RootList.copyRange (Some (0, 0)) extraState |> ok
+
     runCommand extraState "cp 0"
     |> ok
     |> should equal (Updated expected)
@@ -225,6 +239,7 @@ let ``Move dot is a no op`` () =
 [<Fact>]
 let ``Move range moves selected elements to the top`` () =
     let expected = RootList.moveRange (Some (1, 3)) extraState |> ok
+
     runCommand extraState "mv 1-3"
     |> ok
     |> should equal (Updated expected)
@@ -232,6 +247,7 @@ let ``Move range moves selected elements to the top`` () =
 [<Fact>]
 let ``Move index moves selected element to the top`` () =
     let expected = RootList.moveRange (Some (2, 2)) extraState |> ok
+
     runCommand extraState "mv 2"
     |> ok
     |> should equal (Updated expected)
@@ -261,6 +277,7 @@ let ``Remove dot clears list except for root`` () =
 [<Fact>]
 let ``Remove range removes selected elements`` () =
     let expected = RootList.removeRange (Some (1, 3)) extraState |> ok
+
     runCommand extraState "rm 1-3"
     |> ok
     |> should equal (Updated expected)
@@ -268,6 +285,7 @@ let ``Remove range removes selected elements`` () =
 [<Fact>]
 let ``Remove index removes selected element`` () =
     let expected = RootList.removeRange (Some (2, 2)) extraState |> ok
+
     runCommand extraState "rm 2"
     |> ok
     |> should equal (Updated expected)
