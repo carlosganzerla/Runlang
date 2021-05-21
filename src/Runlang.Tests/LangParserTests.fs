@@ -35,8 +35,8 @@ let ``Distance and term pace interval in km`` () =
 
 [<Fact>]
 let ``Distance and time pace interval in km`` () =
-    let input = "1km 4:40/km"
-    let expected = [ "#1 Time: 00:04:40, Distance: 1.00km, Pace: 4:40/km" ]
+    let input = "1.5km 4:40/km"
+    let expected = [ "#1 Time: 00:07:00, Distance: 1.50km, Pace: 4:40/km" ]
     input |> parseToString |> should equal expected
 
 [<Fact>]
@@ -101,8 +101,8 @@ let ``Watch time hours and pace`` () =
 
 [<Fact>]
 let ``Time and distance interval`` () =
-    let input = "32:00 8km"
-    let expected = [ "#1 Time: 00:32:00, Distance: 8.00km, Pace: 4:00/km" ]
+    let input = "32:00 8,2km"
+    let expected = [ "#1 Time: 00:32:00, Distance: 8.20km, Pace: 3:54/km" ]
     input |> parseToString |> should equal expected
 
 [<Fact>]

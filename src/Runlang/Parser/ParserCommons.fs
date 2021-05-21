@@ -31,7 +31,7 @@ let result =
     | Result.Error err -> fail err
 
 let pdecimal input =
-    let dot = opt (pchar '.')
+    let dot = opt (anyOf ",.")
 
     let partsToDecimal intpart decpart = decimal $"{intpart}.{decpart}"
 

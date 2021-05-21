@@ -11,8 +11,10 @@
 | <digit>
 | <digit><integer>
 
+<decimal-separator> ::= ',' | '.'
+
 <decimal> ::=
-| <integer>'.'<digit>
+| <integer><decimal-separator><digit>
 | <integer>
 
 <distance> ::= <integer>'m' | <decimal>'km'
