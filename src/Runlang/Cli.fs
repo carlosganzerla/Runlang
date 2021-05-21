@@ -6,13 +6,13 @@ open LangParser
 open RootList
 open Manipulation
 
-let printList = ManipulationList.toString >> printf "%s"
+let printList manipulations =
+    do Console.Clear ()
+    manipulations |> ManipulationList.toString |> printf "%s"
 
 let printState =
     function
-    | Updated m ->
-        do Console.Clear ()
-        printList m
+    | Updated m -> printList m
     | New -> ()
 
 let printResult fprint =
