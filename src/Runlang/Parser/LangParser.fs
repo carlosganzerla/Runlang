@@ -1,7 +1,6 @@
 module LangParser
 
 open FParsec
-open Pace
 open Interval
 open Repetition
 open ParserCommons
@@ -10,20 +9,19 @@ open LangParserPrimitives
 let paceTable = getUserState
 
 let pace =
-    let timePace = watchtime .>> pstring "/km" |>> TimePerKm
 
     let termPace =
         paceTable
-        <*> tryMany [ stringReturn "CL" CL
-                      stringReturn "CA" CA
-                      stringReturn "CV" CV
-                      stringReturn "TR" TR
-                      stringReturn "LVS" LVS
-                      stringReturn "LE" LE
-                      stringReturn "MO" MO
-                      stringReturn "FO" FO
-                      stringReturn "FTS" FTS
-                      stringReturn "MAX" MAX ]
+        <*> tryMany [ pCL
+                      pCA
+                      pCV
+                      pTR
+                      pLVS
+                      pLE
+                      pMO
+                      pFO
+                      pFTS
+                      pMAX ]
 
     timePace <|> termPace
 

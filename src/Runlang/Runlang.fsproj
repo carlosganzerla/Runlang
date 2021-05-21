@@ -19,6 +19,7 @@
     <Compile Include="Parser/LangParserPrimitives.fs" />
     <Compile Include="Parser/LangParser.fs" />
     <Compile Include="Parser/CommandParser.fs" />
+    <Compile Include="Parser/PaceFileParser.fs" />
     <Compile Include="Cli.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

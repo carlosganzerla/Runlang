@@ -4,6 +4,7 @@ open FParsec
 open ParserCommons
 open Distance
 open Time
+open Pace
 
 let watchDigits x = let p = regex "[0-5][0-9]" |>> uint in p x
 
@@ -61,3 +62,22 @@ let numerictime x =
     p x
 
 let time x = let p = tryMany [ numerictime; watchtime ] in p x
+
+let timePace x = let p = watchtime .>> pstring "/km" |>> TimePerKm in p x
+
+let pCL x = let p = stringReturn "CL" CL in p x
+let pCA x = let p = stringReturn "CA" CA in p x
+let pCV x = let p = stringReturn "CV" CV in p x
+let pTR x = let p = stringReturn "TR" TR in p x
+let pLVS x = let p = stringReturn "LVS" LVS in p x
+let pLE x = let p = stringReturn "LE" LE in p x
+let pMO x = let p = stringReturn "MO" MO in p x
+let pFO x = let p = stringReturn "FO" FO in p x
+let pFTS x = let p = stringReturn "FTS" FTS in p x
+let pMAX x = let p = stringReturn "MAX" MAX in p x
+
+let sequence parsers x =
+    let andThen result next = result .>>. next |>> fun (r, n) -> n :: r
+
+    let p = parsers |> List.fold andThen (preturn []) |>> List.rev in
+    p x
