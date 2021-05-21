@@ -155,3 +155,16 @@ let ``Splitting by outside of bounds index return error`` () =
 [<Fact>]
 let ``Splitting by outside of bounds range return error`` () =
     runCommand initState "split 1s 15-21" |> shouldBeError
+
+[<Fact>]
+let ``Split with -r switch splits the root manipulation`` () =
+    let split = Time.create 0u 1u 20u |> ok |> TimeSplit
+    let expected =
+        workout
+        |> Manipulation.split split (Some (2,5))
+        |> ok
+        |> RootList.add extraState
+
+    runCommand extraState "split 00:01:20 3-6 -r"
+    |> ok
+    |> should equal (Updated expected)

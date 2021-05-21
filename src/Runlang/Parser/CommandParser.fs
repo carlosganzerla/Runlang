@@ -77,8 +77,8 @@ let mv = listCommand "mv" RootList.moveRange
 
 let rm = listCommand "rm" RootList.removeRange
 
-let commands = join <|> split <|> cp <|> mv <|> rm <|> plist <|> pnew
+let command = join <|> split <|> cp <|> mv <|> rm <|> plist <|> pnew
 
-let command = ws >>. commands .>> ws .>> eof
+let commandLine = ws >>. command .>> ws .>> eof
 
-let parseCommand = runParser command
+let parseCommand = runParser commandLine
