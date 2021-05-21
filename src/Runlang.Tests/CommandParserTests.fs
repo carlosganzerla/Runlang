@@ -168,3 +168,122 @@ let ``Split with -r switch splits the root manipulation`` () =
     runCommand extraState "split 00:01:20 3-6 -r"
     |> ok
     |> should equal (Updated expected)
+
+[<Fact>]
+let ``Split with -m switch splits the selected manipulation`` () =
+    let workout = RootList.get 1 extraState |> ok
+    let split = Time.create 1u 0u 5u |> ok |> TimeSplit
+    let expected =
+        workout
+        |> Manipulation.split split None
+        |> ok
+        |> RootList.add extraState
+
+    runCommand extraState "split 1h05s . -m 1"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Split with -m switch outside of bounds returns an error`` () =
+    runCommand initState "split 1m . -m 3" |> shouldBeError
+
+[<Fact>]
+let ``Copy dot duplicates the list`` () =
+    let expected = RootList.copyRange None extraState |> ok
+    runCommand extraState "cp ."
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Copy range duplicates selected elements to the top`` () =
+    let expected = RootList.copyRange (Some (0, 2)) extraState |> ok
+    runCommand extraState "cp 0-2"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Copy index duplicates selected element to the top`` () =
+    let expected = RootList.copyRange (Some (0, 0)) extraState |> ok
+    runCommand extraState "cp 0"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Copy index out of bounds returns an error`` () =
+    runCommand initState "cp 1" |> shouldBeError
+
+[<Fact>]
+let ``Copy range out of bounds returns an error`` () =
+    runCommand initState "cp 1-3" |> shouldBeError
+
+[<Fact>]
+let ``Move dot is a no op`` () =
+    runCommand extraState "mv ."
+    |> ok
+    |> should equal (Updated extraState)
+
+[<Fact>]
+let ``Move range moves selected elements to the top`` () =
+    let expected = RootList.moveRange (Some (1, 3)) extraState |> ok
+    runCommand extraState "mv 1-3"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Move index moves selected element to the top`` () =
+    let expected = RootList.moveRange (Some (2, 2)) extraState |> ok
+    runCommand extraState "mv 2"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Move root index should return an error`` () =
+    runCommand initState "mv 0" |> shouldBeError
+
+[<Fact>]
+let ``Move range within root should return an error`` () =
+    runCommand extraState "mv 0-2" |> shouldBeError
+
+[<Fact>]
+let ``Move index out of bounds returns an error`` () =
+    runCommand initState "mv 1" |> shouldBeError
+
+[<Fact>]
+let ``Move range out of bounds returns an error`` () =
+    runCommand initState "mv 1-3" |> shouldBeError
+
+[<Fact>]
+let ``Remove dot clears list except for root`` () =
+    runCommand extraState "rm ."
+    |> ok
+    |> should equal (Updated initState)
+
+[<Fact>]
+let ``Remove range removes selected elements`` () =
+    let expected = RootList.removeRange (Some (1, 3)) extraState |> ok
+    runCommand extraState "rm 1-3"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Remove index removes selected element`` () =
+    let expected = RootList.removeRange (Some (2, 2)) extraState |> ok
+    runCommand extraState "rm 2"
+    |> ok
+    |> should equal (Updated expected)
+
+[<Fact>]
+let ``Remove root index should return an error`` () =
+    runCommand initState "rm 0" |> shouldBeError
+
+[<Fact>]
+let ``Remove range within root should return an error`` () =
+    runCommand extraState "rm 0-2" |> shouldBeError
+
+[<Fact>]
+let ``Remove index out of bounds returns an error`` () =
+    runCommand initState "rm 1" |> shouldBeError
+
+[<Fact>]
+let ``Remove range out of bounds returns an error`` () =
+    runCommand initState "rm 1-3" |> shouldBeError
