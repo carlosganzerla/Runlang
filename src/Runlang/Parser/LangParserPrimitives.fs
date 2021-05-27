@@ -75,9 +75,3 @@ let pMO x = let p = stringReturn "MO" MO in p x
 let pFO x = let p = stringReturn "FO" FO in p x
 let pFTS x = let p = stringReturn "FTS" FTS in p x
 let pMAX x = let p = stringReturn "MAX" MAX in p x
-
-let sequence parsers x =
-    let andThen result next = result .>>. next |>> fun (r, n) -> n :: r
-
-    let p = parsers |> List.fold andThen (preturn []) |>> List.rev in
-    p x

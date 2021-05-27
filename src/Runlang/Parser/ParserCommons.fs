@@ -1,8 +1,6 @@
 module ParserCommons
 
 open FParsec
-open Distance
-open Time
 
 let (<*>) pf px = pf >>= (|>>) px
 
@@ -41,3 +39,9 @@ let pdecimal input =
         | None -> preturn intpart |>> decimal
 
     (uinteger .>>. dot >>= decimalPart) input
+
+let sequence parsers x =
+    let andThen result next = result .>>. next |>> fun (r, n) -> n :: r
+
+    let p = parsers |> List.fold andThen (preturn []) |>> List.rev in
+    p x
