@@ -10,26 +10,25 @@ type RootList<'T> =
 module RootList =
     let create = Root
 
-    let add list manipulation = Cons (manipulation, list)
+    let add list e = Cons (e, list)
 
-    let rec cata fCons fRoot =
+    let rec fold folder acc list =
+        let loop = fold folder
+
+        match list with
+        | Cons (e, list) -> (folder (acc, e), list) ||> loop
+        | Root r -> folder (acc, r)
+
+    let length list = fold (fst >> (+) 1) 0 list
+
+    let top =
         function
-        | Cons (e, list) ->
-            let result = cata fCons fRoot list
-            fCons (e, result)
-        | Root r -> fRoot r
+        | Cons (e, _) -> e
+        | Root r -> r
 
-    let private k x _ = x
+    let root list = fold snd (top list) list
 
-    let length list = cata (snd >> (+) 1) (k 1) list
-
-    let root list = cata (snd >> id) id list
-
-    let top list = cata (fst >> id) id list
-
-    let toList list =
-        cata (fun (e, es) -> e :: es) List.singleton list
-        |> List.rev
+    let toList list = fold (fun (es, e) -> e :: es) [] list
 
     let fromList =
         function
@@ -38,38 +37,33 @@ module RootList =
 
     let get idx list =
         let length = length list
+        let seed = Error "Invalid index"
 
-        let getOnIdx (e, (previous, count)) =
-            if idx = count then
-                (e, count + 1)
-            else
-                (previous, count + 1)
+        let folder ((state, currentIdx), e) =
+            match state with
+            | Ok _ -> (state, currentIdx)
+            | _ ->
+                if idx = currentIdx then
+                    (Ok e, currentIdx)
+                else
+                    (state, currentIdx - 1)
 
-        let fRoot r = (r, 1)
-
-        let getFn = cata getOnIdx fRoot >> fst
-
-        if idx >= length || idx < 0 then
-            Error "Invalid index"
-        else
-            Ok (getFn list)
+        fold folder (seed, length - 1) list |> fst
 
     let remove idx list =
         let length = length list
 
-        let removeOnIdx (e, (list, count)) =
-            if idx = count then
-                (list, count + 1)
-            else
-                (Cons (e, list), count + 1)
+        let folder ((state, currentIdx), e) =
+            match state with
+            | _ when idx = 0 -> (Error "Cannot remove root", 0)
+            | _ when idx >= length -> (Error "Invalid index", idx)
+            | Ok list when currentIdx = idx -> (Ok list, currentIdx - 1)
+            | Ok list -> (Ok (e :: list), currentIdx - 1)
+            | Error _ -> (state, currentIdx)
 
-        let fRoot r = (Root r, 1)
-
-        let removeFn = cata removeOnIdx fRoot >> fst
-
-        if idx >= length || idx < 0 then Error "Invalid index"
-        elif idx = 0 then Error "Cannot remove root"
-        else Ok (removeFn list)
+        fold folder (Ok [], length - 1) list
+        |> fst
+        |> Result.bind fromList
 
     let copy idx list = list |> get idx |> Result.map (add list)
 
