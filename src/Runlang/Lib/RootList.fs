@@ -12,24 +12,22 @@ module RootList =
 
     let add list manipulation = Cons (manipulation, list)
 
-    let rec cata fCons fRoot =
+    let rec fold folder acc list =
+        let loop = fold folder
+        match list with
+        | Cons (e, list) -> (folder (acc, e), list) ||> loop
+        | Root r -> folder (acc, r)
+
+    let length list = fold (fst >> (+) 1) 0 list
+
+    let root list = fold snd list
+
+    let top =
         function
-        | Cons (e, list) ->
-            let result = cata fCons fRoot list
-            fCons (e, result)
-        | Root r -> fRoot r
+        | Cons (e, _) -> e
+        | Root r -> r
 
-    let private k x _ = x
-
-    let length list = cata (snd >> (+) 1) (k 1) list
-
-    let root list = cata (snd >> id) id list
-
-    let top list = cata (fst >> id) id list
-
-    let toList list =
-        cata (fun (e, es) -> e :: es) List.singleton list
-        |> List.rev
+    let toList list = fold (fun (es ,e) -> e :: es) [] list
 
     let fromList =
         function
@@ -47,7 +45,7 @@ module RootList =
 
         let fRoot r = (r, 1)
 
-        let getFn = cata getOnIdx fRoot >> fst
+        let getFn = fold getOnIdx fRoot >> fst
 
         if idx >= length || idx < 0 then
             Error "Invalid index"
@@ -65,7 +63,7 @@ module RootList =
 
         let fRoot r = (Root r, 1)
 
-        let removeFn = cata removeOnIdx fRoot >> fst
+        let removeFn = fold removeOnIdx fRoot >> fst
 
         if idx >= length || idx < 0 then Error "Invalid index"
         elif idx = 0 then Error "Cannot remove root"
