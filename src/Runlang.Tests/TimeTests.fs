@@ -4,7 +4,6 @@ open FsUnit.Xunit
 open Utils
 open Xunit
 open Time
-open Utils
 
 [<Fact>]
 let ``Minutes and seconds must be base sixty`` () =
@@ -21,13 +20,13 @@ let ``Time must be craeted correcty`` () =
 
 
 [<Fact>]
-let ``Total minutes must yield the time total minutes correctly`` () =
+let ``To minutes must yield the time total minutes correctly`` () =
     let time = Time.create 1u 30u 30u |> ok
-    time |> Time.totalMinutes |> should equal 90.5m
+    time |> Time.toMinutes |> should equal 90.5m
 
 [<Fact>]
-let ``Total time should parse the time correctly from minutes`` () =
-    let time = Time.totalTime 90.5m
+let ``From minutes should parse the time correctly from minutes`` () =
+    let time = Time.fromMinutes 90.5m
     time |> Time.hours |> should equal 1u
     time |> Time.minutes |> should equal 30u
     time |> Time.seconds |> should equal 30u

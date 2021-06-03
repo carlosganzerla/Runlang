@@ -11,8 +11,6 @@ type AppState =
     | New
     | Updated of ManipulationList
 
-type CommandParser<'t> = Parser<'t, RootList<Manipulation>>
-
 let currentList = getUserState
 
 let list = pstring "list" >>. currentList |>> Updated
@@ -50,7 +48,7 @@ let join =
     let join = pstring "join" >>% Manipulation.join .>> ws1
     manipulationCommand join
 
-let split : CommandParser<_> =
+let split =
     let splitTime = time |>> TimeSplit
     let splitDistance = distance |>> DistanceSplit
     let splitValue = tryMany [ splitTime; splitDistance ]

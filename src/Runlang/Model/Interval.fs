@@ -19,19 +19,19 @@ type IntervalSplit =
 module Interval =
     let private timeInterval distance (pace: Pace) =
         let km = Distance.totalKm distance
-        let minPerKm = pace |> Pace.value |> Time.totalMinutes
-        let time = Time.totalTime (km * minPerKm)
+        let minPerKm = pace |> Pace.value |> Time.toMinutes
+        let time = Time.fromMinutes (km * minPerKm)
         { Distance = distance; Time = time; Pace = pace }
 
     let private paceInterval time distance =
-        let minutes = Time.totalMinutes time
+        let minutes = Time.toMinutes time
         let km = Distance.totalKm distance
-        let pace = Time.totalTime (minutes / km) |> TimePerKm
+        let pace = Time.fromMinutes (minutes / km) |> TimePerKm
         { Distance = distance; Time = time; Pace = pace }
 
     let private distanceInterval time pace =
-        let timeMinutes = Time.totalMinutes time
-        let paceMinutes = pace |> Pace.value |> Time.totalMinutes
+        let timeMinutes = Time.toMinutes time
+        let paceMinutes = pace |> Pace.value |> Time.toMinutes
         let distance = Distance.create (timeMinutes / paceMinutes)
         { Distance = distance; Time = time; Pace = pace }
 
@@ -44,7 +44,7 @@ module Interval =
     let private applyProgression count firstMinutes ratio =
         let getPace idx =
             firstMinutes + (decimal (idx - 1) * ratio)
-            |> Time.totalTime
+            |> Time.fromMinutes
             |> TimePerKm
 
         [ 1 .. count ] |> List.map getPace
@@ -72,10 +72,10 @@ module Interval =
             else
                 2, totalKm / 2m, (*) 1000m >> uint >> Meters
 
-        let firstMinutes = Time.totalMinutes first
+        let firstMinutes = Time.toMinutes first
 
         let ratio =
-            (Time.totalMinutes last - firstMinutes)
+            (Time.toMinutes last - firstMinutes)
             / (decimal (splitCount - 1))
 
         let paces = applyProgression splitCount firstMinutes ratio
@@ -117,12 +117,12 @@ module Interval =
         |> List.map create
 
     let private splitByTime time interval =
-        let splitSize = Time.totalMinutes time
-        let totalMinutes = Time.totalMinutes interval.Time
+        let splitSize = Time.toMinutes time
+        let totalMinutes = Time.toMinutes interval.Time
         let splits = getSplits totalMinutes splitSize
 
         splits
-        |> List.map Time.totalTime
+        |> List.map Time.fromMinutes
         |> List.map (fun t -> t, interval.Pace)
         |> List.map TimeAndPace
         |> List.map create

@@ -4,10 +4,10 @@ type Time = private { Hours: uint; Minutes: uint; Seconds: uint }
 
 [<RequireQualifiedAccess>]
 module Time =
-    let totalMinutes { Hours = h; Minutes = min; Seconds = s } =
+    let toMinutes { Hours = h; Minutes = min; Seconds = s } =
         decimal h * 60m + decimal min + (decimal s) / 60m
 
-    let totalTime (mins: decimal) =
+    let fromMinutes (mins: decimal) =
         let seconds = (mins - floor mins) * 60m |> round |> uint
         let minutes = (uint mins) % 60u + seconds / 60u
         let hours = uint mins / 60u + minutes / 60u
@@ -30,5 +30,5 @@ module Time =
     let seconds time = time.Seconds
 
     let sum t1 t2 =
-        let minutesSum = (totalMinutes t1) + (totalMinutes t2)
-        totalTime minutesSum
+        let minutesSum = (toMinutes t1) + (toMinutes t2)
+        fromMinutes minutesSum

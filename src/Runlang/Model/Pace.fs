@@ -27,7 +27,9 @@ module Pace =
     let value (TimePerKm pace) = pace
 
     let toString (TimePerKm pace) =
-        sprintf "%d:%02d/km" (Time.minutes pace) (Time.seconds pace)
+        let hours = Time.hours pace
+        let hoursPart = if hours > 0u then sprintf "%d:" hours else ""
+        sprintf "%s%d:%02d/km" hoursPart (Time.minutes pace) (Time.seconds pace)
 
     let createOrThrow min s =
         create min s

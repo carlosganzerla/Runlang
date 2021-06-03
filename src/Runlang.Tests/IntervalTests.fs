@@ -217,7 +217,7 @@ let ``Splitting interval by non divisible time will yield an extra interval``
     =
     let pace = Pace.create 4u 0u |> ok
     let time = Time.create 0u 25u 0u |> ok
-    let splitSize = TimeSplit (Time.totalTime 4m)
+    let splitSize = TimeSplit (Time.fromMinutes 4m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval
 
@@ -239,7 +239,7 @@ let ``Splitting interval by a divisible time will yield the exact quantity of in
     =
     let pace = Pace.create 4u 0u |> ok
     let time = Time.create 0u 25u 0u |> ok
-    let splitSize = TimeSplit (Time.totalTime 5m)
+    let splitSize = TimeSplit (Time.fromMinutes 5m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval
 
@@ -257,7 +257,7 @@ let ``Splitting interval by a divisible time will yield the exact quantity of in
 let ``Splitting interval by a bigger time will yield the interval itself`` () =
     let pace = Pace.create 4u 25u |> ok
     let time = Time.create 0u 4u 25u |> ok
-    let splitSize = TimeSplit (Time.totalTime 5m)
+    let splitSize = TimeSplit (Time.fromMinutes 5m)
     let interval = Interval.create (TimeAndPace (time, pace))
     let splits = Interval.split splitSize interval
     let expected = [ "#1 Time: 00:04:25, Distance: 1.00km, Pace: 4:25/km" ]

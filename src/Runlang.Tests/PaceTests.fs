@@ -18,8 +18,12 @@ let ``Pace must be craeted correcty`` () =
     pace |> Time.minutes |> should equal 5u
     pace |> Time.seconds |> should equal 30u
 
-
 [<Fact>]
 let ``To string must yield the correct pace representation`` () =
     let pace = Pace.create 5u 30u |> ok
     pace |> Pace.toString |> should equal "5:30/km"
+
+[<Fact>]
+let ``To string must show hours if they are bigger than 0`` () =
+    let pace = Time.create 3u 12u 40u |> ok |> TimePerKm
+    pace |> Pace.toString |> should equal "3:12:40/km"
