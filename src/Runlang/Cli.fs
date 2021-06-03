@@ -6,6 +6,7 @@ open LangParser
 open Utils
 open PaceFileParser
 open RootList
+open Repetition
 open Manipulation
 
 let parseArgs args =
@@ -37,6 +38,7 @@ let rec createState table =
         printfn "Enter workout string:"
         |> Console.ReadLine
         |> parseWorkout table
+        |> Result.map Repetition.flat
         |> Result.map RootList.create
 
     do printResult printList result

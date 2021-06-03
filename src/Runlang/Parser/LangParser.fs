@@ -50,7 +50,6 @@ let interval =
               timeAndPace
               timeAndDistance ]
     |>> List.map Interval
-    |>> RepList
     .>> ws
 
 let plus = (pchar '/' <|> pchar '+') .>> ws
@@ -66,10 +65,11 @@ let repcount =
     .>>. between (pchar '(') (pchar ')') repetitionValue
     .>> ws
     |>> RepCount
+    |>> List.singleton
 
-let replist = sepBy (repcount <|> interval) plus |>> RepList
+let replist = sepBy (repcount <|> interval) plus |>> List.collect id
 do repetitionRef := replist
 
-let repetition = ws >>. repetitionValue .>> ws .>> eof |>> Repetition.toList
+let repetition = ws >>. repetitionValue .>> ws .>> eof
 
 let parseWorkout = runParser repetition

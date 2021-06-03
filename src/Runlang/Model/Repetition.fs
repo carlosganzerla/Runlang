@@ -4,17 +4,30 @@ open Interval
 
 type Repetition =
     | Interval of Interval
-    | RepList of Repetition list
-    | RepCount of uint * Repetition
+    | RepCount of uint * Repetition list
 
 [<RequireQualifiedAccess>]
 module Repetition =
-    let toList repetition =
-        let rec toList acc =
-            function
-            | RepCount (count, rep) ->
-                rep |> List.replicate (int count) |> RepList |> (toList acc)
-            | RepList reps -> reps |> List.fold toList acc
-            | Interval int -> int :: acc
+    let rec fold fRep fInt acc repetition =
+        let fold = fold fRep fInt
 
-        toList [] repetition |> List.rev
+        match repetition with
+        | RepCount (count, rep) -> List.fold fold (fRep acc count) rep
+        | Interval interval -> fInt acc interval
+
+    let rec foldBack fRep fInt repetition acc =
+        let fInt generator interval =
+            fun seed -> fInt interval seed |> generator
+
+        let fRep generator count = fun inner -> fRep count inner |> generator
+        fold fRep fInt id repetition acc
+
+    let toList repetition =
+        let fInt interval list = interval :: list
+
+        let fRep count list =
+            list |> List.replicate (int count) |> List.collect id
+
+        foldBack fRep fInt repetition []
+
+    let flat repetitions = List.collect toList repetitions

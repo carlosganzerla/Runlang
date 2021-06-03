@@ -6,6 +6,7 @@ open Utils
 open Pace
 open LangParser
 open Interval
+open Repetition
 
 let paceTable =
     function
@@ -20,7 +21,7 @@ let paceTable =
     | CA -> Pace.createOrThrow 11u 0u
     | CL -> Pace.createOrThrow 12u 0u
 
-let parse = parseWorkout paceTable >> ok
+let parse = parseWorkout paceTable >> ok >> Repetition.flat
 
 let parseToString = parse >> Interval.listToString
 

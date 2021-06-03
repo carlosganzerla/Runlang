@@ -57,5 +57,6 @@
 
 <repetition> :: =
 | <interval>
-| <repetition> <plus> <repetition>
-| <integer><times> '('<repetition>')'
+| <integer><times> '('<workout>')'
+
+<workout> :: =  <repetition>*
