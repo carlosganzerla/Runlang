@@ -1,5 +1,7 @@
 module Time
 
+open Udecimal
+
 type Time = private { Hours: uint; Minutes: uint; Seconds: uint }
 
 [<RequireQualifiedAccess>]
@@ -7,7 +9,8 @@ module Time =
     let toMinutes { Hours = h; Minutes = min; Seconds = s } =
         decimal h * 60m + decimal min + (decimal s) / 60m
 
-    let fromMinutes (mins: decimal) =
+    let fromMinutes umins =
+        let mins = sdecimal umins
         let seconds = (mins - floor mins) * 60m |> round |> uint
         let minutes = (uint mins) % 60u + seconds / 60u
         let hours = uint mins / 60u + minutes / 60u
@@ -31,4 +34,4 @@ module Time =
 
     let sum t1 t2 =
         let minutesSum = (toMinutes t1) + (toMinutes t2)
-        fromMinutes minutesSum
+        fromMinutes (udecimal minutesSum)

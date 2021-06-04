@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Lib/Utils.fs" />
     <Compile Include="Lib/RootList.fs" />
+    <Compile Include="Lib/Udecimal.fs" />
     <Compile Include="Model/Time.fs" />
     <Compile Include="Model/Pace.fs" />
     <Compile Include="Model/Distance.fs" />

@@ -1,6 +1,7 @@
 module ParserCommons
 
 open FParsec
+open Udecimal
 
 let (<*>) pf px = pf >>= (|>>) px
 
@@ -31,12 +32,13 @@ let result =
 let pdecimal input =
     let dot = opt (anyOf ",.")
 
-    let partsToDecimal intpart decpart = decimal $"{intpart}.{decpart}"
+    let partsToDecimal intpart decpart =
+        decimal $"{intpart}.{decpart}" |> udecimal
 
     let decimalPart (intpart, dot) =
         match dot with
         | Some _ -> uinteger |>> partsToDecimal intpart
-        | None -> preturn intpart |>> decimal
+        | None -> preturn intpart |>> decimal |>> udecimal
 
     (uinteger .>>. dot >>= decimalPart) input
 

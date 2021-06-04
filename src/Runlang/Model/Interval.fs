@@ -1,5 +1,6 @@
 module Interval
 
+open Udecimal
 open Distance
 open Pace
 open Time
@@ -20,13 +21,13 @@ module Interval =
     let private timeInterval distance (pace: Pace) =
         let km = Distance.totalKm distance
         let minPerKm = pace |> Pace.value |> Time.toMinutes
-        let time = Time.fromMinutes (km * minPerKm)
+        let time = (km * minPerKm) |> udecimal |> Time.fromMinutes
         { Distance = distance; Time = time; Pace = pace }
 
     let private paceInterval time distance =
         let minutes = Time.toMinutes time
         let km = Distance.totalKm distance
-        let pace = Time.fromMinutes (minutes / km) |> TimePerKm
+        let pace = (minutes / km) |> udecimal |> Time.fromMinutes |> TimePerKm
         { Distance = distance; Time = time; Pace = pace }
 
     let private distanceInterval time pace =
@@ -44,6 +45,7 @@ module Interval =
     let private applyProgression count firstMinutes ratio =
         let getPace idx =
             firstMinutes + (decimal (idx - 1) * ratio)
+            |> udecimal
             |> Time.fromMinutes
             |> TimePerKm
 
@@ -70,7 +72,8 @@ module Interval =
             if totalKm >= 2.0m then
                 int (ceil totalKm), 1m, Kilometers
             else
-                2, totalKm / 2m, (*) 1000m >> uint >> Meters
+                let toMeters = sdecimal >> (*) 1000m >> uint >> Meters
+                2, (totalKm / 2m), toMeters
 
         let firstMinutes = Time.toMinutes first
 
@@ -79,7 +82,11 @@ module Interval =
             / (decimal (splitCount - 1))
 
         let paces = applyProgression splitCount firstMinutes ratio
-        let distances = getSplits totalKm splitSize |> List.map distFn
+
+        let distances =
+            getSplits totalKm splitSize
+            |> List.map udecimal
+            |> List.map distFn
 
         List.zip distances paces
         |> List.map (DistanceAndPace >> create)
@@ -122,6 +129,7 @@ module Interval =
         let splits = getSplits totalMinutes splitSize
 
         splits
+        |> List.map udecimal
         |> List.map Time.fromMinutes
         |> List.map (fun t -> t, interval.Pace)
         |> List.map TimeAndPace
