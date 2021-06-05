@@ -18,8 +18,6 @@ type Pace = TimePerKm of Time
 
 type PaceTable = RunningTerm -> Pace
 
-exception InvalidPaceException of string
-
 [<RequireQualifiedAccess>]
 module Pace =
     let create min s = Time.create 0 min s |> Result.map TimePerKm
@@ -30,9 +28,3 @@ module Pace =
         let hours = Time.hours pace
         let hoursPart = if hours > 0 then sprintf "%d:" hours else ""
         sprintf "%s%d:%02d/km" hoursPart (Time.minutes pace) (Time.seconds pace)
-
-    let createOrThrow min s =
-        create min s
-        |> function
-        | Ok ok -> ok
-        | Error err -> raise (InvalidPaceException err)

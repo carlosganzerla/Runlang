@@ -14,7 +14,7 @@ let intervals =
     parse "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
 
 [<Fact>]
-let ``Joining intervals outside manipulation or with wrong indexing must yield error``
+let ``Joining outside manipulation or with wrong indexing must yield error``
     ()
     =
     let joins =
@@ -57,7 +57,7 @@ let ``Joining empty list should be a no op`` () =
     join |> shouldBeError
 
 [<Fact>]
-let ``Splitting intervals outside manipulation or with wrong indexing must yield error``
+let ``Splitting outside manipulation or with wrong indexing must yield error``
     ()
     =
     let splitValue = Distance.meters 500 |> DistanceSplit
@@ -141,14 +141,24 @@ let ``Splitting empty list should be a no op`` () =
 
 [<Fact>]
 let ``Manipulation List to string must yield the correct representation`` () =
+    let distance = Distance.meters 500
+    let time = Time.fromMinutes 2m
+    let interval = (time, distance) |> TimeAndDistance |> Interval.create
+    let manipulation = [ interval ]
+
     let manipulations : RootList<Manipulation> =
-        List.replicate 5 [] |> RootList.fromList |> ok
+        List.replicate 5 manipulation |> RootList.fromList |> ok
 
     let expected = """******ROOT(0)******
+#1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 ******MANIPULATION(1)******
+#1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 ******MANIPULATION(2)******
+#1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 ******MANIPULATION(3)******
+#1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 ******MANIPULATION(4)******
+#1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 """
     let expectedLF = expected.Replace ("\r", "") // Windows workaround
 

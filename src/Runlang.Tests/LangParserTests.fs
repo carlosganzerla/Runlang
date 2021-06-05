@@ -10,18 +10,18 @@ open Repetition
 
 let paceTable =
     function
-    | MAX -> Pace.createOrThrow 3 0
-    | FTS -> Pace.createOrThrow 4 0
-    | FO -> Pace.createOrThrow 5 0
-    | MO -> Pace.createOrThrow 6 0
-    | LE -> Pace.createOrThrow 7 0
-    | LVS -> Pace.createOrThrow 8 0
-    | TR -> Pace.createOrThrow 9 0
-    | CV -> Pace.createOrThrow 10 0
-    | CA -> Pace.createOrThrow 11 0
-    | CL -> Pace.createOrThrow 12 0
+    | MAX -> Pace.create 3 0
+    | FTS -> Pace.create 4 0
+    | FO -> Pace.create 5 0
+    | MO -> Pace.create 6 0
+    | LE -> Pace.create 7 0
+    | LVS -> Pace.create 8 0
+    | TR -> Pace.create 9 0
+    | CV -> Pace.create 10 0
+    | CA -> Pace.create 11 0
+    | CL -> Pace.create 12 0
 
-let parse = parseWorkout paceTable >> ok >> Repetition.flat
+let parse = parseWorkout (paceTable >> ok) >> ok >> Repetition.flat
 
 let parseToString = parse >> Interval.listToString
 

@@ -49,10 +49,10 @@ module Interval =
 
         [ 1 .. count ] |> List.map getPace
 
-    let inline private getSplits (value: decimal) (splitSize: decimal) =
+    let private getSplits (value: decimal) (splitSize: decimal) =
         let count = int (ceil (value / splitSize))
 
-        let inline getNextSplit (splits, remaining) _ =
+        let getNextSplit (splits, remaining) _ =
             if remaining >= splitSize then
                 (splitSize :: splits, remaining - splitSize)
             else

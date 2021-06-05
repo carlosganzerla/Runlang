@@ -4,5 +4,5 @@ bin/
 obj/
 .fake
 *.swp
-coveragereport/
+coverage*/
 *.cobertura.xml

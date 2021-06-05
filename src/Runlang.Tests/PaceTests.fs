@@ -12,7 +12,7 @@ let ``Create pace arguments must be base sixty`` () =
     Pace.create 3 77 |> shouldBeError
 
 [<Fact>]
-let ``Pace must be craeted correcty`` () =
+let ``Pace must be created correcty`` () =
     let (TimePerKm pace) = Pace.create 5 30 |> ok
     pace |> Time.hours |> should equal 0
     pace |> Time.minutes |> should equal 5

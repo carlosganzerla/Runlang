@@ -3,11 +3,12 @@ module Cli
 open CommandParser
 open System
 open LangParser
-open Utils
 open PaceFileParser
 open RootList
 open Repetition
 open Manipulation
+
+exception PaceTableError of string
 
 let parseArgs args =
     match args |> Array.truncate 1 with
@@ -16,8 +17,11 @@ let parseArgs args =
 
 let getPaceTable fileName =
     let contents = System.IO.File.ReadAllText fileName
-    let termMap = parseTerms contents |> ok
-    fun term -> Map.find term termMap
+
+    match parseTerms contents with
+    | Ok termMap -> fun term -> Map.find term termMap
+    | Error error -> raise (PaceTableError error)
+
 
 let printList manipulations =
     do Console.Clear ()

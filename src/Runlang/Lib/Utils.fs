@@ -1,15 +1,5 @@
 module Utils
 
-open System
-
-let fromResultList list =
-    let folder list next =
-        Result.bind
-            (fun list -> Result.bind (fun x -> Ok (x :: list)) next)
-            list
-
-    List.fold folder (Ok []) list
-
 let foldResult folder state list =
     let resultFolder result next = Result.bind (folder next) result
     List.fold resultFolder (Ok state) list
@@ -26,8 +16,3 @@ let execRange f rangeOpt list =
         Ok (f (a, b) list)
     else
         Error $"Invalid index"
-
-let ok =
-    function
-    | Ok ok -> ok
-    | Error err -> raise (new Exception ($"{err}"))
