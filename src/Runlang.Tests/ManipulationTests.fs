@@ -60,7 +60,7 @@ let ``Joining empty list should be a no op`` () =
 let ``Splitting intervals outside manipulation or with wrong indexing must yield error``
     ()
     =
-    let splitValue = Meters 500u |> DistanceSplit
+    let splitValue = Distance.meters 500 |> DistanceSplit
 
     let splits =
         [ Manipulation.split splitValue (Some (-1, 5)) intervals;
@@ -73,7 +73,7 @@ let ``Splitting intervals outside manipulation or with wrong indexing must yield
 
 [<Fact>]
 let ``Splitting an index should split the interval accordingly`` () =
-    let splitValue = Meters 300u |> DistanceSplit
+    let splitValue = Distance.meters 300 |> DistanceSplit
     let split = Manipulation.split splitValue (Some (1, 1)) intervals |> ok
 
     let expected =
@@ -92,7 +92,7 @@ let ``Splitting an index should split the interval accordingly`` () =
 
 [<Fact>]
 let ``Splitting by range should split the intervals accordingly`` () =
-    let time = Time.create 0u 4u 0u |> ok
+    let time = Time.create 0 4 0 |> ok
     let splitValue = TimeSplit time
     let split = Manipulation.split splitValue (Some (1, 3)) intervals |> ok
 
@@ -112,7 +112,7 @@ let ``Splitting by range should split the intervals accordingly`` () =
 
 [<Fact>]
 let ``Splitting entire list should split the intervals accordingly`` () =
-    let splitValue = Meters 500u |> DistanceSplit
+    let splitValue = Distance.meters 500 |> DistanceSplit
     let split = Manipulation.split splitValue None intervals |> ok
 
     let expected =
@@ -134,7 +134,7 @@ let ``Splitting entire list should split the intervals accordingly`` () =
 
 [<Fact>]
 let ``Splitting empty list should be a no op`` () =
-    let splitValue = Meters 500u |> DistanceSplit
+    let splitValue = Distance.meters 500 |> DistanceSplit
     let split = Manipulation.split splitValue (Some (0, 0)) []
     split |> shouldBeError
 

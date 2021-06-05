@@ -8,8 +8,8 @@ open Pace
 open Distance
 open Repetition
 
-let distance = Kilometers 1.5m
-let pace = Pace.create 4u 0u |> ok
+let distance = Distance.kilometers 1.5m
+let pace = Pace.create 4 0 |> ok
 let interval = (distance, pace) |> DistanceAndPace |> Interval.create
 
 let repetition =

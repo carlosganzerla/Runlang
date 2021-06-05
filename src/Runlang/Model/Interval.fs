@@ -1,6 +1,5 @@
 module Interval
 
-open Udecimal
 open Distance
 open Pace
 open Time
@@ -21,13 +20,13 @@ module Interval =
     let private timeInterval distance (pace: Pace) =
         let km = Distance.totalKm distance
         let minPerKm = pace |> Pace.value |> Time.toMinutes
-        let time = (km * minPerKm) |> udecimal |> Time.fromMinutes
+        let time = (km * minPerKm) |> Time.fromMinutes
         { Distance = distance; Time = time; Pace = pace }
 
     let private paceInterval time distance =
         let minutes = Time.toMinutes time
         let km = Distance.totalKm distance
-        let pace = (minutes / km) |> udecimal |> Time.fromMinutes |> TimePerKm
+        let pace = (minutes / km) |> Time.fromMinutes |> TimePerKm
         { Distance = distance; Time = time; Pace = pace }
 
     let private distanceInterval time pace =
@@ -45,7 +44,6 @@ module Interval =
     let private applyProgression count firstMinutes ratio =
         let getPace idx =
             firstMinutes + (decimal (idx - 1) * ratio)
-            |> udecimal
             |> Time.fromMinutes
             |> TimePerKm
 
@@ -70,9 +68,9 @@ module Interval =
 
         let splitCount, splitSize, distFn =
             if totalKm >= 2.0m then
-                int (ceil totalKm), 1m, Kilometers
+                int (ceil totalKm), 1m, Distance.kilometers
             else
-                let toMeters = sdecimal >> (*) 1000m >> uint >> Meters
+                let toMeters = (*) 1000m >> int >> Distance.meters
                 2, (totalKm / 2m), toMeters
 
         let firstMinutes = Time.toMinutes first
@@ -85,7 +83,6 @@ module Interval =
 
         let distances =
             getSplits totalKm splitSize
-            |> List.map udecimal
             |> List.map distFn
 
         List.zip distances paces
@@ -129,7 +126,6 @@ module Interval =
         let splits = getSplits totalMinutes splitSize
 
         splits
-        |> List.map udecimal
         |> List.map Time.fromMinutes
         |> List.map (fun t -> t, interval.Pace)
         |> List.map TimeAndPace

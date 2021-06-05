@@ -6,20 +6,20 @@ open Distance
 open Time
 open Pace
 
-let watchDigits x = let p = regex "[0-5][0-9]" |>> uint in p x
+let watchDigits x = let p = regex "[0-5][0-9]" |>> int in p x
 
-let baseSixty x = let p = regex "[0-5]?[0-9]" |>> uint in p x
+let baseSixty x = let p = regex "[0-5]?[0-9]" |>> int in p x
 
 let createTime ((h, min), s) = Time.create h min s
 
 let distance x =
     let distanceM =
         let m = pchar 'm'
-        uinteger .>> m |>> Meters
+        integer .>> m |>> Distance.meters
 
     let distanceKm =
         let km = pstring "km"
-        pdecimal .>> km |>> Kilometers
+        pdecimal .>> km |>> Distance.kilometers
 
     let p = tryMany [ distanceM; distanceKm ] in
     p x
@@ -28,25 +28,25 @@ let watchtime x =
     let colon = pchar ':'
 
     let phhmmss =
-        uinteger .>> colon .>>. watchDigits .>> colon
+        integer .>> colon .>>. watchDigits .>> colon
         .>>. watchDigits
 
-    let pmmss = uzero .>>. baseSixty .>> colon .>>. watchDigits
+    let pmmss = zero .>>. baseSixty .>> colon .>>. watchDigits
 
     let p = tryMany [ phhmmss; pmmss ] |>> createTime >>= result in
     p x
 
 let numerictime x =
-    let ph = uinteger .>> pchar 'h'
+    let ph = integer .>> pchar 'h'
     let pmin = baseSixty .>> pstring "min"
     let ps = baseSixty .>> pchar 's'
     let phmins = ph .>>. pmin .>>. ps
-    let phmin = ph .>>. pmin .>>. uzero
-    let phs = ph .>>. uzero .>>. ps
-    let pmins = uzero .>>. pmin .>>. ps
-    let ph = ph .>>. uzero .>>. uzero
-    let pmin = uzero .>>. pmin .>>. uzero
-    let ps = uzero .>>. uzero .>>. ps
+    let phmin = ph .>>. pmin .>>. zero
+    let phs = ph .>>. zero .>>. ps
+    let pmins = zero .>>. pmin .>>. ps
+    let ph = ph .>>. zero .>>. zero
+    let pmin = zero .>>. pmin .>>. zero
+    let ps = zero .>>. zero .>>. ps
 
     let p =
         tryMany [ phmins

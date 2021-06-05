@@ -1,28 +1,31 @@
 module Distance
 
-open Udecimal
-
-type Distance =
-    | Meters of uint
-    | Kilometers of Udecimal
+type Distance = 
+    private
+    | Meters of int
+    | Kilometers of decimal
 
 [<RequireQualifiedAccess>]
 module Distance =
     let create totalKm =
+        let totalKm = abs totalKm
         if totalKm >= 1.0m then
-            totalKm |> udecimal |> Kilometers
+            totalKm |> Kilometers
         else
-            (totalKm * 1000m) |> round |> uint |> Meters
+            (totalKm * 1000m) |> round |> int |> Meters
 
     let totalKm =
         function
         | Meters m -> (decimal m) / 1000m
-        | Kilometers km -> sdecimal km
+        | Kilometers km -> km
 
     let toString =
         function
         | Meters m -> sprintf "%im" m
-        | Kilometers km -> sprintf "%.2fkm" (sdecimal km)
+        | Kilometers km -> sprintf "%.2fkm" km
+
+    let meters m = Meters (abs m)
+    let kilometers km = Kilometers (abs km)
 
     let sum d1 d2 =
         let kmSum = (totalKm d1) + (totalKm d2)

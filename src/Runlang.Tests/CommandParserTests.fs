@@ -103,7 +103,7 @@ let ``Joining with -m switch with index out range must return error`` () =
 
 [<Fact>]
 let ``Splitting by time with dot splits the whole manipulation`` () =
-    let split = Time.create 0u 3u 0u |> ok |> TimeSplit
+    let split = Time.create 0 3 0 |> ok |> TimeSplit
 
     let expected =
         workout
@@ -117,7 +117,7 @@ let ``Splitting by time with dot splits the whole manipulation`` () =
 
 [<Fact>]
 let ``Splitting by distance with dot splits the whole manipulation`` () =
-    let split = Meters 250u |> DistanceSplit
+    let split = Distance.meters 250 |> DistanceSplit
 
     let expected =
         workout
@@ -131,7 +131,7 @@ let ``Splitting by distance with dot splits the whole manipulation`` () =
 
 [<Fact>]
 let ``Splitting by index just splits the index minus one of the interval`` () =
-    let split = Kilometers 1.3m |> DistanceSplit
+    let split = Distance.kilometers 1.3m |> DistanceSplit
 
     let expected =
         workout
@@ -145,7 +145,7 @@ let ``Splitting by index just splits the index minus one of the interval`` () =
 
 [<Fact>]
 let ``Splitting by range splits the range minus one of the intervals`` () =
-    let split = Time.create 0u 0u 35u |> ok |> TimeSplit
+    let split = Time.create 0 0 35 |> ok |> TimeSplit
 
     let expected =
         workout
@@ -167,7 +167,7 @@ let ``Splitting by outside of bounds range return error`` () =
 
 [<Fact>]
 let ``Split with -r switch splits the root manipulation`` () =
-    let split = Time.create 0u 1u 20u |> ok |> TimeSplit
+    let split = Time.create 0 1 20 |> ok |> TimeSplit
 
     let expected =
         workout
@@ -182,7 +182,7 @@ let ``Split with -r switch splits the root manipulation`` () =
 [<Fact>]
 let ``Split with -m switch splits the selected manipulation`` () =
     let workout = RootList.get 1 extraState |> ok
-    let split = Time.create 1u 0u 5u |> ok |> TimeSplit
+    let split = Time.create 1 0 5 |> ok |> TimeSplit
 
     let expected =
         workout

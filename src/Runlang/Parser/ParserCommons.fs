@@ -1,7 +1,6 @@
 module ParserCommons
 
 open FParsec
-open Udecimal
 
 let (<*>) pf px = pf >>= (|>>) px
 
@@ -11,9 +10,9 @@ let ws1 = spaces1
 
 let ws = spaces
 
-let uinteger = puint32
+let integer = pint32
 
-let uzero input = preturn 0u input
+let zero input = preturn 0 input
 
 let runParser parser state input =
     let output = runParserOnString parser state "" input
@@ -33,14 +32,14 @@ let pdecimal input =
     let dot = opt (anyOf ",.")
 
     let partsToDecimal intpart decpart =
-        decimal $"{intpart}.{decpart}" |> udecimal
+        decimal $"{intpart}.{decpart}"
 
     let decimalPart (intpart, dot) =
         match dot with
-        | Some _ -> uinteger |>> partsToDecimal intpart
-        | None -> preturn intpart |>> decimal |>> udecimal
+        | Some _ -> integer |>> partsToDecimal intpart
+        | None -> preturn intpart |>> decimal 
 
-    (uinteger .>>. dot >>= decimalPart) input
+    (integer .>>. dot >>= decimalPart) input
 
 let sequence parsers x =
     let andThen result next = result .>>. next |>> fun (r, n) -> n :: r

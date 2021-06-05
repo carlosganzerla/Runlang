@@ -10,16 +10,16 @@ open Repetition
 
 let paceTable =
     function
-    | MAX -> Pace.createOrThrow 03u 0u
-    | FTS -> Pace.createOrThrow 04u 0u
-    | FO -> Pace.createOrThrow 05u 0u
-    | MO -> Pace.createOrThrow 06u 0u
-    | LE -> Pace.createOrThrow 07u 0u
-    | LVS -> Pace.createOrThrow 08u 0u
-    | TR -> Pace.createOrThrow 09u 0u
-    | CV -> Pace.createOrThrow 10u 0u
-    | CA -> Pace.createOrThrow 11u 0u
-    | CL -> Pace.createOrThrow 12u 0u
+    | MAX -> Pace.createOrThrow 03 0
+    | FTS -> Pace.createOrThrow 04 0
+    | FO -> Pace.createOrThrow 05 0
+    | MO -> Pace.createOrThrow 06 0
+    | LE -> Pace.createOrThrow 07 0
+    | LVS -> Pace.createOrThrow 08 0
+    | TR -> Pace.createOrThrow 09 0
+    | CV -> Pace.createOrThrow 10 0
+    | CA -> Pace.createOrThrow 11 0
+    | CL -> Pace.createOrThrow 12 0
 
 let parse = parseWorkout paceTable >> ok >> Repetition.flat
 

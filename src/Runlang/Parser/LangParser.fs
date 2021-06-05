@@ -59,7 +59,7 @@ let times = pchar 'x' .>> ws
 let repetitionValue, repetitionRef = createParserForwardedToRef ()
 
 let repcount =
-    let reptimes = attempt (uinteger .>> times)
+    let reptimes = attempt (puint32 .>> times)
 
     reptimes
     .>>. between (pchar '(') (pchar ')') repetitionValue

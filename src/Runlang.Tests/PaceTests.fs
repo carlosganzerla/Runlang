@@ -8,22 +8,22 @@ open Pace
 
 [<Fact>]
 let ``Create pace arguments must be base sixty`` () =
-    Pace.create 65u 30u |> shouldBeError
-    Pace.create 3u 77u |> shouldBeError
+    Pace.create 65 30 |> shouldBeError
+    Pace.create 3 77 |> shouldBeError
 
 [<Fact>]
 let ``Pace must be craeted correcty`` () =
-    let (TimePerKm pace) = Pace.create 5u 30u |> ok
-    pace |> Time.hours |> should equal 0u
-    pace |> Time.minutes |> should equal 5u
-    pace |> Time.seconds |> should equal 30u
+    let (TimePerKm pace) = Pace.create 5 30 |> ok
+    pace |> Time.hours |> should equal 0
+    pace |> Time.minutes |> should equal 5
+    pace |> Time.seconds |> should equal 30
 
 [<Fact>]
 let ``To string must yield the correct pace representation`` () =
-    let pace = Pace.create 5u 30u |> ok
+    let pace = Pace.create 5 30 |> ok
     pace |> Pace.toString |> should equal "5:30/km"
 
 [<Fact>]
 let ``To string must show hours if they are bigger than 0`` () =
-    let pace = Time.create 3u 12u 40u |> ok |> TimePerKm
+    let pace = Time.create 3 12 40 |> ok |> TimePerKm
     pace |> Pace.toString |> should equal "3:12:40/km"
