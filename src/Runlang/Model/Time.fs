@@ -10,7 +10,7 @@ module Time =
     let fromMinutes (mins: decimal) =
         let mins = abs mins
         let seconds = (mins - floor mins) * 60m |> round |> int
-        let minutes =  (int mins) % 60 + seconds / 60
+        let minutes = (int mins) % 60 + seconds / 60
         let hours = (int mins) / 60 + minutes / 60
 
         { Hours = hours;
@@ -21,6 +21,7 @@ module Time =
         let h = abs h
         let min = abs min
         let s = abs s
+
         if min > 59 || s > 59 then
             Error $"Invalid minutes and seconds: {min}, {s}"
         else

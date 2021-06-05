@@ -11,7 +11,10 @@ open Time
 let replicateProgression paceValues =
     let createInterval (min, s) =
         let pace = Pace.create min s |> ok
-        (Distance.kilometers 1m, pace) |> DistanceAndPace |> Interval.create
+
+        (Distance.kilometers 1m, pace)
+        |> DistanceAndPace
+        |> Interval.create
 
     paceValues |> List.map createInterval
 
@@ -101,12 +104,7 @@ let ``Progression with non integer km value uses last split as remainder`` () =
     let intervals = Interval.fromProgression distance first last
 
     let fullKmPaceValues =
-        [ (5, 0);
-          (4, 50);
-          (4, 40);
-          (4, 30);
-          (4, 20);
-          (4, 10) ]
+        [ (5, 0); (4, 50); (4, 40); (4, 30); (4, 20); (4, 10) ]
 
     let fullKmIntervals = replicateProgression fullKmPaceValues
     let pace = Pace.create 4 0 |> ok
@@ -159,9 +157,7 @@ let ``Summing intervals must yield the correct result`` () =
 
 
 [<Fact>]
-let ``Splitting interval by non divisible distance will yield extra``
-    ()
-    =
+let ``Splitting interval by non divisible distance will yield extra`` () =
     let pace = Pace.create 4 30 |> ok
     let distance = Distance.kilometers 3.2m
     let splitSize = DistanceSplit (Distance.meters 500)
@@ -181,9 +177,7 @@ let ``Splitting interval by non divisible distance will yield extra``
 
 
 [<Fact>]
-let ``Splitting by a divisible distance will yield exact quantity``
-    ()
-    =
+let ``Splitting by a divisible distance will yield exact quantity`` () =
     let pace = Pace.create 4 30 |> ok
     let distance = Distance.kilometers 3m
     let splitSize = DistanceSplit (Distance.kilometers 1m)
@@ -212,9 +206,7 @@ let ``Splitting interval by a bigger distance will yield the interval itself``
 
 
 [<Fact>]
-let ``Splitting by non divisible time will yield an extra interval``
-    ()
-    =
+let ``Splitting by non divisible time will yield an extra interval`` () =
     let pace = Pace.create 4 0 |> ok
     let time = Time.create 0 25 0 |> ok
     let splitSize = TimeSplit (Time.fromMinutes 4m)
@@ -234,9 +226,7 @@ let ``Splitting by non divisible time will yield an extra interval``
 
 
 [<Fact>]
-let ``Splitting by a divisible time will yield an exact quantity``
-    ()
-    =
+let ``Splitting by a divisible time will yield an exact quantity`` () =
     let pace = Pace.create 4 0 |> ok
     let time = Time.create 0 25 0 |> ok
     let splitSize = TimeSplit (Time.fromMinutes 5m)

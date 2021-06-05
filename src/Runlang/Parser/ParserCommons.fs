@@ -31,13 +31,12 @@ let result =
 let pdecimal input =
     let dot = opt (anyOf ",.")
 
-    let partsToDecimal intpart decpart =
-        decimal $"{intpart}.{decpart}"
+    let partsToDecimal intpart decpart = decimal $"{intpart}.{decpart}"
 
     let decimalPart (intpart, dot) =
         match dot with
         | Some _ -> integer |>> partsToDecimal intpart
-        | None -> preturn intpart |>> decimal 
+        | None -> preturn intpart |>> decimal
 
     (integer .>>. dot >>= decimalPart) input
 

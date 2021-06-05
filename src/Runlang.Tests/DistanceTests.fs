@@ -10,6 +10,11 @@ let ``Created distance should be in km if total km is not lower than one`` () =
     distance |> should equal (Distance.kilometers 1.01m)
 
 [<Fact>]
+let ``Created distance ignores sign`` () =
+    let distance = Distance.create -3.4m
+    distance |> should equal (Distance.kilometers 3.4m)
+
+[<Fact>]
 let ``Created distance should be in m if total km is lower than one`` () =
     let distance = Distance.create 0.5m
     distance |> should equal (Distance.meters 500)
@@ -21,7 +26,7 @@ let ``Total km should get the distance value in km`` () =
 
 [<Fact>]
 let ``To string must yield correct representation`` () =
-    Distance.meters 500 |> Distance.toString |> should equal "500m"
+    Distance.meters 2500 |> Distance.toString |> should equal "2500m"
     Distance.kilometers 1.854m |> Distance.toString |> should equal "1.85km"
     
 [<Fact>]

@@ -10,13 +10,13 @@ open Repetition
 
 let paceTable =
     function
-    | MAX -> Pace.createOrThrow 03 0
-    | FTS -> Pace.createOrThrow 04 0
-    | FO -> Pace.createOrThrow 05 0
-    | MO -> Pace.createOrThrow 06 0
-    | LE -> Pace.createOrThrow 07 0
-    | LVS -> Pace.createOrThrow 08 0
-    | TR -> Pace.createOrThrow 09 0
+    | MAX -> Pace.createOrThrow 3 0
+    | FTS -> Pace.createOrThrow 4 0
+    | FO -> Pace.createOrThrow 5 0
+    | MO -> Pace.createOrThrow 6 0
+    | LE -> Pace.createOrThrow 7 0
+    | LVS -> Pace.createOrThrow 8 0
+    | TR -> Pace.createOrThrow 9 0
     | CV -> Pace.createOrThrow 10 0
     | CA -> Pace.createOrThrow 11 0
     | CL -> Pace.createOrThrow 12 0

@@ -81,9 +81,7 @@ module Interval =
 
         let paces = applyProgression splitCount firstMinutes ratio
 
-        let distances =
-            getSplits totalKm splitSize
-            |> List.map distFn
+        let distances = getSplits totalKm splitSize |> List.map distFn
 
         List.zip distances paces
         |> List.map (DistanceAndPace >> create)

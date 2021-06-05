@@ -1,14 +1,18 @@
 module Distance
 
-type Distance = 
+type Distance =
     private
     | Meters of int
     | Kilometers of decimal
 
 [<RequireQualifiedAccess>]
 module Distance =
+    let meters m = Meters (abs m)
+    let kilometers km = Kilometers (abs km)
+
     let create totalKm =
         let totalKm = abs totalKm
+
         if totalKm >= 1.0m then
             totalKm |> Kilometers
         else
@@ -23,9 +27,6 @@ module Distance =
         function
         | Meters m -> sprintf "%im" m
         | Kilometers km -> sprintf "%.2fkm" km
-
-    let meters m = Meters (abs m)
-    let kilometers km = Kilometers (abs km)
 
     let sum d1 d2 =
         let kmSum = (totalKm d1) + (totalKm d2)
