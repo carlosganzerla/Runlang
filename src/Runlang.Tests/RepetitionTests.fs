@@ -29,14 +29,14 @@ let ``Repetition to yields a interval list from a recursive fold`` () =
     repetition |> Repetition.toList |> should equal expected
 
 [<Fact>]
-let ``Fold should fold by right`` () =
+let ``Fold should fold by left`` () =
     let fInt acc _ = acc + 1u
     let fRep count acc = acc * count
     let fold = Repetition.fold fRep fInt 0u repetition
     fold |> should equal 7u // Incorrect result, but expected
 
 [<Fact>]
-let ``Fold back should fold by left`` () =
+let ``Fold back should fold by right`` () =
     let fInt _ acc = acc + 1u
     let fRep acc count = acc * count
     let foldBack = Repetition.foldBack fRep fInt repetition 0u
