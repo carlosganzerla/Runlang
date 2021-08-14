@@ -55,83 +55,83 @@ let ``Interval created with distance and time calculates the pace`` () =
     interval |> Interval.time |> should equal time
 
 
-[<Fact>]
-let ``Positive progression should create intervals according to splits`` () =
-    let first = Pace.create 5 0 |> ok
-    let last = Pace.create 4 0 |> ok
-    let distance = Distance.kilometers 7m
-    let intervals = Interval.fromProgression distance first last
-
-    let expectedPaceValues =
-        [ (5, 0);
-          (4, 50);
-          (4, 40);
-          (4, 30);
-          (4, 20);
-          (4, 10);
-          (4, 0) ]
-
-    let expectedIntervals = replicateProgression expectedPaceValues
-    intervals |> should equal expectedIntervals
-
-
-[<Fact>]
-let ``Negative progression should create intervals according to splits`` () =
-    let last = Pace.create 5 0 |> ok
-    let first = Pace.create 4 0 |> ok
-    let distance = Distance.kilometers 7m
-    let intervals = Interval.fromProgression distance first last
-
-    let expectedPaceValues =
-        [ (5, 0);
-          (4, 50);
-          (4, 40);
-          (4, 30);
-          (4, 20);
-          (4, 10);
-          (4, 0) ]
-        |> List.rev
-
-    let expectedIntervals = replicateProgression expectedPaceValues
-    intervals |> should equal expectedIntervals
-
-
-[<Fact>]
-let ``Progression with non integer km value uses last split as remainder`` () =
-    let first = Pace.create 5 0 |> ok
-    let last = Pace.create 4 0 |> ok
-    let distance = Distance.kilometers 6.5m
-    let intervals = Interval.fromProgression distance first last
-
-    let fullKmPaceValues =
-        [ (5, 0); (4, 50); (4, 40); (4, 30); (4, 20); (4, 10) ]
-
-    let fullKmIntervals = replicateProgression fullKmPaceValues
-    let pace = Pace.create 4 0 |> ok
-
-    let expectedIntervals =
-        (Distance.kilometers 0.5m, pace)
-        |> DistanceAndPace
-        |> Interval.create
-        |> List.singleton
-        |> List.append fullKmIntervals
-
-    intervals |> should equal expectedIntervals
-
-
-[<Fact>]
-let ``Progression lower than 2km will yield two half distance intervals`` () =
-    let first = Pace.create 5 0 |> ok
-    let last = Pace.create 4 0 |> ok
-    let distance = Distance.kilometers 1.5m
-    let intervals = Interval.fromProgression distance first last
-    let intervalDistance = Distance.meters 750
-
-    let expectedIntervals =
-        [ (intervalDistance, first); (intervalDistance, last) ]
-        |> List.map (DistanceAndPace >> Interval.create)
-
-    intervals |> should equal expectedIntervals
+// [<Fact>]
+// let ``Positive progression should create intervals according to splits`` () =
+//     let first = Pace.create 5 0 |> ok
+//     let last = Pace.create 4 0 |> ok
+//     let distance = Distance.kilometers 7m
+//     let intervals = Interval.fromProgression distance first last
+// 
+//     let expectedPaceValues =
+//         [ (5, 0);
+//           (4, 50);
+//           (4, 40);
+//           (4, 30);
+//           (4, 20);
+//           (4, 10);
+//           (4, 0) ]
+// 
+//     let expectedIntervals = replicateProgression expectedPaceValues
+//     intervals |> should equal expectedIntervals
+// 
+// 
+// [<Fact>]
+// let ``Negative progression should create intervals according to splits`` () =
+//     let last = Pace.create 5 0 |> ok
+//     let first = Pace.create 4 0 |> ok
+//     let distance = Distance.kilometers 7m
+//     let intervals = Interval.fromProgression distance first last
+// 
+//     let expectedPaceValues =
+//         [ (5, 0);
+//           (4, 50);
+//           (4, 40);
+//           (4, 30);
+//           (4, 20);
+//           (4, 10);
+//           (4, 0) ]
+//         |> List.rev
+// 
+//     let expectedIntervals = replicateProgression expectedPaceValues
+//     intervals |> should equal expectedIntervals
+// 
+// 
+// [<Fact>]
+// let ``Progression with non integer km value uses last split as remainder`` () =
+//     let first = Pace.create 5 0 |> ok
+//     let last = Pace.create 4 0 |> ok
+//     let distance = Distance.kilometers 6.5m
+//     let intervals = Interval.fromProgression distance first last
+// 
+//     let fullKmPaceValues =
+//         [ (5, 0); (4, 50); (4, 40); (4, 30); (4, 20); (4, 10) ]
+// 
+//     let fullKmIntervals = replicateProgression fullKmPaceValues
+//     let pace = Pace.create 4 0 |> ok
+// 
+//     let expectedIntervals =
+//         (Distance.kilometers 0.5m, pace)
+//         |> DistanceAndPace
+//         |> Interval.create
+//         |> List.singleton
+//         |> List.append fullKmIntervals
+// 
+//     intervals |> should equal expectedIntervals
+// 
+// 
+// [<Fact>]
+// let ``Progression lower than 2km will yield two half distance intervals`` () =
+//     let first = Pace.create 5 0 |> ok
+//     let last = Pace.create 4 0 |> ok
+//     let distance = Distance.kilometers 1.5m
+//     let intervals = Interval.fromProgression distance first last
+//     let intervalDistance = Distance.meters 750
+// 
+//     let expectedIntervals =
+//         [ (intervalDistance, first); (intervalDistance, last) ]
+//         |> List.map (DistanceAndPace >> Interval.create)
+// 
+//     intervals |> should equal expectedIntervals
 
 
 [<Fact>]

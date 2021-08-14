@@ -5,6 +5,7 @@ open Xunit
 open Utils
 open PaceFileParser
 open Pace
+open RunningTerm
 
 [<Fact>]
 let ``Parses input file correctly`` () =

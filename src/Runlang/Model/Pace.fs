@@ -3,7 +3,6 @@ module Pace
 open Time
 type Pace = TimePerKm of Time
 
-
 [<RequireQualifiedAccess>]
 module Pace =
     let create min s = Time.create 0 min s |> Result.map TimePerKm

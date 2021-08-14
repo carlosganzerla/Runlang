@@ -12,6 +12,7 @@
     <Compile Include="Model/Time.fs" />
     <Compile Include="Model/Pace.fs" />
     <Compile Include="Model/Distance.fs" />
+    <Compile Include="Model/RunningTerm.fs" />
     <Compile Include="Model/Interval.fs" />
     <Compile Include="Model/Manipulation.fs" />
     <Compile Include="Parser/LangParseTree.fs" />

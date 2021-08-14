@@ -5,7 +5,7 @@ open ParserCommons
 open Distance
 open Time
 open Pace
-open LangParseTree
+open RunningTerm
 
 let watchDigits x = let p = regex "[0-5][0-9]" |>> int in p x
 
@@ -76,3 +76,16 @@ let pMO x = let p = stringReturn "MO" MO in p x
 let pFO x = let p = stringReturn "FO" FO in p x
 let pFTS x = let p = stringReturn "FTS" FTS in p x
 let pMAX x = let p = stringReturn "MAX" MAX in p x
+
+let termPace x =
+    let p =
+        tryMany [ pCL
+                  pCA
+                  pCV
+                  pTR
+                  pLVS
+                  pLE
+                  pMO
+                  pFO
+                  pFTS
+                  pMAX ] in p x

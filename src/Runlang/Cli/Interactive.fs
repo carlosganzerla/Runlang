@@ -5,7 +5,7 @@ open System
 open LangParser
 open PaceFileParser
 open RootList
-open Repetition
+open LangParseTree
 open Manipulation
 
 exception PaceTableException of string
@@ -41,8 +41,8 @@ let rec createState table =
     let result =
         printfn "Enter workout string:"
         |> Console.ReadLine
-        |> parseWorkout table
-        |> Result.map Repetition.flat
+        |> parseWorkout
+        |> Result.map (WorkoutTree.toFlatIntervals table)
         |> Result.map RootList.create
 
     do printResult printList result
