@@ -28,6 +28,7 @@ type WorkoutEncoding =
           Workout: WorkoutMesg;
           WorkoutSteps: WorkoutStepMesg list }
 
+[<RequireQualifiedAccessAttribute>]
 module Workout =
 
     let private createFileIdMessage () =

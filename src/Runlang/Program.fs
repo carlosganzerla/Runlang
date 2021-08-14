@@ -1,5 +1,5 @@
 open Pace
-open Cli
+open InteractiveCli
 
 [<EntryPoint>]
 let rec main argv =

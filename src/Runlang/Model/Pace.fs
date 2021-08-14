@@ -1,22 +1,8 @@
 module Pace
 
 open Time
-
-type RunningTerm =
-    | CL
-    | CA
-    | CV
-    | TR
-    | LVS
-    | LE
-    | MO
-    | FO
-    | FTS
-    | MAX
-
 type Pace = TimePerKm of Time
 
-type PaceTable = RunningTerm -> Pace
 
 [<RequireQualifiedAccess>]
 module Pace =

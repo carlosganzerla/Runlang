@@ -13,14 +13,14 @@
     <Compile Include="Model/Pace.fs" />
     <Compile Include="Model/Distance.fs" />
     <Compile Include="Model/Interval.fs" />
-    <Compile Include="Model/Repetition.fs" />
     <Compile Include="Model/Manipulation.fs" />
+    <Compile Include="Parser/LangParseTree.fs" />
     <Compile Include="Parser/ParserCommons.fs" />
     <Compile Include="Parser/LangParserPrimitives.fs" />
     <Compile Include="Parser/LangParser.fs" />
     <Compile Include="Parser/CommandParser.fs" />
     <Compile Include="Parser/PaceFileParser.fs" />
-    <Compile Include="Cli.fs" />
+    <Compile Include="Cli/Interactive.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

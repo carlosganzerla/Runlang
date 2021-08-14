@@ -1,4 +1,4 @@
-module Cli
+module InteractiveCli
 
 open CommandParser
 open System
@@ -8,7 +8,7 @@ open RootList
 open Repetition
 open Manipulation
 
-exception PaceTableError of string
+exception PaceTableException of string
 
 let parseArgs args =
     match args |> Array.truncate 1 with
@@ -20,7 +20,7 @@ let getPaceTable fileName =
 
     match parseTerms contents with
     | Ok termMap -> fun term -> Map.find term termMap
-    | Error error -> raise (PaceTableError error)
+    | Error error -> raise (PaceTableException error)
 
 
 let printList manipulations =

@@ -5,6 +5,7 @@ open ParserCommons
 open Distance
 open Time
 open Pace
+open LangParseTree
 
 let watchDigits x = let p = regex "[0-5][0-9]" |>> int in p x
 
