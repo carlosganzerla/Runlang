@@ -21,14 +21,24 @@ let ``Created distance should be in m if total km is lower than one`` () =
 
 [<Fact>]
 let ``Total km should get the distance value in km`` () =
-    Distance.create 0.5m |> Distance.totalKm |> should equal 0.5m
-    Distance.create 1.5m |> Distance.totalKm |> should equal 1.5m
+    Distance.create 0.5m
+    |> Distance.totalKm
+    |> should equal 0.5m
+
+    Distance.create 1.5m
+    |> Distance.totalKm
+    |> should equal 1.5m
 
 [<Fact>]
 let ``To string must yield correct representation`` () =
-    Distance.meters 2500 |> Distance.toString |> should equal "2500m"
-    Distance.kilometers 1.854m |> Distance.toString |> should equal "1.85km"
-    
+    Distance.meters 2500
+    |> Distance.toString
+    |> should equal "2500m"
+
+    Distance.kilometers 1.854m
+    |> Distance.toString
+    |> should equal "1.85km"
+
 [<Fact>]
 let ``Summing distances must yield the correct result`` () =
     let d1 = Distance.create 2.55m

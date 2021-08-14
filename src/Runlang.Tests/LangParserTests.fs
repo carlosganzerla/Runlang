@@ -86,24 +86,12 @@ let ``Time and distance interval step`` () =
     let expected = "00:32:00 8.20km"
     input |> parseToString |> should equal expected
 
-// [<Fact>]
-// let ``Progression steps`` () =
-//     let input = "10km 4:40/km~3:55/km"
-//
-//     let expected =
-//         [ "#1 Time: 00:04:40, Distance: 1.00km, Pace: 4:40/km";
-//           "#2 Time: 00:04:35, Distance: 1.00km, Pace: 4:35/km";
-//           "#3 Time: 00:04:30, Distance: 1.00km, Pace: 4:30/km";
-//           "#4 Time: 00:04:25, Distance: 1.00km, Pace: 4:25/km";
-//           "#5 Time: 00:04:20, Distance: 1.00km, Pace: 4:20/km";
-//           "#6 Time: 00:04:15, Distance: 1.00km, Pace: 4:15/km";
-//           "#7 Time: 00:04:10, Distance: 1.00km, Pace: 4:10/km";
-//           "#8 Time: 00:04:05, Distance: 1.00km, Pace: 4:05/km";
-//           "#9 Time: 00:04:00, Distance: 1.00km, Pace: 4:00/km";
-//           "#10 Time: 00:03:55, Distance: 1.00km, Pace: 3:55/km" ]
-//
-//     input |> parseToString |> should equal expected
-//
+[<Fact>]
+let ``Progression steps`` () =
+    let input = "10.00km 4:40/km->3:55/km:1.00km"
+    let expected = input
+    input |> parseToString |> should equal expected
+
 [<Fact>]
 let ``Sum steps`` () =
     let input = "1km FO / 12min MO + 5min 1km"
@@ -125,32 +113,19 @@ let ``Nested Repeat workout`` () =
 
 [<Fact>]
 let ``Highly complex workout`` () =
-    let input = """20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) +
-    1m TR + 1m LE)
-    """
-    let expected = "1.00km TR + 8x(1.00km LE + 2x(200m MAX + 200m CL))"
-    input |> parseToString |> should equal expected
-//
-//
-// [<Fact>]
-// let ``Sample workout warmup plus progression`` () =
-//     let input = "1km TR + 10km 4:40/km~3:55/km"
-//
-//     let expected =
-//         [ "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
-//           "#2 Time: 00:04:40, Distance: 1.00km, Pace: 4:40/km";
-//           "#3 Time: 00:04:35, Distance: 1.00km, Pace: 4:35/km";
-//           "#4 Time: 00:04:30, Distance: 1.00km, Pace: 4:30/km";
-//           "#5 Time: 00:04:25, Distance: 1.00km, Pace: 4:25/km";
-//           "#6 Time: 00:04:20, Distance: 1.00km, Pace: 4:20/km";
-//           "#7 Time: 00:04:15, Distance: 1.00km, Pace: 4:15/km";
-//           "#8 Time: 00:04:10, Distance: 1.00km, Pace: 4:10/km";
-//           "#9 Time: 00:04:05, Distance: 1.00km, Pace: 4:05/km";
-//           "#10 Time: 00:04:00, Distance: 1.00km, Pace: 4:00/km";
-//           "#11 Time: 00:03:55, Distance: 1.00km, Pace: 3:55/km" ]
-//
-//     input |> parseToString |> should equal expected
+    let input =
+        "20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE)"
 
+    let expected = input
+    input |> parseToString |> should equal expected
+
+[<Fact>]
+let ``Sample workout warmup plus progression`` () =
+    let input = "1km TR / 10km TR->FTS:1500m"
+
+    let expected = "1.00km TR + 10.00km TR->FTS:1500m"
+
+    input |> parseToString |> should equal expected
 
 [<Fact>]
 let ``Sample workout warmup plus repetitions plus cooldown`` () =

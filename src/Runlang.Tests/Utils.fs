@@ -30,4 +30,7 @@ let paceTable =
     | CL -> Pace.create 12 0
     >> ok
 
-let parseToIntervals workout = parseWorkout workout |> ok |> WorkoutTree.toFlatIntervals paceTable
+let parseToIntervals workout =
+    parseWorkout workout
+    |> ok
+    |> WorkoutTree.toFlatIntervals paceTable
