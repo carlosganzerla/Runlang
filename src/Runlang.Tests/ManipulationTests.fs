@@ -3,15 +3,14 @@ module ManipulationTests
 open FsUnit.Xunit
 open Utils
 open Xunit
-open LangParserTests
 open Interval
 open Manipulation
 open Distance
 open Time
 open RootList
 
-let intervals =
-    parse "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
+
+let intervals = parseToIntervals "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
 
 [<Fact>]
 let ``Joining outside manipulation or with wrong indexing must yield error``

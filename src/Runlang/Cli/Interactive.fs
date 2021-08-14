@@ -1,14 +1,14 @@
-module Cli
+module InteractiveCli
 
 open CommandParser
 open System
 open LangParser
 open PaceFileParser
 open RootList
-open Repetition
+open LangParseTree
 open Manipulation
 
-exception PaceTableError of string
+exception PaceTableException of string
 
 let parseArgs args =
     match args |> Array.truncate 1 with
@@ -20,7 +20,7 @@ let getPaceTable fileName =
 
     match parseTerms contents with
     | Ok termMap -> fun term -> Map.find term termMap
-    | Error error -> raise (PaceTableError error)
+    | Error error -> raise (PaceTableException error)
 
 
 let printList manipulations =
@@ -41,8 +41,8 @@ let rec createState table =
     let result =
         printfn "Enter workout string:"
         |> Console.ReadLine
-        |> parseWorkout table
-        |> Result.map Repetition.flat
+        |> parseWorkout
+        |> Result.map (WorkoutTree.toFlatIntervals table)
         |> Result.map RootList.create
 
     do printResult printList result
