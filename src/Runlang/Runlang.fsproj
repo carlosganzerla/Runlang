@@ -5,7 +5,9 @@
     <TargetFramework>net5.0</TargetFramework>
   <RootNamespace>Runlang</RootNamespace>
   </PropertyGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="../Runlang.Encoder/Runlang.Encoder.fsproj" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Lib/Utils.fs" />
     <Compile Include="Lib/RootList.fs" />
@@ -28,5 +30,4 @@
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
   </ItemGroup>
-
 </Project>

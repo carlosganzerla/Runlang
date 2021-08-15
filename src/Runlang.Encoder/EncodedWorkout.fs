@@ -1,9 +1,9 @@
-module Workout
+module EncodedWorkout
 
 open System.IO
 open Dynastream.Fit
 
-type WorkoutIntensity =
+type EncodedWorkoutIntensity =
     | Active
     | Warmup
     | Cooldown
@@ -11,25 +11,25 @@ type WorkoutIntensity =
     | Interval
     | Rest
 
-type WorkoutDuration =
+type EncodedWorkoutDuration =
     | Time of int
     | Distance of int
     | Open
 
-type WorkoutStep =
-    { Duration: WorkoutDuration;
-      Intensity: WorkoutIntensity;
+type EncodedWorkoutStep =
+    { Duration: EncodedWorkoutDuration;
+      Intensity: EncodedWorkoutIntensity;
       Notes: string option;
       Name: string option }
 
-type WorkoutEncoding =
+type EncodedWorkout =
     private
         { FileId: FileIdMesg;
           Workout: WorkoutMesg;
           WorkoutSteps: WorkoutStepMesg list }
 
 [<RequireQualifiedAccessAttribute>]
-module Workout =
+module EncodedWorkout =
 
     let private createFileIdMessage () =
         let fileId = FileIdMesg ()
@@ -88,12 +88,12 @@ module Workout =
         newStep.SetTargetType WktStepTarget.Invalid
         encoding
 
-    let addRepeat (fromStep: int) (count: int) encoding =
+    let addRepeat (fromStep: int) (count: uint) encoding =
         let (newStep, encoding) = createStep encoding
         newStep.SetDurationType (WktStepDuration.RepeatUntilStepsCmplt)
         newStep.SetDurationValue (fromStep |> abs |> uint)
         newStep.SetTargetType (WktStepTarget.Open)
-        newStep.SetTargetValue (count |> abs |> uint)
+        newStep.SetTargetValue count
         encoding
 
 

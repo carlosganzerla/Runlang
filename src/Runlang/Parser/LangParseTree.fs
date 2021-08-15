@@ -47,7 +47,7 @@ module ProgressionStep =
           FinalPace = finalPace;
           SplitDistance = splitDistance }
 
-    let toString step = 
+    let toString step =
         let total = Distance.toString step.TotalDistance
         let initialPace = WorkoutPace.toString step.InitialPace
         let finalPace = WorkoutPace.toString step.FinalPace
@@ -113,9 +113,9 @@ module WorkoutStep =
             |> IntervalType.TimeAndDistance
             |> Interval.create
             |> List.singleton
-        | WorkoutStep.Progression progression -> 
+        | WorkoutStep.Progression progression ->
             ProgressionStep.toIntervals paceTable progression
-            
+
 
 [<RequireQualifiedAccess>]
 module WorkoutTree =
