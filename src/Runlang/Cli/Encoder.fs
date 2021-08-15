@@ -1,4 +1,3 @@
 module EncoderCli
 
 open WorkoutTree
-

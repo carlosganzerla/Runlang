@@ -88,6 +88,8 @@ module EncodedWorkout =
         newStep.SetTargetType WktStepTarget.Invalid
         encoding
 
+    let addStepFlip encoding step = addStep step encoding
+
     let addRepeat (fromStep: int) (count: uint) encoding =
         let (newStep, encoding) = createStep encoding
         newStep.SetDurationType (WktStepDuration.RepeatUntilStepsCmplt)

@@ -4,6 +4,8 @@ let foldResult folder state list =
     let resultFolder result next = Result.bind (folder next) result
     List.fold resultFolder (Ok state) list
 
+let flip f x y = f y x
+
 let execRange f rangeOpt list =
     let length = List.length list
 

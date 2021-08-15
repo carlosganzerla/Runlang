@@ -7,7 +7,7 @@ module Time =
     let toMinutes { Hours = h; Minutes = min; Seconds = s } =
         decimal h * 60m + decimal min + (decimal s) / 60m
 
-    let toSeconds { Hours = h; Minutes = min; Seconds = s } = 
+    let toSeconds { Hours = h; Minutes = min; Seconds = s } =
         h * 3600 + min * 60 + s
 
     let fromMinutes (mins: decimal) =

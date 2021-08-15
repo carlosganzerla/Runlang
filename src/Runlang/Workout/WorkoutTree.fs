@@ -1,6 +1,8 @@
 module WorkoutTree
 
 open WorkoutStep
+open Utils
+open EncodedWorkout
 
 type WorkoutTree =
     | Step of WorkoutStep
@@ -30,19 +32,35 @@ module WorkoutTree =
         foldBack fRep fStep tree []
         |> List.collect (WorkoutStep.toIntervals paceTable)
 
-    let toFlatIntervals paceTable treeNodes =
-        List.collect (toIntervals paceTable) treeNodes
-
-    let rec toString nodes =
+    let rec toString tree =
         // TODO: Make tail recursive
-        let rec loop nodes acc =
-            match nodes with
-            | Repeat (count, nodes) :: tail ->
-                let repeatString = $"{count}x({toString nodes})"
-                loop tail (repeatString :: acc)
-            | Step step :: tail ->
+        let join (str: string list) = System.String.Join(" + ", str)
+        let rec loop tree acc =
+            match tree with
+            | Repeat (count, nodes) ->
+                let innerString = nodes |> List.fold (flip loop) [] |> List.rev |> join
+                let repeatString = $"{count}x({innerString})"
+                repeatString::acc
+            | Step step ->
                 let stepString = WorkoutStep.toString step
-                loop tail (stepString :: acc)
-            | [] -> List.rev acc
+                stepString::acc
+        loop tree [] |> List.rev |> join
 
-        System.String.Join (" + ", loop nodes [])
+
+    let rec private encode tree (encoding, index) =
+        match tree with
+        | Repeat (count, nodes) ->
+            let fromStep = index
+
+            let (encoding, index) =
+                List.fold (flip encode) (encoding, index) nodes
+
+            (EncodedWorkout.addRepeat fromStep count encoding, index)
+        | Step step ->
+            let steps = step |> WorkoutStep.encode
+
+            let encoding =
+                List.fold (flip EncodedWorkout.addStep) encoding steps
+
+            let offset = List.length steps
+            (encoding, index + offset)

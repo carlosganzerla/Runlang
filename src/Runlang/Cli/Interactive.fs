@@ -42,7 +42,7 @@ let rec createState table =
         printfn "Enter workout string:"
         |> Console.ReadLine
         |> parseWorkout
-        |> Result.map (WorkoutTree.toFlatIntervals table)
+        |> Result.map (WorkoutTree.toIntervals table)
         |> Result.map RootList.create
 
     do printResult printList result

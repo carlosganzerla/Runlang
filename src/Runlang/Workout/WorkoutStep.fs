@@ -2,6 +2,7 @@ module WorkoutStep
 
 open Distance
 open ProgressionStep
+open EncodedWorkout
 open WorkoutPace
 open Interval
 open Time
@@ -14,34 +15,68 @@ type WorkoutStep =
 
 [<RequireQualifiedAccess>]
 module WorkoutStep =
-    let toString step =
+    let map fDP fTP fTD fPro step =
         match step with
-        | WorkoutStep.DistanceAndPace (distance, pace) ->
-            $"{Distance.toString distance} {WorkoutPace.toString pace}"
-        | WorkoutStep.TimeAndPace (time, pace) ->
-            $"{Time.toString time} {WorkoutPace.toString pace}"
-        | WorkoutStep.TimeAndDistance (time, distance) ->
-            $"{Time.toString time} {Distance.toString distance}"
-        | WorkoutStep.Progression progression ->
-            ProgressionStep.toString progression
+        | WorkoutStep.DistanceAndPace (dist, pace) -> fDP dist pace
+        | WorkoutStep.TimeAndPace (time, pace) -> fTP time pace
+        | WorkoutStep.TimeAndDistance (time, dist) -> fTD time dist
+        | WorkoutStep.Progression pro -> fPro pro
 
-    let toIntervals paceTable step =
-        match step with
-        | WorkoutStep.DistanceAndPace (distance, pace) ->
+    let toString =
+        let fDP dist pace =
+            $"{Distance.toString dist} {WorkoutPace.toString pace}"
+
+        let fTP time pace = $"{Time.toString time} {WorkoutPace.toString pace}"
+        let fTD time dist = $"{Time.toString time} {Distance.toString dist}"
+        let fPro = ProgressionStep.toString
+        map fDP fTP fTD fPro
+
+    let toIntervals paceTable =
+        let fDP distance pace =
             (distance, WorkoutPace.toPace paceTable pace)
             |> IntervalType.DistanceAndPace
             |> Interval.create
             |> List.singleton
-        | WorkoutStep.TimeAndPace (time, pace) ->
+
+        let fTP time pace =
             (time, WorkoutPace.toPace paceTable pace)
             |> IntervalType.TimeAndPace
             |> Interval.create
             |> List.singleton
-        | WorkoutStep.TimeAndDistance (time, distance) ->
+
+        let fTD time distance =
             (time, distance)
             |> IntervalType.TimeAndDistance
             |> Interval.create
             |> List.singleton
-        | WorkoutStep.Progression progression ->
-            ProgressionStep.toIntervals paceTable progression
 
+        let fPro = ProgressionStep.toIntervals paceTable
+        map fDP fTP fTD fPro
+
+    let encode step =
+        let createEncoded duration intensity =
+            let name = toString step
+
+            { Duration = duration;
+              Intensity = intensity;
+              Name = Some name;
+              Notes = Some name }
+
+        let fDP distance pace =
+            let duration = distance |> Distance.totalMeters |> Distance
+            let intensity = pace |> WorkoutPace.encodeIntensity
+            [ createEncoded duration intensity ]
+
+        let fTP time pace =
+            let duration = time |> Time.toSeconds |> Time
+            let intensity = pace |> WorkoutPace.encodeIntensity
+            [ createEncoded duration intensity ]
+
+        let fTD time _ =
+            let duration = time |> Time.toSeconds |> Time
+            let intensity = Active
+            [ createEncoded duration intensity ]
+
+        let fPro = ProgressionStep.encode
+
+        map fDP fTP fTD fPro step

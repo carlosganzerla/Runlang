@@ -8,7 +8,7 @@ open WorkoutPace
 open ParserCommons
 open LangParserPrimitives
 
-type LangParser = Parser<WorkoutTree list, unit>
+type LangParser = Parser<WorkoutTree, unit>
 
 let pace = (timePace |>> Absolute) <|> (termPace |>> Term)
 
@@ -51,6 +51,12 @@ let steps = sepBy (repeat <|> step) plus
 
 do repeatRef := steps
 
-let workoutTree: LangParser = ws >>. repeatTree .>> ws .>> eof
+let toTree nodes =
+    match nodes with
+    | [node] -> node
+    | node::tail -> Repeat(1u, node::tail)
+    | [] -> Repeat(1u, [])
+
+let workoutTree: LangParser = ws >>. repeatTree .>> ws .>> eof |>> toTree
 
 let parseWorkout = runParser workoutTree ()

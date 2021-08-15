@@ -1,6 +1,7 @@
 module WorkoutPace
 
 open Pace
+open EncodedWorkout
 open RunningTerm
 
 type WorkoutPace =
@@ -9,14 +10,29 @@ type WorkoutPace =
 
 [<RequireQualifiedAccess>]
 module WorkoutPace =
-    let toPace paceTable pace =
+    let map fPace fTerm pace =
         match pace with
-        | Absolute pace -> pace
-        | Term term -> paceTable term
+        | Absolute pace -> fPace pace
+        | Term term -> fTerm term
 
-    let toString pace =
-        match pace with
-        | Absolute pace -> Pace.toString pace
-        | Term term -> sprintf "%A" term
+    let toPace paceTable = map id paceTable
 
+    let toString = map Pace.toString (sprintf "%A")
 
+    let encodeIntensity =
+        let fPace _ = Active
+
+        let fTerm =
+            function
+            | CL
+            | CA
+            | CV -> Rest
+            | TR
+            | LVS
+            | LE
+            | MO -> Active
+            | FO
+            | FTS
+            | MAX -> Interval
+
+        map fPace fTerm

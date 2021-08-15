@@ -6,6 +6,7 @@ open Interval
 open Time
 open Distance
 open Utils
+open EncodedWorkout
 
 type ProgressionStep =
     { InitialPace: WorkoutPace;
@@ -28,9 +29,14 @@ module ProgressionStep =
         let split = Distance.toString step.SplitDistance
         $"{total} {initialPace}->{finalPace}:{split}"
 
-    let toIntervals paceTable step =
+    let private getSplits step =
         let totalDistance = Distance.totalKm step.TotalDistance
         let splitDistance = Distance.totalKm step.SplitDistance
+        splitList totalDistance splitDistance
+
+    let toIntervals paceTable step =
+        let splits = getSplits step
+        let splitCount = splits |> List.length |> decimal
 
         let toMinutes pace =
             pace
@@ -38,21 +44,49 @@ module ProgressionStep =
             |> Pace.value
             |> Time.toMinutes
 
-        let splitCount = ceil totalDistance / splitDistance
         let initialPace = toMinutes step.InitialPace
         let finalPace = toMinutes step.FinalPace
         let ratio = (finalPace - initialPace) / (splitCount - 1m)
 
-        let getPace splitIdx =
+        let getPace splitIdx _ =
             initialPace + (decimal (splitIdx - 1) * ratio)
             |> Time.fromMinutes
             |> TimePerKm
 
-        let paces = [ 1 .. int splitCount ] |> List.map getPace
+        let paces = splits |> List.mapi getPace
 
-        let distances =
-            splitList totalDistance splitDistance
-            |> List.map Distance.create
+        let distances = splits |> List.map Distance.create
 
         List.zip distances paces
         |> List.map (DistanceAndPace >> Interval.create)
+
+    let encode step =
+        let splits = getSplits step
+        let splitCount = List.length splits
+        let initialPace = step.InitialPace
+        let finalPace = step.FinalPace
+
+        let duration split =
+            split |> Distance.create |> Distance.totalMeters |> Distance
+
+        let name index =
+            let initialString =
+                if index = 0 then WorkoutPace.toString initialPace else ""
+
+            let finalString = WorkoutPace.toString finalPace
+
+            let dots =
+                ('.', (splitCount - index) * 5 / splitCount)
+                |> System.String
+
+            initialString + dots + finalString
+
+        let createEncoding index split =
+            let name = name index
+
+            { Duration = duration split;
+              Intensity = Active;
+              Notes = Some name;
+              Name = Some name }
+
+        List.mapi createEncoding splits

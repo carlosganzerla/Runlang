@@ -23,7 +23,7 @@ module Distance =
         | Meters m -> (decimal m) / 1000m
         | Kilometers km -> km
 
-    let totalMeters = 
+    let totalMeters =
         function
         | Meters m -> m
         | Kilometers km -> int (km * 1000m)

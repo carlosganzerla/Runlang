@@ -33,4 +33,4 @@ let paceTable =
 let parseToIntervals workout =
     parseWorkout workout
     |> ok
-    |> WorkoutTree.toFlatIntervals paceTable
+    |> WorkoutTree.toIntervals paceTable
