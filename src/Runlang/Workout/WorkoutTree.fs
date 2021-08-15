@@ -34,33 +34,41 @@ module WorkoutTree =
 
     let rec toString tree =
         // TODO: Make tail recursive
-        let join (str: string list) = System.String.Join(" + ", str)
+        let join (str: string list) = System.String.Join (" + ", str)
+
         let rec loop tree acc =
             match tree with
             | Repeat (count, nodes) ->
-                let innerString = nodes |> List.fold (flip loop) [] |> List.rev |> join
+                let innerString =
+                    nodes |> List.fold (flip loop) [] |> List.rev |> join
+
                 let repeatString = $"{count}x({innerString})"
-                repeatString::acc
+                repeatString :: acc
             | Step step ->
                 let stepString = WorkoutStep.toString step
-                stepString::acc
+                stepString :: acc
+
         loop tree [] |> List.rev |> join
 
 
-    let rec private encode tree (encoding, index) =
-        match tree with
-        | Repeat (count, nodes) ->
-            let fromStep = index
+    let encode tree encoding =
+        // TODO: Make tail recursive / create catamorphism
+        let rec loop tree (encoding, index) =
+            match tree with
+            | Repeat (count, nodes) ->
+                let fromStep = index
 
-            let (encoding, index) =
-                List.fold (flip encode) (encoding, index) nodes
+                let (encoding, index) =
+                    List.fold (flip loop) (encoding, index) nodes
 
-            (EncodedWorkout.addRepeat fromStep count encoding, index)
-        | Step step ->
-            let steps = step |> WorkoutStep.encode
+                (EncodedWorkout.addRepeat fromStep count encoding, index)
+            | Step step ->
+                let steps = step |> WorkoutStep.encode
 
-            let encoding =
-                List.fold (flip EncodedWorkout.addStep) encoding steps
+                let encoding =
+                    List.fold (flip EncodedWorkout.addStep) encoding steps
 
-            let offset = List.length steps
-            (encoding, index + offset)
+                let offset = List.length steps
+                (encoding, index + offset)
+
+        loop tree (encoding, 0)

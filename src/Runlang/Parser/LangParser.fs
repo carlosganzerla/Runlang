@@ -53,9 +53,8 @@ do repeatRef := steps
 
 let toTree nodes =
     match nodes with
-    | [node] -> node
-    | node::tail -> Repeat(1u, node::tail)
-    | [] -> Repeat(1u, [])
+    | [ node ] -> node
+    | list -> Repeat (1u, list)
 
 let workoutTree: LangParser = ws >>. repeatTree .>> ws .>> eof |>> toTree
 

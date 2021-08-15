@@ -118,6 +118,7 @@ let ``Highly complex workout`` () =
 
     let expected =
         "1x(20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE))"
+
     input |> parseToString |> should equal expected
 
 [<Fact>]
