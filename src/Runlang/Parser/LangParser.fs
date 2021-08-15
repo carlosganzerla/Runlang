@@ -1,7 +1,10 @@
 module LangParser
 
 open FParsec
-open LangParseTree
+open WorkoutTree
+open WorkoutStep
+open ProgressionStep
+open WorkoutPace
 open ParserCommons
 open LangParserPrimitives
 

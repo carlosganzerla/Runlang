@@ -1,3 +1,4 @@
 module EncoderCli
 
-let encodeStep step = ()
+open WorkoutTree
+

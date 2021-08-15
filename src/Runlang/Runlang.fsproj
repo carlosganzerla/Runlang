@@ -11,19 +11,23 @@
   <ItemGroup>
     <Compile Include="Lib/Utils.fs" />
     <Compile Include="Lib/RootList.fs" />
-    <Compile Include="Model/Time.fs" />
-    <Compile Include="Model/Pace.fs" />
-    <Compile Include="Model/Distance.fs" />
-    <Compile Include="Model/RunningTerm.fs" />
-    <Compile Include="Model/Interval.fs" />
-    <Compile Include="Model/Manipulation.fs" />
-    <Compile Include="Parser/LangParseTree.fs" />
+    <Compile Include="Primitives/Time.fs" />
+    <Compile Include="Primitives/Pace.fs" />
+    <Compile Include="Primitives/Distance.fs" />
+    <Compile Include="Primitives/RunningTerm.fs" />
+    <Compile Include="Interactive/Interval.fs" />
+    <Compile Include="Interactive/Manipulation.fs" />
+    <Compile Include="Workout/WorkoutPace.fs" />
+    <Compile Include="Workout/ProgressionStep.fs" />
+    <Compile Include="Workout/WorkoutStep.fs" />
+    <Compile Include="Workout/WorkoutTree.fs" />
     <Compile Include="Parser/ParserCommons.fs" />
     <Compile Include="Parser/LangParserPrimitives.fs" />
     <Compile Include="Parser/LangParser.fs" />
     <Compile Include="Parser/CommandParser.fs" />
     <Compile Include="Parser/PaceFileParser.fs" />
     <Compile Include="Cli/Interactive.fs" />
+    <Compile Include="Cli/Encoder.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

@@ -23,6 +23,11 @@ module Distance =
         | Meters m -> (decimal m) / 1000m
         | Kilometers km -> km
 
+    let totalMeters = 
+        function
+        | Meters m -> m
+        | Kilometers km -> int (km * 1000m)
+
     let toString =
         function
         | Meters m -> sprintf "%im" m

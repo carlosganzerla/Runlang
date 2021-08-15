@@ -5,7 +5,7 @@ open System
 open LangParser
 open PaceFileParser
 open RootList
-open LangParseTree
+open WorkoutTree
 open Manipulation
 
 exception PaceTableException of string

@@ -4,7 +4,7 @@ open FsUnit.Xunit
 open Xunit
 open Utils
 open LangParser
-open LangParseTree
+open WorkoutTree
 
 let parseToString = parseWorkout >> ok >> WorkoutTree.toString
 
