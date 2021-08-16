@@ -24,13 +24,20 @@ module WorkoutTree =
         fold fRep fInt id tree acc
 
     let toIntervals paceTable tree =
-        let fStep step list = step :: list
+        let rec loop tree acc =
+            match tree with
+            | Repeat (count, nodes) ->
+                nodes
+                |> flip (List.foldBack loop) []
+                |> List.replicate (int count)
+                |> List.collect id
+                |> flip (List.foldBack <| curry List.Cons) acc
+            | Step step ->
+                step
+                |> WorkoutStep.toIntervals paceTable
+                |> flip (List.foldBack <| curry List.Cons) acc
 
-        let fRep count list =
-            list |> List.replicate (int count) |> List.collect id
-
-        foldBack fRep fStep tree []
-        |> List.collect (WorkoutStep.toIntervals paceTable)
+        loop tree []
 
     let rec toString tree =
         // TODO: Make tail recursive
@@ -51,24 +58,19 @@ module WorkoutTree =
         loop tree [] |> List.rev |> join
 
 
-    let encode tree encoding =
+    let encode tree =
         // TODO: Make tail recursive / create catamorphism
-        let rec loop tree (encoding, index) =
+        let rec loop tree acc =
             match tree with
             | Repeat (count, nodes) ->
-                let fromStep = index
-
-                let (encoding, index) =
-                    List.fold (flip loop) (encoding, index) nodes
-
-                (EncodedWorkout.addRepeat fromStep count encoding, index)
+                let fromIndex = List.length acc
+                let stepsToRepeat = List.fold (flip loop) [] nodes
+                let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
+                repeatStep :: acc
             | Step step ->
-                let steps = step |> WorkoutStep.encode
+                step
+                |> WorkoutStep.encode
+                |> List.fold (flip (curry List.Cons)) acc
 
-                let encoding =
-                    List.fold (flip EncodedWorkout.addStep) encoding steps
 
-                let offset = List.length steps
-                (encoding, index + offset)
-
-        loop tree (encoding, 0)
+        loop tree [] |> List.rev

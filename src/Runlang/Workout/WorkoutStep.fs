@@ -55,12 +55,9 @@ module WorkoutStep =
 
     let encode step =
         let createEncoded duration intensity =
-            let name = toString step
-
-            { Duration = duration;
-              Intensity = intensity;
-              Name = Some name;
-              Notes = Some name }
+            step
+            |> toString
+            |> EncodedWorkoutStep.createDefault duration intensity
 
         let fDP distance pace =
             let duration = distance |> Distance.totalMeters |> Distance

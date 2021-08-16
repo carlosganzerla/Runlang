@@ -82,11 +82,8 @@ module ProgressionStep =
             initialString + dots + finalString
 
         let createEncoding index split =
-            let name = name index
-
-            { Duration = duration split;
-              Intensity = Active;
-              Notes = Some name;
-              Name = Some name }
+            index
+            |> name
+            |> EncodedWorkoutStep.createDefault (duration split) Active
 
         List.mapi createEncoding splits

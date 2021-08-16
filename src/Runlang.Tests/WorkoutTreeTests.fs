@@ -1,43 +1,24 @@
-module RepetitionTests
+module WorkoutTreeTests
 
 open FsUnit.Xunit
 open Utils
 open Xunit
 open Interval
-open Pace
-open Distance
-open Repetition
-
-let distance = Distance.kilometers 1.5m
-let pace = Pace.create 4 0 |> ok
-let interval = (distance, pace) |> DistanceAndPace |> Interval.create
-
-let repetition =
-    RepCount (
-        5u,
-        [ Interval interval;
-          Interval interval;
-          RepCount (
-              2u,
-              [ Interval interval; Interval interval; Interval interval ]
-          ) ]
-    )
 
 [<Fact>]
-let ``Repetition to yields a interval list from a recursive fold`` () =
-    let expected = interval |> List.replicate 40
-    repetition |> Repetition.toList |> should equal expected
+let ``To intervals flats all steps into an interval list`` () =
+    let expected =
+        [ "#1 Time: 00:09:00, Distance: 1.00km, Pace: 9:00/km";
+          "#2 Time: 00:02:00, Distance: 400m, Pace: 5:00/km";
+          "#3 Time: 00:01:12, Distance: 100m, Pace: 12:00/km";
+          "#4 Time: 00:02:00, Distance: 400m, Pace: 5:00/km";
+          "#5 Time: 00:01:12, Distance: 100m, Pace: 12:00/km";
+          "#6 Time: 00:02:00, Distance: 400m, Pace: 5:00/km";
+          "#7 Time: 00:01:12, Distance: 100m, Pace: 12:00/km";
+          "#8 Time: 00:07:00, Distance: 1.00km, Pace: 7:00/km" ]
 
-[<Fact>]
-let ``Fold should fold by left`` () =
-    let fInt acc _ = acc + 1u
-    let fRep count acc = acc * count
-    let fold = Repetition.fold fRep fInt 0u repetition
-    fold |> should equal 7u // Incorrect result, but expected
+    let intervals =
+        parseToIntervals "1km TR + 3x(400m FO + 100m CL) + 1km LE"
+        |> Interval.listToString
 
-[<Fact>]
-let ``Fold back should fold by right`` () =
-    let fInt _ acc = acc + 1u
-    let fRep acc count = acc * count
-    let foldBack = Repetition.foldBack fRep fInt repetition 0u
-    foldBack |> should equal 40u // Correct Result
+    intervals |> should equal expected

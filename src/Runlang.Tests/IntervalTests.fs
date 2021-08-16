@@ -8,16 +8,6 @@ open Pace
 open Distance
 open Time
 
-let replicateProgression paceValues =
-    let createInterval (min, s) =
-        let pace = Pace.create min s |> ok
-
-        (Distance.kilometers 1m, pace)
-        |> DistanceAndPace
-        |> Interval.create
-
-    paceValues |> List.map createInterval
-
 [<Fact>]
 let ``Interval created with distance and pace calculates the time`` () =
     let distance = Distance.kilometers 1.5m

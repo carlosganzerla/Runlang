@@ -17,10 +17,31 @@ type EncodedWorkoutDuration =
     | Open
 
 type EncodedWorkoutStep =
+    private
+    | Default of EncodedDefaultStep
+    | Repeat of EncodedRepeatStep
+
+and private EncodedDefaultStep =
     { Duration: EncodedWorkoutDuration;
       Intensity: EncodedWorkoutIntensity;
       Notes: string option;
       Name: string option }
+
+and private EncodedRepeatStep = { FromIndex: int; Count: uint }
+
+[<RequireQualifiedAccessAttribute>]
+module EncodedWorkoutStep =
+    let createRepeat fromIndex count =
+        Repeat { FromIndex = fromIndex; Count = count }
+
+    let createDefault duration intensity name =
+        Default
+            { Duration = duration;
+              Intensity = intensity;
+              Name = Some name;
+              Notes = Some name }
+
+
 
 type EncodedWorkout =
     private
@@ -76,7 +97,7 @@ module EncodedWorkout =
         steps |> List.length |> uint16 |> newStep.SetMessageIndex
         (newStep, { encoding with WorkoutSteps = newStep :: steps })
 
-    let addStep step encoding =
+    let private addDefaultStep step encoding =
         let (newStep, encoding) = createStep encoding
         let (durationValue, durationType) = fitDuration step.Duration
         let intensity = fitIntensity step.Intensity
@@ -88,16 +109,18 @@ module EncodedWorkout =
         newStep.SetTargetType WktStepTarget.Invalid
         encoding
 
-    let addStepFlip encoding step = addStep step encoding
-
-    let addRepeat (fromStep: int) (count: uint) encoding =
+    let private addRepeatStep step encoding =
         let (newStep, encoding) = createStep encoding
         newStep.SetDurationType (WktStepDuration.RepeatUntilStepsCmplt)
-        newStep.SetDurationValue (fromStep |> abs |> uint)
+        newStep.SetDurationValue (step.FromIndex |> abs |> uint)
         newStep.SetTargetType (WktStepTarget.Open)
-        newStep.SetTargetValue count
+        newStep.SetTargetValue step.Count
         encoding
 
+    let addStep step encoding =
+        match step with
+        | Default step -> addDefaultStep step encoding
+        | Repeat step -> addRepeatStep step encoding
 
     let dumpFile directory encoding =
         encoding.Workout.SetNumValidSteps (
