@@ -4,25 +4,15 @@ open WorkoutStep
 open Utils
 open EncodedWorkout
 
+// TODO Check if this can be optimized to better support TCO
 type WorkoutTree =
     | Step of WorkoutStep
     | Repeat of uint * WorkoutTree list
 
 [<RequireQualifiedAccess>]
 module WorkoutTree =
-    let rec fold fRep fStep acc tree =
-        let fold = fold fRep fStep
-
-        match tree with
-        | Repeat (count, repeats) -> List.fold fold (fRep acc count) repeats
-        | Step step -> fStep acc step
-
-    let rec foldBack fRep fStep tree acc =
-        let fInt generator step = fun seed -> fStep step seed |> generator
-
-        let fRep generator count = fun inner -> fRep count inner |> generator
-        fold fRep fInt id tree acc
-
+    // TODO Optimize this MO'FO
+    // TODO Make this tail recursive, or Create catamorphism if not possible.
     let toIntervals paceTable tree =
         let rec loop tree acc =
             match tree with
@@ -40,14 +30,13 @@ module WorkoutTree =
         loop tree []
 
     let rec toString tree =
-        // TODO: Make tail recursive
         let join (str: string list) = System.String.Join (" + ", str)
 
         let rec loop tree acc =
             match tree with
             | Repeat (count, nodes) ->
                 let innerString =
-                    nodes |> List.fold (flip loop) [] |> List.rev |> join
+                    nodes |> flip (List.foldBack loop) [] |> List.rev |> join
 
                 let repeatString = $"{count}x({innerString})"
                 repeatString :: acc
@@ -59,18 +48,17 @@ module WorkoutTree =
 
 
     let encode tree =
-        // TODO: Make tail recursive / create catamorphism
         let rec loop tree acc =
             match tree with
+            | Repeat (_, []) -> acc
             | Repeat (count, nodes) ->
                 let fromIndex = List.length acc
-                let stepsToRepeat = List.fold (flip loop) [] nodes
                 let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
-                repeatStep :: acc
+                let repeatLoop = nodes |> List.fold (flip loop) acc
+                repeatStep :: repeatLoop
             | Step step ->
                 step
                 |> WorkoutStep.encode
-                |> List.fold (flip (curry List.Cons)) acc
-
+                |> List.fold (flip <| curry List.Cons) acc
 
         loop tree [] |> List.rev

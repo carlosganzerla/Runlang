@@ -1,7 +1,8 @@
 open Pace
 open InteractiveCli
+open EncoderCli
 
 [<EntryPoint>]
 let rec main argv =
-    app argv |> ignore
+    test ()
     0

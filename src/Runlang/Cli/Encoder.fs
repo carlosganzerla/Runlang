@@ -5,9 +5,9 @@ open WorkoutTree
 open LangParser
 
 let rec test () =
-    let workout = Console.ReadLine ()
-    let tree = parseWorkout workout
+    let workout = Console.WriteLine "Enter Workout Mofo" |> Console.ReadLine
+    let result = parseWorkout workout
 
-    match tree with
-    | Ok ok -> ()
+    match result with
+    | Ok tree -> tree |> WorkoutTree.encode |> printfn "%A" |> test
     | Error err -> err |> Console.WriteLine |> test
