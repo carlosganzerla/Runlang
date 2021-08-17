@@ -9,6 +9,12 @@ open WorkoutTree
 let parseToString = parseWorkout >> ok >> WorkoutTree.toString
 
 [<Fact>]
+let ``Empty workout`` () =
+    let input = ""
+    let expected = ""
+    input |> parseToString |> should equal expected
+
+[<Fact>]
 let ``Distance and term pace step in km`` () =
     let input = "1km MO"
     let expected = "1.00km MO"
@@ -95,7 +101,7 @@ let ``Progression steps`` () =
 [<Fact>]
 let ``Sum steps`` () =
     let input = "1km FO / 12min MO + 5min 1km"
-    let expected = "1x(1.00km FO + 00:12:00 MO + 00:05:00 1.00km)"
+    let expected = "1.00km FO + 00:12:00 MO + 00:05:00 1.00km"
 
     input |> parseToString |> should equal expected
 
@@ -108,7 +114,7 @@ let ``Repeat workout`` () =
 [<Fact>]
 let ``Nested Repeat workout`` () =
     let input = "1km TR + 8x(1km LE + 2x(200m MAX + 200m CL))"
-    let expected = "1x(1.00km TR + 8x(1.00km LE + 2x(200m MAX + 200m CL)))"
+    let expected = "1.00km TR + 8x(1.00km LE + 2x(200m MAX + 200m CL))"
     input |> parseToString |> should equal expected
 
 [<Fact>]
@@ -116,8 +122,7 @@ let ``Highly complex workout`` () =
     let input =
         "20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE)"
 
-    let expected =
-        "1x(20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE))"
+    let expected = input
 
     input |> parseToString |> should equal expected
 
@@ -125,7 +130,7 @@ let ``Highly complex workout`` () =
 let ``Sample workout warmup plus progression`` () =
     let input = "1km TR / 10km TR->FTS:1500m"
 
-    let expected = "1x(1.00km TR + 10.00km TR->FTS:1500m)"
+    let expected = "1.00km TR + 10.00km TR->FTS:1500m"
 
     input |> parseToString |> should equal expected
 
@@ -133,5 +138,5 @@ let ``Sample workout warmup plus progression`` () =
 let ``Sample workout warmup plus repetitions plus cooldown`` () =
     let input = "2km TR / 6x(1km FTS + 2min CV) / 2km LE"
 
-    let expected = "1x(2.00km TR + 6x(1.00km FTS + 00:02:00 CV) + 2.00km LE)"
+    let expected = "2.00km TR + 6x(1.00km FTS + 00:02:00 CV) + 2.00km LE"
     input |> parseToString |> should equal expected

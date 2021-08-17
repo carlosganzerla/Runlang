@@ -14,6 +14,7 @@ module WorkoutTree =
 
     let rec catamorph fStep fEmpty fSingle fRep tree =
         let recurse = catamorph fStep fEmpty fSingle fRep
+
         match tree with
         | Repeat (_, [])
         | Repeat (0u, _) -> fEmpty ()
@@ -23,24 +24,37 @@ module WorkoutTree =
 
     let toIntervals paceTable tree =
         let fStep = WorkoutStep.toIntervals paceTable
+        let fSingle = List.collect id
+        let fEmpty () = []
+
         let fRep count intervals =
             intervals
-            |> List.collect id
+            |> fSingle
             |> List.replicate (int count)
             |> List.collect id
-        catamorph fStep fRep tree
+
+        catamorph fStep fEmpty fSingle fRep tree
 
     let rec toString tree =
-        let join (str: string list) = System.String.Join (" + ", str)
         let fStep = WorkoutStep.toString
-        let fRep count steps = $"{count}x({join steps})"
-        catamorph fStep fRep tree
+        let fEmpty () = ""
+        let fSingle (steps: string list) = System.String.Join (" + ", steps)
+        let fRep count steps = $"{count}x({fSingle steps})"
+        catamorph fStep fEmpty fSingle fRep tree
 
-    let encode tree =
-        let fStep (step, index) =
-            let steps = WorkoutStep.encode step
-            (steps, index + List.length steps)
-        let fRep count (stepsLists, index) = 
-            let repeat = EncodedWorkoutStep.createRepeat index count
-            let 
-        catamorph fStep fRep tree |> fst
+let encode tree =
+    let rec loop tree acc =
+        match tree with
+        | Repeat (_, []) -> acc
+        | Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
+        | Repeat (count, nodes) ->
+            let fromIndex = List.length acc
+            let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
+            let repeatLoop = nodes |> List.fold (flip loop) acc
+            repeatStep :: repeatLoop
+        | Step step ->
+            step
+            |> WorkoutStep.encode
+            |> List.fold (flip <| curry List.Cons) acc
+
+    loop tree [] |> List.rev

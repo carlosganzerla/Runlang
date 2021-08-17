@@ -129,7 +129,7 @@ module EncodedWorkout =
 
         use fs =
             new FileStream (
-                Path.ChangeExtension(path, ".fit"),
+                Path.ChangeExtension (path, ".fit"),
                 FileMode.Create,
                 FileAccess.ReadWrite,
                 FileShare.Read
