@@ -122,20 +122,14 @@ module EncodedWorkout =
         | Default step -> addDefaultStep step encoding
         | Repeat step -> addRepeatStep step encoding
 
-    let dumpFile directory encoding =
+    let dumpFile encoding path =
         encoding.Workout.SetNumValidSteps (
             encoding.WorkoutSteps |> List.length |> uint16
         )
 
-        let fileName =
-            Path.Combine (
-                directory,
-                $"{encoding.Workout.GetWktNameAsString ()}.fit"
-            )
-
         use fs =
             new FileStream (
-                fileName,
+                Path.ChangeExtension(path, ".fit"),
                 FileMode.Create,
                 FileAccess.ReadWrite,
                 FileShare.Read

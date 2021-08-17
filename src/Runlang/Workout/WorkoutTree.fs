@@ -51,6 +51,7 @@ module WorkoutTree =
         let rec loop tree acc =
             match tree with
             | Repeat (_, []) -> acc
+            | Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
             | Repeat (count, nodes) ->
                 let fromIndex = List.length acc
                 let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
