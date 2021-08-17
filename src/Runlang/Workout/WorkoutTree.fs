@@ -4,7 +4,6 @@ open WorkoutStep
 open Utils
 open EncodedWorkout
 
-// TODO Check if this can be optimized to better support TCO
 type WorkoutTree =
     | Step of WorkoutStep
     | Repeat of uint * WorkoutTree list
@@ -42,19 +41,20 @@ module WorkoutTree =
         let fRep count steps = $"{count}x({fSingle steps})"
         catamorph fStep fEmpty fSingle fRep tree
 
-let encode tree =
-    let rec loop tree acc =
-        match tree with
-        | Repeat (_, []) -> acc
-        | Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
-        | Repeat (count, nodes) ->
-            let fromIndex = List.length acc
-            let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
-            let repeatLoop = nodes |> List.fold (flip loop) acc
-            repeatStep :: repeatLoop
-        | Step step ->
-            step
-            |> WorkoutStep.encode
-            |> List.fold (flip <| curry List.Cons) acc
+    let encode tree =
+        let rec loop tree acc =
+            match tree with
+            | Repeat (_, []) 
+            | Repeat (0u, _) -> acc
+            | Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
+            | Repeat (count, nodes) ->
+                let fromIndex = List.length acc
+                let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
+                let repeatLoop = nodes |> List.fold (flip loop) acc
+                repeatStep :: repeatLoop
+            | Step step ->
+                step
+                |> WorkoutStep.encode
+                |> List.fold (flip <| curry List.Cons) acc
 
-    loop tree [] |> List.rev
+        loop tree [] |> List.rev
