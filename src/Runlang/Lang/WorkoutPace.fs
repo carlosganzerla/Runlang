@@ -1,7 +1,6 @@
 module WorkoutPace
 
 open Pace
-open EncodedWorkout
 open RunningTerm
 
 type WorkoutPace =
@@ -19,20 +18,3 @@ module WorkoutPace =
 
     let toString = map Pace.toString (sprintf "%A")
 
-    let encodeIntensity =
-        let fPace _ = Active
-
-        let fTerm =
-            function
-            | CL
-            | CA
-            | CV -> Rest
-            | TR
-            | LVS
-            | LE
-            | MO -> Active
-            | FO
-            | FTS
-            | MAX -> Interval
-
-        map fPace fTerm

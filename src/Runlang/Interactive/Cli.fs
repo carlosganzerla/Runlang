@@ -6,6 +6,7 @@ open LangParser
 open PaceFileParser
 open RootList
 open WorkoutTree
+open InteractiveExtensions
 open Manipulation
 
 exception PaceTableException of string

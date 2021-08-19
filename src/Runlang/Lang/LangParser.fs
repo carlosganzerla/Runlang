@@ -5,7 +5,7 @@ open WorkoutTree
 open WorkoutStep
 open ProgressionStep
 open WorkoutPace
-open ParserCommons
+open ParserUtils
 open LangParserPrimitives
 
 type LangParser = Parser<WorkoutTree, unit>

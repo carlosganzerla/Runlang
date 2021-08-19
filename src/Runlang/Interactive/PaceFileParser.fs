@@ -1,7 +1,7 @@
 module PaceFileParser
 
 open FParsec
-open ParserCommons
+open ParserUtils
 open LangParserPrimitives
 
 let termAndPace term = term .>> pchar '=' .>>. timePace .>> newline

@@ -1,7 +1,7 @@
 module LangParserPrimitives
 
 open FParsec
-open ParserCommons
+open ParserUtils
 open Distance
 open Time
 open Pace

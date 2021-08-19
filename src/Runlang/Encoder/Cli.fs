@@ -2,9 +2,9 @@ module EncoderCli
 
 open System
 open Utils
-open WorkoutTree
 open EncodedWorkout
 open LangParser
+open EncoderExtensions
 
 let rec test () =
     let result =
