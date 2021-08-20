@@ -79,4 +79,3 @@ module WorkoutTree =
             |> List.collect id
 
         WorkoutTree.catamorph fStep fEmpty fSingle fRep tree
-

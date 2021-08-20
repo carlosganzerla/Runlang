@@ -25,4 +25,3 @@ module WorkoutTree =
         let fSingle (steps: string list) = System.String.Join (" + ", steps)
         let fRep count steps = $"{count}x({fSingle steps})"
         catamorph fStep fEmpty fSingle fRep tree
-

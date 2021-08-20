@@ -51,7 +51,9 @@ module ProgressionStep =
         let createEncoding index split =
             index
             |> name
-            |> EncodedWorkoutStep.createDefault (Distance.totalMeters >> Distance <| split) Active
+            |> EncodedWorkoutStep.createDefault
+                (Distance.totalMeters >> Distance <| split)
+                Active
 
         List.mapi createEncoding splits
 
@@ -93,7 +95,8 @@ module WorkoutTree =
             match tree with
             | WorkoutTree.Repeat (_, [])
             | WorkoutTree.Repeat (0u, _) -> acc
-            | WorkoutTree.Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
+            | WorkoutTree.Repeat (1u, nodes) ->
+                nodes |> List.fold (flip loop) acc
             | WorkoutTree.Repeat (count, nodes) ->
                 let fromIndex = List.length acc
                 let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count

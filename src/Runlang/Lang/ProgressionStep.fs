@@ -28,5 +28,6 @@ module ProgressionStep =
     let getSplits step =
         let totalDistance = Distance.totalKm step.TotalDistance
         let splitDistance = Distance.totalKm step.SplitDistance
-        splitList totalDistance splitDistance |> List.map Distance.create
 
+        splitList totalDistance splitDistance
+        |> List.map Distance.create
