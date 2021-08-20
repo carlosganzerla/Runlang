@@ -4,5 +4,5 @@ open EncoderCli
 
 [<EntryPoint>]
 let rec main argv =
-    test ()
+    EncoderCli.app ()
     0

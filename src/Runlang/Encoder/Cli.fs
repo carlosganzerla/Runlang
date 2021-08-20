@@ -6,30 +6,41 @@ open EncoderExtensions
 open EncodedWorkout
 open Utils
 
-let input () = Console.ReadLine().Trim() 
+let trim (str: string) = str.Trim ()
+
+let read () = () |> Console.ReadLine |> trim
 
 let rec readMandatory desc =
     printfn "%s: " desc
-    |> input
+    |> read
     |> function
-    | "" -> readMandatory desc
-    | value -> value
+        | "" -> readMandatory desc
+        | value -> value
 
-let readOptional desc fallback = 
-    printfn "%s (%s): " desc fallback 
-    |> input
+let readOptional desc fallback =
+    printfn "%s (%s): " desc fallback
+    |> read
     |> function
-    | "" -> fallback
-    | value -> value
+        | "" -> fallback
+        | value -> value
 
-let createWorkout steps = 
+let downloadWorkout tree =
+    let steps = WorkoutTree.encode tree
+    let name = readMandatory "Enter workout name"
+
     let encoding =
-        readMandatory "Enter workout name:" 
-        |> EncodedWorkout.createEncoding 
-    List.fold 
+        EncodedWorkout.createEncoding name
+        |> List.fold (flip EncodedWorkout.addStep)
+        <| steps
 
-let readWorkout () =  
-    readMandatory "Enter workout string:"
+    readOptional "Enter file path" $"/home/carlo/Documents/{name}.fit"
+    |> EncodedWorkout.dumpFile encoding
+
+
+let rec app () =
+    readMandatory "Enter workout string"
     |> parseWorkout
-    |> Result.map WorkoutTree.encode
-
+    |> function
+        | Ok tree -> downloadWorkout tree
+        | Error error -> printfn "%s" error
+    |> app
