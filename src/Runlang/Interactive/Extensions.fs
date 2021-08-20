@@ -6,7 +6,7 @@ open Pace
 open WorkoutPace
 
 [<RequireQualifiedAccess>]
-module ProgressionStep = 
+module ProgressionStep =
     open ProgressionStep
 
     let toIntervals paceTable step =
@@ -24,7 +24,10 @@ module ProgressionStep =
         let ratio = (finalPace - initialPace) / (splitCount - 1m)
 
         let getPace splitIdx _ =
-            initialPace + (decimal (splitIdx - 1) * ratio)
+            splitIdx
+            |> decimal
+            |> (*) ratio
+            |> (+) initialPace
             |> Time.fromMinutes
             |> TimePerKm
 
@@ -34,7 +37,7 @@ module ProgressionStep =
         |> List.map (DistanceAndPace >> Interval.create)
 
 [<RequireQualifiedAccess>]
-module WorkoutStep = 
+module WorkoutStep =
     open WorkoutStep
 
     let toIntervals paceTable =
@@ -61,7 +64,7 @@ module WorkoutStep =
 
 
 [<RequireQualifiedAccess>]
-module WorkoutTree = 
+module WorkoutTree =
     open WorkoutTree
 
     let toIntervals paceTable tree =

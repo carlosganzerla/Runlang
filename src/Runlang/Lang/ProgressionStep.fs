@@ -1,8 +1,6 @@
 module ProgressionStep
 
 open WorkoutPace
-open Pace
-open Time
 open Distance
 open Utils
 
