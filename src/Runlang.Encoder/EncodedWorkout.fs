@@ -29,7 +29,7 @@ and private EncodedDefaultStep =
 
 and private EncodedRepeatStep = { FromIndex: int; Count: uint }
 
-[<RequireQualifiedAccessAttribute>]
+[<RequireQualifiedAccess>]
 module EncodedWorkoutStep =
     let createRepeat fromIndex count =
         Repeat { FromIndex = fromIndex; Count = count }
@@ -49,7 +49,7 @@ type EncodedWorkout =
           Workout: WorkoutMesg;
           WorkoutSteps: WorkoutStepMesg list }
 
-[<RequireQualifiedAccessAttribute>]
+[<RequireQualifiedAccess>]
 module EncodedWorkout =
 
     let private createFileIdMessage () =

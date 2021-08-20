@@ -9,7 +9,7 @@ open ProgressionStep
 open EncodedWorkout
 
 [<RequireQualifiedAccess>]
-module WorkoutPace = 
+module WorkoutPace =
     let encodeIntensity =
         let fPace _ = Active
 
@@ -29,7 +29,7 @@ module WorkoutPace =
         WorkoutPace.map fPace fTerm
 
 [<RequireQualifiedAccess>]
-module ProgressionStep = 
+module ProgressionStep =
     let encode step =
         let splits = ProgressionStep.getSplits step
         let splitCount = List.length splits
@@ -56,7 +56,7 @@ module ProgressionStep =
         List.mapi createEncoding splits
 
 [<RequireQualifiedAccess>]
-module WorkoutStep = 
+module WorkoutStep =
     open WorkoutStep
 
     let encode step =
@@ -85,13 +85,13 @@ module WorkoutStep =
         WorkoutStep.map fDP fTP fTD fPro step
 
 [<RequireQualifiedAccess>]
-module WorkoutTree = 
+module WorkoutTree =
     open WorkoutTree
 
     let encode tree =
         let rec loop tree acc =
             match tree with
-            | WorkoutTree.Repeat (_, []) 
+            | WorkoutTree.Repeat (_, [])
             | WorkoutTree.Repeat (0u, _) -> acc
             | WorkoutTree.Repeat (1u, nodes) -> nodes |> List.fold (flip loop) acc
             | WorkoutTree.Repeat (count, nodes) ->

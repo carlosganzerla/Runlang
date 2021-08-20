@@ -18,6 +18,7 @@
         <Compile Include="Interactive/PaceFileParserTests.fs" />
         <Compile Include="Interactive/CommandParserTests.fs" />
         <Compile Include="Interactive/ExtensionTests.fs" />
+        <Compile Include="Encoder/ExtensionTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="3.0.3">
