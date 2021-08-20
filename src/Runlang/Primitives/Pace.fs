@@ -7,7 +7,7 @@ type Pace = TimePerKm of Time
 module Pace =
     let create min s = Time.create 0 min s |> Result.map TimePerKm
 
-    let value (TimePerKm pace) = pace
+    let time (TimePerKm pace) = pace
 
     let toString (TimePerKm pace) =
         let hours = Time.hours pace

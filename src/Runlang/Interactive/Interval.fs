@@ -20,7 +20,7 @@ type IntervalSplit =
 module Interval =
     let private timeInterval distance (pace: Pace) =
         let km = Distance.totalKm distance
-        let minPerKm = pace |> Pace.value |> Time.toMinutes
+        let minPerKm = pace |> Pace.time |> Time.toMinutes
         let time = (km * minPerKm) |> Time.fromMinutes
         { Distance = distance; Time = time; Pace = pace }
 
@@ -32,7 +32,7 @@ module Interval =
 
     let private distanceInterval time pace =
         let timeMinutes = Time.toMinutes time
-        let paceMinutes = pace |> Pace.value |> Time.toMinutes
+        let paceMinutes = pace |> Pace.time |> Time.toMinutes
         let distance = Distance.create (timeMinutes / paceMinutes)
         { Distance = distance; Time = time; Pace = pace }
 

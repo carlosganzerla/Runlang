@@ -1,29 +1,35 @@
 module EncoderCli
 
 open System
-open Utils
-open EncodedWorkout
 open LangParser
 open EncoderExtensions
+open EncodedWorkout
+open Utils
 
-let rec test () =
-    let result =
-        Console.WriteLine "Enter Workout Mofo"
-        |> Console.ReadLine
-        |> parseWorkout
+let input () = Console.ReadLine().Trim() 
 
-    match result with
-    | Ok tree ->
-        let encoding =
-            Console.WriteLine $"Enter Workout Name: (unnamed)"
-            |> Console.ReadLine
-            |> EncodedWorkout.createEncoding
+let rec readMandatory desc =
+    printfn "%s: " desc
+    |> input
+    |> function
+    | "" -> readMandatory desc
+    | value -> value
 
-        let steps = tree |> WorkoutTree.encode
-        let encoding = List.fold (flip EncodedWorkout.addStep) encoding steps
+let readOptional desc fallback = 
+    printfn "%s (%s): " desc fallback 
+    |> input
+    |> function
+    | "" -> fallback
+    | value -> value
 
-        Console.WriteLine $"Enter Workout File name: (test.fit)"
-        |> Console.ReadLine
-        |> EncodedWorkout.dumpFile encoding
-        |> test
-    | Error err -> err |> Console.WriteLine |> test
+let createWorkout steps = 
+    let encoding =
+        readMandatory "Enter workout name:" 
+        |> EncodedWorkout.createEncoding 
+    List.fold 
+
+let readWorkout () =  
+    readMandatory "Enter workout string:"
+    |> parseWorkout
+    |> Result.map WorkoutTree.encode
+

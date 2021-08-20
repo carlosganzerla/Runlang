@@ -16,7 +16,7 @@ module ProgressionStep =
         let toMinutes pace =
             pace
             |> WorkoutPace.toPace paceTable
-            |> Pace.value
+            |> Pace.time
             |> Time.toMinutes
 
         let initialPace = toMinutes step.InitialPace
