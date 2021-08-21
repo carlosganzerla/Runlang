@@ -1,7 +1,5 @@
 module RunningTerm
 
-open Pace
-
 type RunningTerm =
     | CL
     | CA
@@ -13,5 +11,3 @@ type RunningTerm =
     | FO
     | FTS
     | MAX
-
-type PaceTable = RunningTerm -> Pace

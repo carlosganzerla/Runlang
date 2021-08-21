@@ -20,7 +20,7 @@ module WorkoutTree =
         | Repeat (count, nodes) -> nodes |> List.map recurse |> fRep count
         | Step step -> fStep step
 
-    let rec toString tree =
+    let toString tree =
         let fStep = WorkoutStep.toString
         let fEmpty () = ""
         let fSingle steps = join " + " steps
