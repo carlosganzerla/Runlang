@@ -12,6 +12,7 @@
     <Compile Include="Lib/Functions.fs" />
     <Compile Include="Lib/StringUtils.fs" />
     <Compile Include="Lib/ListUtils.fs" />
+    <Compile Include="Lib/Console.fs" />
     <Compile Include="Lib/RootList.fs" />
     <Compile Include="Lib/ParserUtils.fs" />
     <Compile Include="Primitives/Time.fs" />
@@ -24,7 +25,6 @@
     <Compile Include="Lang/WorkoutTree.fs" />
     <Compile Include="Lang/LangParserPrimitives.fs" />
     <Compile Include="Lang/LangParser.fs" />
-    <Compile Include="Encoder/Io.fs" />
     <Compile Include="Encoder/Extensions.fs" />
     <Compile Include="Encoder/Cli.fs" />
     <Compile Include="Interactive/Interval.fs" />

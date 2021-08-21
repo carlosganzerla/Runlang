@@ -6,6 +6,7 @@ open EncoderExtensions
 open EncodedWorkout
 open Functions
 open StringUtils
+open ConsoleUtils
 open System.IO
 
 let homePath = Environment.GetFolderPath Environment.SpecialFolder.Personal
@@ -24,22 +25,6 @@ let findGarmin () =
     |> Array.filter Directory.Exists
     |> Array.tryHead
 
-let read () = () |> Console.ReadLine |> trim
-
-let rec readMandatory desc =
-    printfn "%s: " desc
-    |> read
-    |> function
-        | "" -> readMandatory desc
-        | value -> value
-
-let readOptional desc fallback =
-    printfn "%s (%s): " desc fallback
-    |> read
-    |> function
-        | "" -> fallback
-        | value -> value
-
 let downloadWorkout tree =
     let steps = WorkoutTree.encode tree
     let name = readMandatory "Enter workout name"
@@ -56,6 +41,7 @@ let downloadWorkout tree =
 
     readOptional "Enter file path" defaultPath
     |> EncodedWorkout.dumpFile encoding
+    => printfn $"Success!"
 
 
 let rec app () =

@@ -1,20 +1,20 @@
 module InteractiveCli
 
 open CommandParser
-open System
 open LangParser
 open PaceFileParser
 open RootList
 open WorkoutTree
 open InteractiveExtensions
+open ConsoleUtils
 open Manipulation
 
 exception PaceTableException of string
 
 let parseArgs args =
-    match args |> Array.truncate 1 with
-    | [| paceFileName |] -> paceFileName
-    | _ -> ".pacetable"
+    match Array.tryHead args with
+    | Some paceFileName -> paceFileName
+    | None -> ".pacetable"
 
 let getPaceTable fileName =
     let contents = System.IO.File.ReadAllText fileName
@@ -25,7 +25,7 @@ let getPaceTable fileName =
 
 
 let printList manipulations =
-    do Console.Clear ()
+    do clear ()
     manipulations |> ManipulationList.toString |> printf "%s"
 
 let printState =
@@ -40,8 +40,7 @@ let printResult fprint =
 
 let rec createState table =
     let result =
-        printfn "Enter workout string:"
-        |> Console.ReadLine
+        readMandatory "Enter workout string"
         |> parseWorkout
         |> Result.map (WorkoutTree.toIntervals table)
         |> Result.map RootList.create
@@ -53,10 +52,7 @@ let rec createState table =
     | Error _ -> createState table
 
 let rec updateState manipulations =
-    let result =
-        printf "Enter Command:"
-        |> Console.ReadLine
-        |> parseCommand manipulations
+    let result = readMandatory "Enter Command" |> parseCommand manipulations
 
     do printResult printState result
 
@@ -72,5 +68,5 @@ let app args =
         | Updated m -> updateState m |> loop table
         | New -> createState table |> loop table
 
-    do Console.Clear ()
+    do clear ()
     loop table New
