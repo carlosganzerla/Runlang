@@ -3,7 +3,9 @@ module StringUtils
 open System
 open System.IO
 
-let inline join sep (str: string seq) = String.Join (sep, str)
+let inline join sep (strings: string seq) = String.Join (sep, strings)
+
+let inline trim (str: string) = str.Trim ()
 
 let inline toUpper (str: string) = str.ToUpperInvariant ()
 

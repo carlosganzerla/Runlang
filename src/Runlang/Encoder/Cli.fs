@@ -3,11 +3,26 @@ module EncoderCli
 open System
 open LangParser
 open EncoderExtensions
-open EncoderIo
 open EncodedWorkout
 open Functions
+open StringUtils
+open System.IO
 
-let trim (str: string) = str.Trim ()
+let homePath = Environment.GetFolderPath Environment.SpecialFolder.Personal
+
+let findGarmin () =
+    let isGarminDrive (drive: DriveInfo) =
+        drive.IsReady
+        && drive.VolumeLabel |> toUpper |> contains "GARMIN"
+
+    let exportDirectory (drive: DriveInfo) =
+        appendPath "GARMIN/NEWFILES" drive.RootDirectory.FullName
+
+    DriveInfo.GetDrives ()
+    |> Array.filter isGarminDrive
+    |> Array.map exportDirectory
+    |> Array.filter Directory.Exists
+    |> Array.tryHead
 
 let read () = () |> Console.ReadLine |> trim
 
@@ -29,12 +44,17 @@ let downloadWorkout tree =
     let steps = WorkoutTree.encode tree
     let name = readMandatory "Enter workout name"
 
+    let defaultPath =
+        findGarmin ()
+        |> Option.defaultValue homePath
+        |> appendPath $"{name}.fit"
+
     let encoding =
         EncodedWorkout.createEncoding name
         |> List.fold (flip EncodedWorkout.addStep)
         <| steps
 
-    readOptional "Enter file path" $"/home/carlo/Documents/{name}.fit"
+    readOptional "Enter file path" defaultPath
     |> EncodedWorkout.dumpFile encoding
 
 
