@@ -17,7 +17,8 @@ let findGarmin () =
         && drive.VolumeLabel |> toUpper |> contains "GARMIN"
 
     let exportDirectory (drive: DriveInfo) =
-        appendPath "GARMIN/NEWFILES" drive.RootDirectory.FullName
+        appendPath "GARMIN" >> appendPath "NEWFILES"
+        <| drive.RootDirectory.FullName
 
     DriveInfo.GetDrives ()
     |> Array.filter isGarminDrive
