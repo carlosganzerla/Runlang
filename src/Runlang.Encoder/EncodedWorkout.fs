@@ -57,7 +57,7 @@ module EncodedWorkout =
         let rand = System.Random ()
         fileId.SetType File.Workout
         fileId.SetManufacturer Manufacturer.Development
-        fileId.SetProduct 0us
+        fileId.SetProduct (rand.Next 65535 |> uint16)
         fileId.SetTimeCreated (DateTime (System.DateTime.UtcNow))
         fileId.SetSerialNumber (rand.Next () |> uint)
         fileId
