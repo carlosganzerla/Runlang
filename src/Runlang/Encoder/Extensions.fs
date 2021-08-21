@@ -1,6 +1,6 @@
 module EncoderExtensions
 
-open Utils
+open Functions
 open WorkoutPace
 open Distance
 open Time

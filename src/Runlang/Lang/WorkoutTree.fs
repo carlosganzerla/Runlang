@@ -1,6 +1,7 @@
 module WorkoutTree
 
 open WorkoutStep
+open StringUtils
 
 type WorkoutTree =
     | Step of WorkoutStep
@@ -22,6 +23,6 @@ module WorkoutTree =
     let rec toString tree =
         let fStep = WorkoutStep.toString
         let fEmpty () = ""
-        let fSingle (steps: string list) = System.String.Join (" + ", steps)
+        let fSingle steps = join " + " steps
         let fRep count steps = $"{count}x({fSingle steps})"
         catamorph fStep fEmpty fSingle fRep tree

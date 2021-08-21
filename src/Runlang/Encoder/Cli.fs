@@ -3,8 +3,9 @@ module EncoderCli
 open System
 open LangParser
 open EncoderExtensions
+open EncoderIo
 open EncodedWorkout
-open Utils
+open Functions
 
 let trim (str: string) = str.Trim ()
 
