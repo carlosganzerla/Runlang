@@ -61,10 +61,17 @@ module ProgressionStep =
 module WorkoutStep =
     open WorkoutStep
 
+    let private encodeString =
+        let fDP _ pace = WorkoutPace.toString pace
+        let fTP _ pace = WorkoutPace.toString pace
+        let fTD _ distance = Distance.toString distance
+        let fPro _ = ""
+        WorkoutStep.map fDP fTP fTD fPro
+
     let encode step =
         let createEncoded duration intensity =
             step
-            |> WorkoutStep.toString
+            |> encodeString
             |> EncodedWorkoutStep.createDefault duration intensity
 
         let fDP distance pace =

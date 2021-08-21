@@ -88,4 +88,6 @@ let termPace x =
                   pMO
                   pFO
                   pFTS
-                  pMAX ] in p x
+                  pMAX ] in
+
+    p x

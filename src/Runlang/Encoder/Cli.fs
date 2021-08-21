@@ -48,6 +48,6 @@ let rec app () =
     readMandatory "Enter workout string"
     |> parseWorkout
     |> function
-        | Ok tree -> downloadWorkout tree
-        | Error error -> printfn "%s" error
+    | Ok tree -> downloadWorkout tree
+    | Error error -> printfn "%s" error
     |> app

@@ -48,7 +48,6 @@ let repeat =
     |>> Repeat
 
 let steps = sepBy (repeat <|> step) plus
-
 do repeatRef := steps
 
 let toTree nodes =
@@ -56,6 +55,6 @@ let toTree nodes =
     | [ node ] -> node
     | list -> Repeat (1u, list)
 
-let workoutTree: LangParser = ws >>. repeatTree .>> ws .>> eof |>> toTree
+let workoutTree : LangParser = ws >>. repeatTree .>> ws .>> eof |>> toTree
 
 let parseWorkout = runParser workoutTree ()
