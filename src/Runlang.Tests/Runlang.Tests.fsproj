@@ -8,16 +8,17 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Utils.fs" />
-        <Compile Include="TimeTests.fs" />
-        <Compile Include="DistanceTests.fs" />
-        <Compile Include="PaceTests.fs" />
-        <Compile Include="LangParserTests.fs" />
-        <Compile Include="IntervalTests.fs" />
-        <Compile Include="RepetitionTests.fs" />
         <Compile Include="RootListTests.fs" />
-        <Compile Include="ManipulationTests.fs" />
-        <Compile Include="PaceFileParserTests.fs" />
-        <Compile Include="CommandParserTests.fs" />
+        <Compile Include="Primitives/TimeTests.fs" />
+        <Compile Include="Primitives/DistanceTests.fs" />
+        <Compile Include="Primitives/PaceTests.fs" />
+        <Compile Include="Lang/LangParserTests.fs" />
+        <Compile Include="Interactive/IntervalTests.fs" />
+        <Compile Include="Interactive/ManipulationTests.fs" />
+        <Compile Include="Interactive/PaceFileParserTests.fs" />
+        <Compile Include="Interactive/CommandParserTests.fs" />
+        <Compile Include="Interactive/ExtensionTests.fs" />
+        <Compile Include="Encoder/ExtensionTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="3.0.3">

@@ -1,28 +1,13 @@
 module Pace
 
 open Time
-
-type RunningTerm =
-    | CL
-    | CA
-    | CV
-    | TR
-    | LVS
-    | LE
-    | MO
-    | FO
-    | FTS
-    | MAX
-
 type Pace = TimePerKm of Time
-
-type PaceTable = RunningTerm -> Pace
 
 [<RequireQualifiedAccess>]
 module Pace =
     let create min s = Time.create 0 min s |> Result.map TimePerKm
 
-    let value (TimePerKm pace) = pace
+    let time (TimePerKm pace) = pace
 
     let toString (TimePerKm pace) =
         let hours = Time.hours pace

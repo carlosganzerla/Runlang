@@ -3,15 +3,15 @@ module ManipulationTests
 open FsUnit.Xunit
 open Utils
 open Xunit
-open LangParserTests
 open Interval
 open Manipulation
 open Distance
 open Time
 open RootList
 
+
 let intervals =
-    parse "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
+    parseToIntervals "1km TR + 1km LVS + 1km LE + 1km MO + 1km FO + 1km FTS"
 
 [<Fact>]
 let ``Joining outside manipulation or with wrong indexing must yield error``
@@ -146,10 +146,11 @@ let ``Manipulation List to string must yield the correct representation`` () =
     let interval = (time, distance) |> TimeAndDistance |> Interval.create
     let manipulation = [ interval ]
 
-    let manipulations : RootList<Manipulation> =
+    let manipulations: RootList<Manipulation> =
         List.replicate 5 manipulation |> RootList.fromList |> ok
 
-    let expected = """******ROOT(0)******
+    let expected =
+        """******ROOT(0)******
 #1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 ******MANIPULATION(1)******
 #1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
@@ -160,6 +161,7 @@ let ``Manipulation List to string must yield the correct representation`` () =
 ******MANIPULATION(4)******
 #1 Time: 00:02:00, Distance: 500m, Pace: 4:00/km
 """
+
     let expectedLF = expected.Replace ("\r", "") // Windows workaround
 
     manipulations

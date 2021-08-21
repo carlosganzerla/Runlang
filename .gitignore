@@ -6,3 +6,4 @@ obj/
 *.swp
 coverage*/
 *.cobertura.xml
+.pacetable

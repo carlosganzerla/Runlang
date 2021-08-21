@@ -8,17 +8,16 @@ open Distance
 open Interval
 open Manipulation
 open RootList
-open LangParserTests
 open CommandParser
 
-let workout = parse "10x(1km TR + 500m LE)"
+let workout = parseToIntervals "10x(1km TR + 500m LE)"
 let initState = workout |> RootList.create
 
 let runCommand state = parseCommand state
 
 let extraState =
-    [ "1km TR"; "5km 4:50/km~4:00/km"; "10min FO" ]
-    |> List.map parse
+    [ "1km TR"; "5km 4:50/km->4:00/km:1km"; "10min FO" ]
+    |> List.map parseToIntervals
     |> List.fold RootList.add initState
 
 [<Fact>]

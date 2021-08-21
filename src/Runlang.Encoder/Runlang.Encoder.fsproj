@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="EncodedWorkout.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Dynastream.Fit.Portable">
+      <HintPath>lib\Dynastream.Fit.Portable.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
