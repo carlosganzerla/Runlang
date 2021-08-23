@@ -26,8 +26,8 @@ let findGarmin () =
     |> Array.filter Directory.Exists
     |> Array.tryHead
 
-let downloadWorkout tree =
-    let steps = WorkoutTree.encode (StepEncodingMode.Default) tree
+let downloadWorkout mode tree =
+    let steps = WorkoutTree.encode mode tree
     let name = readMandatory "Enter workout name"
 
     let defaultPath =
@@ -44,11 +44,18 @@ let downloadWorkout tree =
     |> EncodedWorkout.dumpFile encoding
     => printfn $"Success!"
 
+let parseArgs args =
+    match Array.tryHead args with
+    | Some "--open"
+    | Some "-o" -> StepEncodingMode.OpenDistance
+    | _ -> StepEncodingMode.Default
 
-let rec app () =
+let rec app args =
+    let mode = parseArgs args
+
     readMandatory "Enter workout string"
     |> parseWorkout
     |> function
-        | Ok tree -> downloadWorkout tree
+        | Ok tree -> downloadWorkout mode tree
         | Error error -> printfn "%s" error
-    |> app
+    => app args

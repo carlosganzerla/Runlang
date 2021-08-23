@@ -4,6 +4,7 @@ open CommandParser
 open LangParser
 open PaceFileParser
 open RootList
+open Functions
 open WorkoutTree
 open InteractiveExtensions
 open ConsoleUtils
@@ -17,12 +18,12 @@ let parseArgs args =
     | None -> ".pacetable"
 
 let getPaceTable fileName =
-    let contents = System.IO.File.ReadAllText fileName
-
-    match parseTerms contents with
-    | Ok termMap -> fun term -> Map.find term termMap
-    | Error error -> raise (PaceTableException error)
-
+    fileName
+    |> System.IO.File.ReadAllText
+    |> parseTerms
+    |> function
+        | Ok termMap -> flip Map.find <| termMap
+        | Error error -> raise (PaceTableException error)
 
 let printList manipulations =
     do clear ()
