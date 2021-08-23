@@ -70,6 +70,7 @@ module WorkoutTree =
     let toIntervals paceTable tree =
         let fStep = WorkoutStep.toIntervals paceTable
         let fSingle = List.collect id
+
         let fRep count intervals =
             intervals
             |> fSingle

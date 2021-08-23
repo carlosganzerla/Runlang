@@ -97,38 +97,17 @@ module WorkoutStep =
 module WorkoutTree =
     open WorkoutTree
 
-    let encode tree =
-        let fStep step acc = 
-            step
-            |> WorkoutStep.encode
-            |> List.fold (flip <| curry List.Cons) acc
-        let fRep count acc = 
-        let rec loop tree acc =
-            match tree with
-            | WorkoutTree.Repeat (_, [])
-            | WorkoutTree.Repeat (0u, _) -> acc
-            | WorkoutTree.Repeat (1u, nodes) ->
-                nodes |> List.fold (flip loop) acc
-            | WorkoutTree.Repeat (count, nodes) ->
-                let fromIndex = List.length acc
-                let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
-                let repeatLoop = nodes |> List.fold (flip loop) acc
-                repeatStep :: repeatLoop
-            | WorkoutTree.Step step ->
-                step
-                |> WorkoutStep.encode
-                |> List.fold (flip <| curry List.Cons) acc
-
-        loop tree [] |> List.rev
     let encode =
-        let fStep step acc = 
+        let fStep step acc =
             step
             |> WorkoutStep.encode
             |> List.fold (flip <| curry List.Cons) acc
-        let fSingle = id 
-        let fRep count acc = 
-            let fromIndex = List.length acc
+
+        let fSingle _ acc = acc
+
+        let fRep count stepsBefore repeatLoop =
+            let fromIndex = List.length stepsBefore
             let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
-            repeatStep :: (List.rev acc)
-        WorkoutTree.fold fStep fSingle fRep []
-            
+            repeatStep :: repeatLoop
+
+        WorkoutTree.loop fStep fSingle fRep [] >> List.rev
