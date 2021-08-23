@@ -3,7 +3,8 @@ module StringUtils
 open System
 open System.IO
 
-let inline join sep (strings: string seq) = String.Join (sep, strings)
+let inline join sep (strings: string seq) =
+    String.Join (sep, Seq.filter (String.IsNullOrEmpty >> not) strings)
 
 let inline trim (str: string) = str.Trim ()
 

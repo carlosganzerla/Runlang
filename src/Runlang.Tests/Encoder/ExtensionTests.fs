@@ -87,23 +87,25 @@ let ``Step list on OpenDistance progression contains each step distance`` () =
           EncodedWorkoutStep.createDefault Open Active "1.00km .FTS";
           EncodedWorkoutStep.createDefault Open Active "300m FTS" ]
 
-    let encoded = parseOk "8.3km TR->FTS:1km" |> WorkoutTree.encode OpenDistance
+    let encoded =
+        parseOk "8.3km TR->FTS:1km"
+        |> WorkoutTree.encode OpenDistance
 
     encoded |> should equal expected
 
 [<Fact>]
 let ``Deeply nested workout on OpenDistance mode`` () =
     let expected =
-        [ EncodedWorkoutStep.createDefault Open Rest "CL";
-          EncodedWorkoutStep.createDefault Open Active "4:40/km";
-          EncodedWorkoutStep.createDefault Open Interval "FO";
-          EncodedWorkoutStep.createDefault Open Active "1.00km";
+        [ EncodedWorkoutStep.createDefault (Time 60) Rest "CL";
+          EncodedWorkoutStep.createDefault (Time 60) Active "4:40/km";
+          EncodedWorkoutStep.createDefault Open Interval "30m FO";
+          EncodedWorkoutStep.createDefault (Time 300) Active "1.00km";
           EncodedWorkoutStep.createRepeat 3 3u;
-          EncodedWorkoutStep.createDefault Open Active "TR";
+          EncodedWorkoutStep.createDefault Open Active "1.00km TR";
           EncodedWorkoutStep.createRepeat 2 5u;
-          EncodedWorkoutStep.createDefault Open Active "LE";
+          EncodedWorkoutStep.createDefault Open Active "1.00km LE";
           EncodedWorkoutStep.createRepeat 0 2u;
-          EncodedWorkoutStep.createDefault Open Interval "FTS" ]
+          EncodedWorkoutStep.createDefault (Time 60) Interval "FTS" ]
 
     let encoded =
         parseOk

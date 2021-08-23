@@ -1,8 +1,8 @@
 module WorkoutTree
 
 open WorkoutStep
-open StringUtils
 open Functions
+open StringUtils
 
 type WorkoutTree =
     private

@@ -11,12 +11,12 @@ let rec readMandatory desc =
     printfn "%s: " desc
     |> read
     |> function
-    | "" -> readMandatory desc
-    | value -> value
+        | "" -> readMandatory desc
+        | value -> value
 
 let readOptional desc fallback =
     printfn "%s (%s): " desc fallback
     |> read
     |> function
-    | "" -> fallback
-    | value -> value
+        | "" -> fallback
+        | value -> value

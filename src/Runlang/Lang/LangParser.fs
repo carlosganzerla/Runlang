@@ -52,7 +52,7 @@ let repeat =
 let steps = sepBy (repeat <|> step) plus
 do repeatRef := steps
 
-let workoutTree : LangParser =
+let workoutTree: LangParser =
     ws >>. repeatTree .>> ws .>> eof |>> WorkoutTree.repeat 1u
     >>= result
 

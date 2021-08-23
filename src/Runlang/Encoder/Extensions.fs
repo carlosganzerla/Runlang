@@ -5,8 +5,22 @@ open Distance
 open Time
 open RunningTerm
 open ProgressionStep
+open StringUtils
 open EncodedWorkout
 open Functions
+
+type StepEncodingMode =
+    | Default
+    | OpenDistance
+
+[<RequireQualifiedAccess>]
+module StepEncodingMode =
+    let choice mode openVal defaultVal =
+        match mode with
+        | Default -> defaultVal
+        | OpenDistance -> openVal
+
+    let prefix mode value = choice mode value ""
 
 [<RequireQualifiedAccess>]
 module WorkoutPace =
@@ -30,30 +44,38 @@ module WorkoutPace =
 
 [<RequireQualifiedAccess>]
 module ProgressionStep =
-    let encode step =
+    let encode mode step =
         let splits = ProgressionStep.getSplits step
         let splitCount = List.length splits
         let initialPace = step.InitialPace
         let finalPace = step.FinalPace
 
-        let name index =
-            let initialString =
+        let duration split =
+            split
+            |> Distance.totalMeters
+            |> Distance
+            |> StepEncodingMode.choice mode Open
+
+        let name index split =
+            let prefix =
+                split |> Distance.toString |> StepEncodingMode.prefix mode
+
+            let initial =
                 if index = 0 then WorkoutPace.toString initialPace else ""
 
-            let finalString = WorkoutPace.toString finalPace
+            let final = WorkoutPace.toString finalPace
 
             let dots =
                 ('.', (splitCount - index) * 5 / splitCount)
                 |> System.String
 
-            initialString + dots + finalString
+            join " " [ prefix; initial + dots + final ]
 
         let createEncoding index split =
-            index
-            |> name
-            |> EncodedWorkoutStep.createDefault
-                (Distance.totalMeters >> Distance <| split)
-                Active
+            EncodedWorkoutStep.createDefault
+            <| duration split
+            <| Active
+            <| name index split
 
         List.mapi createEncoding splits
 
@@ -61,35 +83,39 @@ module ProgressionStep =
 module WorkoutStep =
     open WorkoutStep
 
-    let private encodeString =
-        let fDP _ pace = WorkoutPace.toString pace
-        let fTP _ pace = WorkoutPace.toString pace
-        let fTD _ distance = Distance.toString distance
-        let fPro _ = ""
-        WorkoutStep.map fDP fTP fTD fPro
-
-    let encode step =
-        let createEncoded duration intensity =
-            step
-            |> encodeString
-            |> EncodedWorkoutStep.createDefault duration intensity
+    let encode mode step =
+        let encode = EncodedWorkoutStep.createDefault
 
         let fDP distance pace =
-            let duration = distance |> Distance.totalMeters |> Distance
+            let duration =
+                distance
+                |> Distance.totalMeters
+                |> Distance
+                |> StepEncodingMode.choice mode Open
+
             let intensity = pace |> WorkoutPace.encodeIntensity
-            [ createEncoded duration intensity ]
+
+            let prefix =
+                distance
+                |> Distance.toString
+                |> StepEncodingMode.prefix mode
+
+            let name = join " " [ prefix; WorkoutPace.toString pace ]
+            [ encode duration intensity name ]
 
         let fTP time pace =
             let duration = time |> Time.toSeconds |> Time
             let intensity = pace |> WorkoutPace.encodeIntensity
-            [ createEncoded duration intensity ]
+            let name = WorkoutPace.toString pace
+            [ encode duration intensity name ]
 
-        let fTD time _ =
+        let fTD time distance =
             let duration = time |> Time.toSeconds |> Time
             let intensity = Active
-            [ createEncoded duration intensity ]
+            let name = Distance.toString distance
+            [ encode duration intensity name ]
 
-        let fPro = ProgressionStep.encode
+        let fPro = ProgressionStep.encode mode
 
         WorkoutStep.map fDP fTP fTD fPro step
 
@@ -97,10 +123,10 @@ module WorkoutStep =
 module WorkoutTree =
     open WorkoutTree
 
-    let encode =
+    let encode mode =
         let fStep step acc =
             step
-            |> WorkoutStep.encode
+            |> WorkoutStep.encode mode
             |> List.fold (flip <| curry List.Cons) acc
 
         let fSingle _ acc = acc

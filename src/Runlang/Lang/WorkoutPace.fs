@@ -16,4 +16,4 @@ module WorkoutPace =
 
     let toPace paceTable = map id paceTable
 
-    let toString = map Pace.toString (sprintf "%A")
+    let toString = map Pace.toString RunningTerm.toString
