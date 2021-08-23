@@ -70,12 +70,10 @@ module WorkoutTree =
     let toIntervals paceTable tree =
         let fStep = WorkoutStep.toIntervals paceTable
         let fSingle = List.collect id
-        let fEmpty () = []
-
         let fRep count intervals =
             intervals
             |> fSingle
             |> List.replicate (int count)
-            |> List.collect id
+            |> fSingle
 
-        WorkoutTree.catamorph fStep fEmpty fSingle fRep tree
+        WorkoutTree.catamorph fStep fSingle fRep tree

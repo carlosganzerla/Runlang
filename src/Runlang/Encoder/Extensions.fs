@@ -1,12 +1,12 @@
 module EncoderExtensions
 
-open Functions
 open WorkoutPace
 open Distance
 open Time
 open RunningTerm
 open ProgressionStep
 open EncodedWorkout
+open Functions
 
 [<RequireQualifiedAccess>]
 module WorkoutPace =
@@ -97,21 +97,15 @@ module WorkoutStep =
 module WorkoutTree =
     open WorkoutTree
 
-    let encode tree =
-        let rec loop tree acc =
-            match tree with
-            | WorkoutTree.Repeat (_, [])
-            | WorkoutTree.Repeat (0u, _) -> acc
-            | WorkoutTree.Repeat (1u, nodes) ->
-                nodes |> List.fold (flip loop) acc
-            | WorkoutTree.Repeat (count, nodes) ->
-                let fromIndex = List.length acc
-                let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
-                let repeatLoop = nodes |> List.fold (flip loop) acc
-                repeatStep :: repeatLoop
-            | WorkoutTree.Step step ->
-                step
-                |> WorkoutStep.encode
-                |> List.fold (flip <| curry List.Cons) acc
-
-        loop tree [] |> List.rev
+    let encode =
+        let fStep step acc = 
+            step
+            |> WorkoutStep.encode
+            |> List.fold (flip <| curry List.Cons) acc
+        let fSingle = id 
+        let fRep count acc = 
+            let fromIndex = List.length acc
+            let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
+            repeatStep :: (List.rev acc)
+        WorkoutTree.fold fStep fSingle fRep []
+            

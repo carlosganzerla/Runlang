@@ -9,12 +9,6 @@ open WorkoutTree
 let parseToString = parseWorkout >> ok >> WorkoutTree.toString
 
 [<Fact>]
-let ``Empty workout`` () =
-    let input = ""
-    let expected = ""
-    input |> parseToString |> should equal expected
-
-[<Fact>]
 let ``Distance and term pace step in km`` () =
     let input = "1km MO"
     let expected = "1.00km MO"

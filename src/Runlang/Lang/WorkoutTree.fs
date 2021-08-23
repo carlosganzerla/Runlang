@@ -4,25 +4,38 @@ open WorkoutStep
 open StringUtils
 
 type WorkoutTree =
+    private
     | Step of WorkoutStep
     | Repeat of uint * WorkoutTree list
 
 [<RequireQualifiedAccess>]
 module WorkoutTree =
+    let step = Step
 
-    let rec catamorph fStep fEmpty fSingle fRep tree =
-        let recurse = catamorph fStep fEmpty fSingle fRep
+    let repeat count nodes =
+        match (count, nodes) with
+        | (0u, _)
+        | (_, []) -> Error "Workout tree cannot be empty"
+        | (1u, [ node ]) -> Ok node
+        | subtree -> Ok <| Repeat subtree
 
+    let rec fold fStep fSingle fRep acc tree = 
+        let fold = fold fStep fSingle fRep
         match tree with
-        | Repeat (_, [])
-        | Repeat (0u, _) -> fEmpty ()
-        | Repeat (1u, nodes) -> List.map recurse nodes |> fSingle
+        | Repeat (1u, nodes) -> nodes |> List.fold fold (fSingle acc)
+        | Repeat (count, nodes) -> nodes |> List.fold fold (fRep count acc)
+        | Step step -> fStep step acc
+
+
+    let rec catamorph fStep fSingle fRep tree =
+        let recurse = catamorph fStep fSingle fRep
+        match tree with
+        | Repeat (1u, nodes) -> nodes |> List.map recurse |> fSingle
         | Repeat (count, nodes) -> nodes |> List.map recurse |> fRep count
         | Step step -> fStep step
 
     let toString tree =
         let fStep = WorkoutStep.toString
-        let fEmpty () = ""
-        let fSingle steps = join " + " steps
+        let fSingle = join " + "
         let fRep count steps = $"{count}x({fSingle steps})"
-        catamorph fStep fEmpty fSingle fRep tree
+        catamorph fStep fSingle fRep tree

@@ -11,3 +11,6 @@ type RunningTerm =
     | FO
     | FTS
     | MAX
+
+module RunningTerm =
+    let toString (term: RunningTerm) = sprintf "%A" term

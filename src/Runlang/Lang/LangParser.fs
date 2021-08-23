@@ -31,7 +31,7 @@ let step =
               distanceAndPace
               timeAndPace
               timeAndDistance ]
-    |>> Step
+    |>> WorkoutTree.step
     .>> ws
 
 let plus = (pchar '/' <|> pchar '+') .>> ws
@@ -43,18 +43,17 @@ let repeatTree, repeatRef = createParserForwardedToRef ()
 let repeat =
     let repeatCount = attempt (puint32 .>> times)
 
-    repeatCount .>>. between (pchar '(') (pchar ')') repeatTree
+    preturn WorkoutTree.repeat
+    <*> repeatCount
+    <*> between (pchar '(') (pchar ')') repeatTree
     .>> ws
-    |>> Repeat
+    >>= result
 
 let steps = sepBy (repeat <|> step) plus
 do repeatRef := steps
 
-let toTree nodes =
-    match nodes with
-    | [ node ] -> node
-    | list -> Repeat (1u, list)
-
-let workoutTree : LangParser = ws >>. repeatTree .>> ws .>> eof |>> toTree
+let workoutTree : LangParser =
+    ws >>. repeatTree .>> ws .>> eof |>> WorkoutTree.repeat 1u
+    >>= result
 
 let parseWorkout = runParser workoutTree ()
