@@ -19,6 +19,7 @@
     <Compile Include="Model/Distance.fs" />
     <Compile Include="Model/RunningTerm.fs" />
     <Compile Include="Model/Interval.fs" />
+    <Compile Include="Model/IntervalTree.fs" />
     <Compile Include="Model/WorkoutPace.fs" />
     <Compile Include="Model/ProgressionStep.fs" />
     <Compile Include="Model/WorkoutStep.fs" />

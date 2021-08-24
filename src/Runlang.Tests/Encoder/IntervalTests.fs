@@ -1,4 +1,4 @@
-module InteractiveExtensionsTests
+module IntervalEncoderTests
 
 open FsUnit.Xunit
 open Utils

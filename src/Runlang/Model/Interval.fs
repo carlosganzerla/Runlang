@@ -6,6 +6,7 @@ open Functions
 open Pace
 open Time
 
+
 type Interval = private { Distance: Distance; Time: Time; Pace: Pace }
 
 type IntervalType =

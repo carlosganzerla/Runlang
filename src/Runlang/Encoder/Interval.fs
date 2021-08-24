@@ -1,6 +1,7 @@
 module IntervalEncoder
 
 open Interval
+open IntervalTree
 open Time
 open Pace
 open WorkoutPace
@@ -9,7 +10,7 @@ open WorkoutPace
 module ProgressionStep =
     open ProgressionStep
 
-    let toIntervals paceTable step =
+    let toIntervalTree paceTable step =
         let splits = ProgressionStep.getSplits step
         let splitCount = splits |> List.length |> decimal
 
@@ -33,33 +34,35 @@ module ProgressionStep =
 
         let paces = splits |> List.mapi getPace
 
-        List.zip splits paces
-        |> List.map (DistanceAndPace >> Interval.create)
+        List.zip splits paces 
+        |> List.map (DistanceAndPace >> Interval.create >> IntervalTree.leaf)
+        |> IntervalTree.node
+
 
 [<RequireQualifiedAccess>]
 module WorkoutStep =
     open WorkoutStep
 
-    let toIntervals paceTable =
+    let toIntervalTree paceTable =
         let fDP distance pace =
             (distance, WorkoutPace.toPace paceTable pace)
             |> IntervalType.DistanceAndPace
             |> Interval.create
-            |> List.singleton
+            |> IntervalTree.leaf
 
         let fTP time pace =
             (time, WorkoutPace.toPace paceTable pace)
             |> IntervalType.TimeAndPace
             |> Interval.create
-            |> List.singleton
+            |> IntervalTree.leaf
 
         let fTD time distance =
             (time, distance)
             |> IntervalType.TimeAndDistance
             |> Interval.create
-            |> List.singleton
+            |> IntervalTree.leaf
 
-        let fPro = ProgressionStep.toIntervals paceTable
+        let fPro = ProgressionStep.toIntervalTree paceTable
         WorkoutStep.map fDP fTP fTD fPro
 
 
@@ -67,14 +70,13 @@ module WorkoutStep =
 module WorkoutTree =
     open WorkoutTree
 
-    let toIntervals paceTable tree =
-        let fStep = WorkoutStep.toIntervals paceTable
-        let fSingle = List.collect id
-
-        let fRep count intervals =
-            intervals
-            |> fSingle
+    let toIntervalTree paceTable tree =
+        let fStep = WorkoutStep.toIntervalTree paceTable
+        let fSingle = IntervalTree.node
+        let fRep count subtrees = 
+            subtrees
             |> List.replicate (int count)
-            |> fSingle
+            |> List.collect id
+            |> IntervalTree.node
 
         WorkoutTree.catamorph fStep fSingle fRep tree
