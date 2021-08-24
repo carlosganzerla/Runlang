@@ -1,4 +1,4 @@
-module EncoderExtensions
+module FitEncoder
 
 open WorkoutPace
 open Distance
@@ -6,15 +6,15 @@ open Time
 open RunningTerm
 open ProgressionStep
 open StringUtils
-open EncodedWorkout
+open FitWorkout
 open Functions
 
-type StepEncodingMode =
+type FitEncodingMode =
     | Default
     | OpenDistance
 
 [<RequireQualifiedAccess>]
-module StepEncodingMode =
+module private StepEncodingMode =
     let choice mode openVal defaultVal =
         match mode with
         | Default -> defaultVal
@@ -24,7 +24,7 @@ module StepEncodingMode =
 
 [<RequireQualifiedAccess>]
 module WorkoutPace =
-    let encodeIntensity =
+    let toFitIntensity =
         let fPace _ = Active
 
         let fTerm =
@@ -44,7 +44,7 @@ module WorkoutPace =
 
 [<RequireQualifiedAccess>]
 module ProgressionStep =
-    let encode mode step =
+    let toFit mode step =
         let splits = ProgressionStep.getSplits step
         let splitCount = List.length splits
         let initialPace = step.InitialPace
@@ -72,7 +72,7 @@ module ProgressionStep =
             join " " [ prefix; initial + dots + final ]
 
         let createEncoding index split =
-            EncodedWorkoutStep.createDefault
+            FitWorkoutStep.createDefault
             <| duration split
             <| Active
             <| name index split
@@ -83,8 +83,8 @@ module ProgressionStep =
 module WorkoutStep =
     open WorkoutStep
 
-    let encode mode step =
-        let encode = EncodedWorkoutStep.createDefault
+    let toFit mode step =
+        let toFit = FitWorkoutStep.createDefault
 
         let fDP distance pace =
             let duration =
@@ -93,7 +93,7 @@ module WorkoutStep =
                 |> Distance
                 |> StepEncodingMode.choice mode Open
 
-            let intensity = pace |> WorkoutPace.encodeIntensity
+            let intensity = pace |> WorkoutPace.toFitIntensity
 
             let prefix =
                 distance
@@ -101,21 +101,21 @@ module WorkoutStep =
                 |> StepEncodingMode.prefix mode
 
             let name = join " " [ prefix; WorkoutPace.toString pace ]
-            [ encode duration intensity name ]
+            [ toFit duration intensity name ]
 
         let fTP time pace =
             let duration = time |> Time.toSeconds |> Time
-            let intensity = pace |> WorkoutPace.encodeIntensity
+            let intensity = pace |> WorkoutPace.toFitIntensity
             let name = WorkoutPace.toString pace
-            [ encode duration intensity name ]
+            [ toFit duration intensity name ]
 
         let fTD time distance =
             let duration = time |> Time.toSeconds |> Time
             let intensity = Active
             let name = Distance.toString distance
-            [ encode duration intensity name ]
+            [ toFit duration intensity name ]
 
-        let fPro = ProgressionStep.encode mode
+        let fPro = ProgressionStep.toFit mode
 
         WorkoutStep.map fDP fTP fTD fPro step
 
@@ -123,17 +123,17 @@ module WorkoutStep =
 module WorkoutTree =
     open WorkoutTree
 
-    let encode mode =
+    let toFit mode =
         let fStep step acc =
             step
-            |> WorkoutStep.encode mode
+            |> WorkoutStep.toFit mode
             |> List.fold (flip <| curry List.Cons) acc
 
         let fSingle _ acc = acc
 
         let fRep count stepsBefore repeatLoop =
             let fromIndex = List.length stepsBefore
-            let repeatStep = EncodedWorkoutStep.createRepeat fromIndex count
+            let repeatStep = FitWorkoutStep.createRepeat fromIndex count
             repeatStep :: repeatLoop
 
         WorkoutTree.loop fStep fSingle fRep [] >> List.rev

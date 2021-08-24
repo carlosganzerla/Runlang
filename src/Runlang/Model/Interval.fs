@@ -1,7 +1,8 @@
 module Interval
 
 open Distance
-open Utils
+open ListUtils
+open Functions
 open Pace
 open Time
 
@@ -68,22 +69,26 @@ module Interval =
         let totalKm = Distance.totalKm interval.Distance
         let splits = splitList totalKm splitSize
 
-        splits
-        |> List.map Distance.create
-        |> List.map (fun d -> d, interval.Pace)
-        |> List.map DistanceAndPace
-        |> List.map create
+        let create =
+            Distance.create
+            >> (flip tuple) interval.Pace
+            >> DistanceAndPace
+            >> create
+
+        List.map create splits
 
     let private splitByTime time interval =
         let splitSize = Time.toMinutes time
         let totalMinutes = Time.toMinutes interval.Time
         let splits = splitList totalMinutes splitSize
 
-        splits
-        |> List.map Time.fromMinutes
-        |> List.map (fun t -> t, interval.Pace)
-        |> List.map TimeAndPace
-        |> List.map create
+        let create =
+            Time.fromMinutes
+            >> (flip tuple) interval.Pace
+            >> TimeAndPace
+            >> create
+
+        List.map create splits
 
     let split split interval =
         match split with

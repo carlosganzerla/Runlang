@@ -1,9 +1,9 @@
-module EncodedWorkout
+module FitWorkout
 
 open System.IO
 open Dynastream.Fit
 
-type EncodedWorkoutIntensity =
+type FitWorkoutIntensity =
     | Active
     | Warmup
     | Cooldown
@@ -11,26 +11,26 @@ type EncodedWorkoutIntensity =
     | Interval
     | Rest
 
-type EncodedWorkoutDuration =
+type FitWorkotuDuration =
     | Time of int
     | Distance of int
     | Open
 
-type EncodedWorkoutStep =
+type FitWorkoutStep =
     private
-    | Default of EncodedDefaultStep
-    | Repeat of EncodedRepeatStep
+    | Default of FitDefaultStep
+    | Repeat of FitRepeatStep
 
-and private EncodedDefaultStep =
-    { Duration: EncodedWorkoutDuration;
-      Intensity: EncodedWorkoutIntensity;
+and private FitDefaultStep =
+    { Duration: FitWorkotuDuration;
+      Intensity: FitWorkoutIntensity;
       Notes: string option;
       Name: string option }
 
-and private EncodedRepeatStep = { FromIndex: int; Count: uint }
+and private FitRepeatStep = { FromIndex: int; Count: uint }
 
 [<RequireQualifiedAccess>]
-module EncodedWorkoutStep =
+module FitWorkoutStep =
     let createRepeat fromIndex count =
         Repeat { FromIndex = fromIndex; Count = count }
 
@@ -43,14 +43,14 @@ module EncodedWorkoutStep =
 
 
 
-type EncodedWorkout =
+type FitWorkout =
     private
         { FileId: FileIdMesg;
           Workout: WorkoutMesg;
           WorkoutSteps: WorkoutStepMesg list }
 
 [<RequireQualifiedAccess>]
-module EncodedWorkout =
+module FitWorkout =
 
     let private createFileIdMessage () =
         let fileId = FileIdMesg ()
@@ -69,7 +69,7 @@ module EncodedWorkout =
         workout.SetWktName (name.Replace (" ", "_"))
         workout
 
-    let createEncoding workoutName =
+    let createWorkout workoutName =
         { Workout = createWorkoutMessage workoutName;
           FileId = createFileIdMessage ();
           WorkoutSteps = [] }
@@ -91,14 +91,14 @@ module EncodedWorkout =
             (meters * 100 |> abs |> uint |> Some, WktStepDuration.Distance)
         | Open -> (None, WktStepDuration.Open)
 
-    let private createStep encoding =
+    let private createStep workout =
         let newStep = WorkoutStepMesg ()
-        let steps = encoding.WorkoutSteps
+        let steps = workout.WorkoutSteps
         steps |> List.length |> uint16 |> newStep.SetMessageIndex
-        (newStep, { encoding with WorkoutSteps = newStep :: steps })
+        (newStep, { workout with WorkoutSteps = newStep :: steps })
 
-    let private addDefaultStep step encoding =
-        let (newStep, encoding) = createStep encoding
+    let private addDefaultStep step workout =
+        let (newStep, workout) = createStep workout
         let (durationValue, durationType) = fitDuration step.Duration
         let intensity = fitIntensity step.Intensity
         step.Name |> Option.iter newStep.SetWktStepName
@@ -107,24 +107,24 @@ module EncodedWorkout =
         durationValue |> Option.iter newStep.SetDurationValue
         newStep.SetIntensity intensity
         newStep.SetTargetType WktStepTarget.Invalid
-        encoding
+        workout
 
-    let private addRepeatStep step encoding =
-        let (newStep, encoding) = createStep encoding
+    let private addRepeatStep step workout =
+        let (newStep, workout) = createStep workout
         newStep.SetDurationType (WktStepDuration.RepeatUntilStepsCmplt)
         newStep.SetDurationValue (step.FromIndex |> abs |> uint)
         newStep.SetTargetType (WktStepTarget.Open)
         newStep.SetTargetValue step.Count
-        encoding
+        workout
 
-    let addStep step encoding =
+    let addStep step workout =
         match step with
-        | Default step -> addDefaultStep step encoding
-        | Repeat step -> addRepeatStep step encoding
+        | Default step -> addDefaultStep step workout
+        | Repeat step -> addRepeatStep step workout
 
-    let dumpFile encoding path =
-        encoding.Workout.SetNumValidSteps (
-            encoding.WorkoutSteps |> List.length |> uint16
+    let dumpFile workout path =
+        workout.Workout.SetNumValidSteps (
+            workout.WorkoutSteps |> List.length |> uint16
         )
 
         use fs =
@@ -137,8 +137,8 @@ module EncodedWorkout =
 
         let encoder = Encode ProtocolVersion.V10
         encoder.Open fs
-        encoder.Write encoding.FileId
-        encoder.Write encoding.Workout
-        encoding.WorkoutSteps |> List.rev |> List.iter encoder.Write
+        encoder.Write workout.FileId
+        encoder.Write workout.Workout
+        workout.WorkoutSteps |> List.rev |> List.iter encoder.Write
         encoder.Close ()
         fs.Close ()

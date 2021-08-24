@@ -1,4 +1,4 @@
-module InteractiveExtensions
+module IntervalEncoder
 
 open Interval
 open Time

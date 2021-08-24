@@ -2,7 +2,7 @@ module ProgressionStep
 
 open WorkoutPace
 open Distance
-open Utils
+open ListUtils
 
 type ProgressionStep =
     { InitialPace: WorkoutPace;

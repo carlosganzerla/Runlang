@@ -6,33 +6,29 @@
   <RootNamespace>Runlang</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Runlang.Encoder/Runlang.Encoder.fsproj" />
+    <ProjectReference Include="../Runlang.Garmin/Runlang.Garmin.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lib/Functions.fs" />
     <Compile Include="Lib/StringUtils.fs" />
     <Compile Include="Lib/ListUtils.fs" />
     <Compile Include="Lib/Console.fs" />
-    <Compile Include="Lib/RootList.fs" />
     <Compile Include="Lib/ParserUtils.fs" />
-    <Compile Include="Primitives/Time.fs" />
-    <Compile Include="Primitives/Pace.fs" />
-    <Compile Include="Primitives/Distance.fs" />
-    <Compile Include="Primitives/RunningTerm.fs" />
-    <Compile Include="Lang/WorkoutPace.fs" />
-    <Compile Include="Lang/ProgressionStep.fs" />
-    <Compile Include="Lang/WorkoutStep.fs" />
-    <Compile Include="Lang/WorkoutTree.fs" />
-    <Compile Include="Lang/LangParserPrimitives.fs" />
-    <Compile Include="Lang/LangParser.fs" />
-    <Compile Include="Encoder/Extensions.fs" />
-    <Compile Include="Encoder/Cli.fs" />
-    <Compile Include="Interactive/Interval.fs" />
-    <Compile Include="Interactive/Manipulation.fs" />
-    <Compile Include="Interactive/Extensions.fs" />
-    <Compile Include="Interactive/CommandParser.fs" />
-    <Compile Include="Interactive/PaceFileParser.fs" />
-    <Compile Include="Interactive/Cli.fs" />
+    <Compile Include="Model/Time.fs" />
+    <Compile Include="Model/Pace.fs" />
+    <Compile Include="Model/Distance.fs" />
+    <Compile Include="Model/RunningTerm.fs" />
+    <Compile Include="Model/Interval.fs" />
+    <Compile Include="Model/WorkoutPace.fs" />
+    <Compile Include="Model/ProgressionStep.fs" />
+    <Compile Include="Model/WorkoutStep.fs" />
+    <Compile Include="Model/WorkoutTree.fs" />
+    <Compile Include="Parser/LangParserPrimitives.fs" />
+    <Compile Include="Parser/LangParser.fs" />
+    <Compile Include="Parser/PaceFileParser.fs" />
+    <Compile Include="Encoder/Fit.fs" />
+    <Compile Include="Encoder/Interval.fs" />
+    <Compile Include="Cli/Cli.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

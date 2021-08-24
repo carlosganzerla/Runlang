@@ -4,7 +4,7 @@ open System
 open RunningTerm
 open Pace
 open LangParser
-open InteractiveExtensions
+open IntervalEncoder
 
 let shouldBeError =
     function

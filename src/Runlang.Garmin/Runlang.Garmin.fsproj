@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="EncodedWorkout.fs" />
+    <Compile Include="FitWorkout.fs" />
   </ItemGroup>
 
   <ItemGroup>

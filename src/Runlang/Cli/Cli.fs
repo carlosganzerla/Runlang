@@ -2,8 +2,8 @@ module EncoderCli
 
 open System
 open LangParser
-open EncoderExtensions
-open EncodedWorkout
+open FitEncoder
+open FitWorkout
 open Functions
 open StringUtils
 open ConsoleUtils
@@ -27,7 +27,7 @@ let findGarmin () =
     |> Array.tryHead
 
 let downloadWorkout mode tree =
-    let steps = WorkoutTree.encode mode tree
+    let steps = WorkoutTree.toFit mode tree
     let name = readMandatory "Enter workout name"
 
     let defaultPath =
@@ -36,19 +36,19 @@ let downloadWorkout mode tree =
         |> appendPath $"{name}.fit"
 
     let encoding =
-        EncodedWorkout.createEncoding name
-        |> List.fold (flip EncodedWorkout.addStep)
+        FitWorkout.createWorkout name
+        |> List.fold (flip FitWorkout.addStep)
         <| steps
 
     readOptional "Enter file path" defaultPath
-    |> EncodedWorkout.dumpFile encoding
+    |> FitWorkout.dumpFile encoding
     => printfn $"Success!"
 
 let parseArgs args =
     match Array.tryHead args with
     | Some "--open"
-    | Some "-o" -> StepEncodingMode.OpenDistance
-    | _ -> StepEncodingMode.Default
+    | Some "-o" -> FitEncodingMode.OpenDistance
+    | _ -> FitEncodingMode.Default
 
 let rec app args =
     let mode = parseArgs args
