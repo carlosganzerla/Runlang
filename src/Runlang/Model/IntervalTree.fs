@@ -26,26 +26,29 @@ module IntervalTree =
 
     let leaf = Leaf
 
-    let rec toListWithDepth depth tree =
-        match tree with
-        | Leaf interval -> [(interval, depth)]
-        | Node (interval, subtrees) -> 
-            (interval, depth) :: (List.map (toListWithDepth (depth + 1)) subtrees |> List.collect id)
+    let toListWithDepth tree =
+        let rec toListWithDepth depth =
+            function
+            | Leaf interval -> [ (interval, depth) ]
+            | Node (interval, subtrees) ->
+                subtrees
+                |> List.map (toListWithDepth (depth + 1))
+                |> List.collect id
+                |> flip (curry List.Cons)
+                <| (interval, depth)
+
+        toListWithDepth 0 tree
 
     let toStringList =
         let toString (interval, depth) =
             let dashes = " - " |> List.replicate depth |> System.String.Concat
             join " " [ dashes; Interval.toString interval ]
 
-        toListWithDepth 0 >> List.map toString
+        toListWithDepth >> List.map toString
 
     let node subtrees =
-        let fLeaf = curry List.Cons
-        let fNode = fLeaf
-        let fold = fold fLeaf fNode
-
         subtrees
-        |> List.fold fold []
-        |> List.reduce Interval.sum
+        |> List.collect toList
+        |> List.fold Interval.sum Interval.Zero
         |> (flip tuple) subtrees
         |> Node

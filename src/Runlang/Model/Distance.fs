@@ -7,6 +7,8 @@ type Distance =
 
 [<RequireQualifiedAccess>]
 module Distance =
+    let Zero = Meters 0
+
     let meters m = Meters (abs m)
     let kilometers km = Kilometers (abs km)
 
@@ -26,7 +28,7 @@ module Distance =
     let totalMeters =
         function
         | Meters m -> m
-        | Kilometers km -> int (km * 1000m)
+        | Kilometers km -> int <| ceil (km * 1000m)
 
     let toString =
         function

@@ -20,6 +20,11 @@ type IntervalSplit =
 
 [<RequireQualifiedAccess>]
 module Interval =
+    let Zero =
+        { Distance = Distance.Zero;
+          Time = Time.Zero;
+          Pace = TimePerKm Time.Zero }
+
     let private timeInterval distance (pace: Pace) =
         let km = Distance.totalKm distance
         let minPerKm = pace |> Pace.time |> Time.toMinutes
@@ -49,12 +54,6 @@ module Interval =
             Time.toString time, Distance.toString dist, Pace.toString pace
 
         $"Time: {timeStr}, Distance: {distStr}, Pace: {paceStr}"
-
-    let listToString list =
-        let withCount count interval =
-            sprintf "#%d %s" (count + 1) (toString interval)
-
-        list |> List.mapi withCount
 
     let time interval = interval.Time
     let pace interval = interval.Pace

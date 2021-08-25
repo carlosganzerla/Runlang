@@ -4,6 +4,8 @@ type Time = private { Hours: int; Minutes: int; Seconds: int }
 
 [<RequireQualifiedAccess>]
 module Time =
+    let Zero = { Hours = 0; Minutes = 0; Seconds = 0 }
+
     let toMinutes { Hours = h; Minutes = min; Seconds = s } =
         decimal h * 60m + decimal min + (decimal s) / 60m
 

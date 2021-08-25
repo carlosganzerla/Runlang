@@ -30,6 +30,17 @@ let ``Total km should get the distance value in km`` () =
     |> should equal 1.5m
 
 [<Fact>]
+let ``Total meters should get the distance value in meters`` () =
+    Distance.create 0.75m
+    |> Distance.totalMeters
+    |> should equal 750
+
+    Distance.create 32.5326m
+    |> Distance.totalMeters
+    |> should equal 32533
+
+
+[<Fact>]
 let ``To string must yield correct representation`` () =
     Distance.meters 2500
     |> Distance.toString
@@ -43,5 +54,16 @@ let ``To string must yield correct representation`` () =
 let ``Summing distances must yield the correct result`` () =
     let d1 = Distance.create 2.55m
     let d2 = Distance.create 0.57m
-    let distance = Distance.sum d1 d2
-    distance |> Distance.toString |> should equal "3.12km"
+    let sum1 = Distance.sum d1 d2
+    let sum2 = Distance.sum d2 d1
+    sum1 |> Distance.toString |> should equal "3.12km"
+    sum2 |> Distance.toString |> should equal "3.12km"
+
+[<Fact>]
+let ``Distance.Zero is the identity element on sum`` () =
+    let d1 = Distance.Zero
+    let d2 = Distance.create 1.57m
+    let sum1 = Distance.sum d1 d2
+    let sum2 = Distance.sum d2 d1
+    sum1 |> Distance.toString |> should equal "1.57km"
+    sum2 |> Distance.toString |> should equal "1.57km"

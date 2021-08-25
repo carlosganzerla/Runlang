@@ -1,6 +1,7 @@
 module Pace
 
 open Time
+
 type Pace = TimePerKm of Time
 
 [<RequireQualifiedAccess>]

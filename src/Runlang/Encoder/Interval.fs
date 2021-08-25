@@ -34,7 +34,7 @@ module ProgressionStep =
 
         let paces = splits |> List.mapi getPace
 
-        List.zip splits paces 
+        List.zip splits paces
         |> List.map (DistanceAndPace >> Interval.create >> IntervalTree.leaf)
         |> IntervalTree.node
 
@@ -73,7 +73,8 @@ module WorkoutTree =
     let toIntervalTree paceTable tree =
         let fStep = WorkoutStep.toIntervalTree paceTable
         let fSingle = IntervalTree.node
-        let fRep count subtrees = 
+
+        let fRep count subtrees =
             subtrees
             |> List.replicate (int count)
             |> List.collect id
