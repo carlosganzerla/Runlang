@@ -19,13 +19,6 @@ module IntervalTree =
             subtrees |> List.fold fold (fNode interval acc)
         | Leaf interval -> fLeaf interval acc
 
-    let rec catamorph fLeaf fNode tree =
-        let recurse = catamorph fLeaf fNode 
-
-        match tree with
-        | Node (interval, subtrees) -> subtrees |> List.map recurse |> fNode interval
-        | Leaf interval -> fLeaf interval
-
     let toList =
         let fLeaf = curry List.Cons
         let fNode = flip k
@@ -33,22 +26,18 @@ module IntervalTree =
 
     let leaf = Leaf
 
-    let toListWithDepth =
-        let rec toListWithDepth depth tree = 
-            let fLeaf interval = [(interval, depth)]
-            let fNode interval intervals = 
-                intervals
-                |> List.collect (toListWithDepth (depth + 1))
-                                
-            catamorph fLeaf fNode tree
-        toListWithDepth 0 >> List.rev
+    let rec toListWithDepth depth tree =
+        match tree with
+        | Leaf interval -> [(interval, depth)]
+        | Node (interval, subtrees) -> 
+            (interval, depth) :: (List.map (toListWithDepth (depth + 1)) subtrees |> List.collect id)
 
     let toStringList =
         let toString (interval, depth) =
             let dashes = " - " |> List.replicate depth |> System.String.Concat
             join " " [ dashes; Interval.toString interval ]
 
-        toListWithDepth >> List.map toString
+        toListWithDepth 0 >> List.map toString
 
     let node subtrees =
         let fLeaf = curry List.Cons
