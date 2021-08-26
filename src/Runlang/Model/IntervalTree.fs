@@ -46,6 +46,8 @@ module IntervalTree =
 
         toListWithDepth >> List.map toString
 
+    let toString = toStringList >> join "\n"
+
     let node subtrees =
         subtrees
         |> List.collect toList

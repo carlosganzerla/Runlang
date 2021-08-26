@@ -1,7 +1,6 @@
 module WorkoutTree
 
 open WorkoutStep
-open Functions
 open StringUtils
 
 type WorkoutTree =
@@ -10,6 +9,7 @@ type WorkoutTree =
     | Repeat of uint * WorkoutTree list
 
 [<RequireQualifiedAccess>]
+[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
 module WorkoutTree =
     let step = Step
 
@@ -20,7 +20,6 @@ module WorkoutTree =
         | (1u, [ node ]) -> Ok node
         | subtree -> Ok <| Repeat subtree
 
-
     let rec loop fStep fSingle fRep acc tree =
         let loop = loop fStep fSingle fRep
 
@@ -28,14 +27,6 @@ module WorkoutTree =
         | Step step -> fStep step acc
         | Repeat (1u, nodes) -> nodes |> List.fold loop acc |> fSingle acc
         | Repeat (count, nodes) -> nodes |> List.fold loop acc |> fRep count acc
-
-    let rec fold fStep fSingle fRep acc tree =
-        let fold = fold fStep fSingle fRep
-
-        match tree with
-        | Repeat (1u, nodes) -> nodes |> List.fold fold (fSingle acc)
-        | Repeat (count, nodes) -> nodes |> List.fold fold (fRep count acc)
-        | Step step -> fStep step acc
 
     let rec catamorph fStep fSingle fRep tree =
         let recurse = catamorph fStep fSingle fRep

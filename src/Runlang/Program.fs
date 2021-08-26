@@ -1,4 +1,7 @@
 open Functions
 
+open Args
+
 [<EntryPoint>]
-let rec main argv = EncoderCli.app argv => 0
+let rec main argv = 
+    |> k 0

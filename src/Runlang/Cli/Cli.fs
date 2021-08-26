@@ -2,16 +2,40 @@ module EncoderCli
 
 open System
 open LangParser
+open PaceTableParser
 open FitEncoder
+open IntervalTree
+open IntervalEncoder
 open FitWorkout
+open RunningTerm
+open Pace
 open Functions
 open StringUtils
 open ConsoleUtils
+open Args
 open System.IO
+
+type AppInput =
+    { EncodingMode: FitEncodingMode;
+      DisplayTree: bool;
+      PaceTable: RunningTerm -> Pace;
+      WorkoutName: string;
+      WorkoutPath: string;
+      WorkoutString: string }
+
+[<Literal>]
+let PaceTableFileName = ".pacetable"
 
 let homePath = Environment.GetFolderPath Environment.SpecialFolder.Personal
 
-let findGarmin () =
+let paceTablePath () =
+    [ PaceTableFileName; appendPath PaceTableFileName homePath ]
+    |> List.filter File.Exists
+    |> List.tryHead
+    |> Option.defaultValue (exit<string> -2)
+
+
+let workoutPath workoutName =
     let isGarminDrive (drive: DriveInfo) =
         drive.IsReady
         && drive.VolumeLabel |> toUpper |> contains "GARMIN"
@@ -25,8 +49,63 @@ let findGarmin () =
     |> Array.map exportDirectory
     |> Array.filter Directory.Exists
     |> Array.tryHead
+    |> Option.defaultValue homePath
+    |> appendPath $"{workoutName}.fit"
 
-let downloadWorkout mode tree =
+
+let evaluateInput args =
+    let encodingMode =
+        if args.OpenDistance then
+            FitEncodingMode.OpenDistance
+        else
+            FitEncodingMode.Default
+
+    let pacetable =
+        args.PaceTablePath
+        |> Option.map thunk
+        |> Option.defaultValue (paceTablePath)
+        <| ()
+        |> parsparseP
+
+    let workoutName =
+        Option.defaultValue
+            $"Runlang_{DateTime.Now:dd_MM_yyyy_hh_mm_ss}"
+            args.WorkoutName
+
+    let workoutPath =
+        args.WorkoutPath
+        |> Option.map thunk
+        |> Option.defaultValue (delay workoutPath workoutName)
+        <| ()
+
+    { DisplayTree = args.DisplayTree;
+      PaceTablePath = paceTablePath;
+      WorkoutName = workoutName;
+      WorkoutPath = workoutPath;
+      WorkoutString = args.WorkoutString;
+      EncodingMode = encodingMode }
+
+let displayTree input tree =
+    if input.DisplayTree then
+        tree
+        |> WorkoutTree.toIntervalTree
+        |> IntervalTree.toString
+        |> printf "%s" 
+        => tree
+    else
+        tree
+
+let downloadWorkout input =
+    let workout =
+        input.WorkoutString
+        |> parseWorkout
+        |> function
+            | Ok tree -> tree
+            | Error error ->
+                printf "%s" error => exit -1
+
+        |> displayTree input
+
     let steps = WorkoutTree.toFit mode tree
     let name = readMandatory "Enter workout name"
 
@@ -44,18 +123,8 @@ let downloadWorkout mode tree =
     |> FitWorkout.dumpFile encoding
     => printfn $"Success!"
 
-let parseArgs args =
-    match Array.tryHead args with
-    | Some "--open"
-    | Some "-o" -> FitEncodingMode.OpenDistance
-    | _ -> FitEncodingMode.Default
-
-let rec app args =
-    let mode = parseArgs args
-
-    readMandatory "Enter workout string"
-    |> parseWorkout
-    |> function
-        | Ok tree -> downloadWorkout mode tree
-        | Error error -> printfn "%s" error
-    => app args
+let app argv =
+    parseArgs argv
+    |> Result.map evaluateInput
+    |> Result.map downloadWorkout
+    |> Result.mapError (printf "%s" >> delay exit<unit> -1)

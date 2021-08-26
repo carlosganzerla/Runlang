@@ -20,4 +20,4 @@ let terms =
     .>> eof
     |>> Map.ofList
 
-let parseTerms = runParser terms ()
+let parsePaceTable = runParser terms ()

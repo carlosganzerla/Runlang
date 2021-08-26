@@ -6,6 +6,10 @@ let curry f x y = f (x, y)
 
 let tuple x y = (x, y)
 
-let k x y = x
+let k x _ = x
 
 let (=>) () g = g
+
+let delay f x  = fun () -> f x
+
+let thunk x () = x 
