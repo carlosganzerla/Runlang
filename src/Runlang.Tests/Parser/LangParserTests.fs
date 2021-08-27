@@ -9,6 +9,21 @@ open WorkoutTree
 let parseToString = parseWorkout >> ok >> WorkoutTree.toString
 
 [<Fact>]
+let ``Empty workout should not be parsed`` () =
+    let input = ""
+    input |> parseWorkout |> shouldBeError
+
+[<Fact>]
+let ``Workout with 0 repeats should not be parsed`` () =
+    let input = "1km TR + 0x(200m TR + 100m CL)"
+    input |> parseWorkout |> shouldBeError
+
+[<Fact>]
+let ``Workout with empty repeat should not be parsed`` () =
+    let input = "10x()"
+    input |> parseWorkout |> shouldBeError
+
+[<Fact>]
 let ``Distance and term pace step in km`` () =
     let input = "1km MO"
     let expected = "1.00km MO"

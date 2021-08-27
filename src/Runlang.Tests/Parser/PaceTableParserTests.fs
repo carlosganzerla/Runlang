@@ -1,9 +1,10 @@
-module PaceFileParserTests
+module PaceTableParserTests
 
 open FsUnit.Xunit
 open Xunit
 open Utils
-open PaceFileParser
+open Functions
+open PaceTableParser
 open Pace
 open RunningTerm
 
@@ -23,20 +24,20 @@ let ``Parses input file correctly`` () =
         |> System.String.Concat
 
     let expected =
-        [ (CL, "11:06/km");
-          (CA, "9:51/km");
-          (CV, "8:52/km");
-          (TR, "4:47/km");
-          (LVS, "4:31/km");
-          (LE, "4:14/km");
-          (MO, "4:01/km");
-          (FO, "3:42/km");
-          (FTS, "3:25/km");
-          (MAX, "2:57/km") ]
+        [ "11:06/km";
+          "9:51/km";
+          "8:52/km";
+          "4:47/km";
+          "4:31/km";
+          "4:14/km";
+          "4:01/km";
+          "3:42/km";
+          "3:25/km";
+          "2:57/km" ]
 
     input
-    |> parseTerms
+    |> parsePaceTable
     |> ok
-    |> Map.toList
-    |> List.map (fun (t, p) -> (t, Pace.toString p))
+    |> flip List.map [ CL; CA; CV; TR; LVS; LE; MO; FO; FTS; MAX ]
+    |> List.map Pace.toString
     |> should equal expected

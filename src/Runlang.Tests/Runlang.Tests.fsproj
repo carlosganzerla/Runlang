@@ -13,9 +13,10 @@
         <Compile Include="Model/PaceTests.fs" />
         <Compile Include="Model/IntervalTests.fs" />
         <Compile Include="Parser/LangParserTests.fs" />
-        <Compile Include="Parser/PaceFileParserTests.fs" />
+        <Compile Include="Parser/PaceTableParserTests.fs" />
         <Compile Include="Encoder/FitTests.fs" />
         <Compile Include="Encoder/IntervalTests.fs" />
+        <Compile Include="Cli/ArgsTests.fs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="3.0.3">

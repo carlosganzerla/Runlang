@@ -8,6 +8,8 @@ let inline join sep (strings: string seq) =
 
 let inline trim (str: string) = str.Trim ()
 
+let inline split (sep: string) (str: string) = str.Split sep
+
 let inline toUpper (str: string) = str.ToUpperInvariant ()
 
 let inline contains (text: string) (str: string) = str.Contains text

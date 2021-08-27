@@ -1,8 +1,6 @@
 module Args
 
 open CommandLine
-open StringUtils
-
 
 type CliArguments =
     { [<Option('o',
