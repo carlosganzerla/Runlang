@@ -47,10 +47,16 @@
 
 <plus> ::= "+" | "/"
 
-<steps> ::= <time> <white1> <distance>
+<step> ::= <time> <white1> <distance>
   | <time> <white1> <pace>
   | <distance> <white1> <pace>
   | <distance> <white1> <progression>
 
-<repeat> ::= <steps> <white>
-  | <integer> "x" <white> "(" <white> <repeat> <white> ")"
+<repeat> ::= <step> <white> 
+  | <integer> "x" <white> "(" <white> <steps> <white> ")"
+
+<workout_step> ::= <step> | <repeat>
+
+<steps> ::= (<workout_step> (<plus> <white> <workout_step>)*)?
+
+<workout> ::= <white> <steps> <white>
