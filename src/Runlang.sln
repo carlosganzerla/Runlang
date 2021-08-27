@@ -5,7 +5,7 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Runlang", "Runlang\Runlang.fsproj", "{3B923245-FDA7-4F42-AF41-31B5AE532009}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Runlang.Encoder", "Runlang.Encoder\Runlang.Encoder.fsproj", "{EAFD13E4-22F8-4A8C-9817-485F19D32C2A}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Runlang.Garmin", "Runlang.Garmin\Runlang.Garmin.fsproj", "{EAFD13E4-22F8-4A8C-9817-485F19D32C2A}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Runlang.Tests", "Runlang.Tests\Runlang.Tests.fsproj", "{4EB37446-7A5B-4B10-A55D-533B2C7B7014}"
 EndProject

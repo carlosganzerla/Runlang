@@ -4,7 +4,7 @@ open System
 open RunningTerm
 open Pace
 open LangParser
-open InteractiveExtensions
+open IntervalEncoder
 
 let shouldBeError =
     function
@@ -32,5 +32,4 @@ let paceTable =
 
 let parseOk workout = parseWorkout workout |> ok
 
-let parseToIntervals workout =
-    parseOk workout |> WorkoutTree.toIntervals paceTable
+let parseToIntervalTree = parseOk >> WorkoutTree.toIntervalTree paceTable
