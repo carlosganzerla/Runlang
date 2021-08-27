@@ -11,14 +11,11 @@ type CliArguments =
                HelpText = "Export on open distance mode")>]
       OpenDistance: bool;
       [<Option('d',
-               "display-tree",
+               "display",
                Required = false,
-               HelpText = "Display interval tree")>]
+               HelpText = "Display workout tree")>]
       DisplayTree: bool;
-      [<Option('t',
-               "table",
-               Required = false,
-               HelpText = "Pace table path")>]
+      [<Option("table", Required = false, HelpText = "Pace table path")>]
       PaceTablePath: string option;
       [<Option('n', "name", Required = false, HelpText = "Workout name")>]
       WorkoutName: string option;
@@ -39,8 +36,5 @@ let parseArgs argv =
     |> function
         | :? Parsed<CliArguments> as parsed -> Result.Ok parsed.Value
         | :? NotParsed<CliArguments> as notParsed ->
-            notParsed.Errors
-            |> Seq.map str
-            |> join "\n"
-            |> Result.Error
+            notParsed.Errors |> Seq.map str |> join "\n" |> Result.Error
         | _ -> Result.Error "Unknown error"

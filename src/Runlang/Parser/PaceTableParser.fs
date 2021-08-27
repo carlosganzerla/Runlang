@@ -1,8 +1,9 @@
-module PaceFileParser
+module PaceTableParser
 
 open FParsec
 open ParserUtils
 open LangParserPrimitives
+open Functions
 
 let termAndPace term = term .>> pchar '=' .>>. timePace .>> newline
 
@@ -19,5 +20,6 @@ let terms =
                termAndPace pMAX ]
     .>> eof
     |>> Map.ofList
+    |>> flip Map.find
 
 let parsePaceTable = runParser terms ()

@@ -137,3 +137,8 @@ module WorkoutTree =
             repeatStep :: repeatLoop
 
         WorkoutTree.loop fStep fSingle fRep [] >> List.rev
+
+    let encode name mode tree =
+        FitWorkout.createWorkout name
+        |> List.fold (flip FitWorkout.addStep)
+        <| toFit mode tree

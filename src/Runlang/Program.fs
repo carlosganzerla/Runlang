@@ -1,7 +1,6 @@
-open Functions
-
-open Args
+open Cli
 
 [<EntryPoint>]
-let rec main argv = 
-    |> k 0
+let main argv = 
+    app argv
+    0

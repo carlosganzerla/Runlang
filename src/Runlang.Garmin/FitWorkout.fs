@@ -122,7 +122,7 @@ module FitWorkout =
         | Default step -> addDefaultStep step workout
         | Repeat step -> addRepeatStep step workout
 
-    let dumpFile workout path =
+    let dumpFile path workout =
         workout.Workout.SetNumValidSteps (
             workout.WorkoutSteps |> List.length |> uint16
         )

@@ -1,4 +1,4 @@
-module EncoderCli
+module Cli
 
 open System
 open LangParser
@@ -17,8 +17,7 @@ open System.IO
 
 type AppInput =
     { EncodingMode: FitEncodingMode;
-      DisplayTree: bool;
-      PaceTable: RunningTerm -> Pace;
+      PaceTable: (RunningTerm -> Pace) option;
       WorkoutName: string;
       WorkoutPath: string;
       WorkoutString: string }
@@ -28,12 +27,10 @@ let PaceTableFileName = ".pacetable"
 
 let homePath = Environment.GetFolderPath Environment.SpecialFolder.Personal
 
-let paceTablePath () =
-    [ PaceTableFileName; appendPath PaceTableFileName homePath ]
+let defaultPaceFlePath () =
+    [  PaceTableFileName; appendPath PaceTableFileName homePath ]
     |> List.filter File.Exists
     |> List.tryHead
-    |> Option.defaultValue (exit<string> -2)
-
 
 let workoutPath workoutName =
     let isGarminDrive (drive: DriveInfo) =
@@ -60,12 +57,18 @@ let evaluateInput args =
         else
             FitEncodingMode.Default
 
-    let pacetable =
-        args.PaceTablePath
-        |> Option.map thunk
-        |> Option.defaultValue (paceTablePath)
-        <| ()
-        |> parsparseP
+    let paceTable =
+        if args.DisplayTree then
+            args.PaceTablePath
+            |> Option.filter File.Exists
+            |> Option.orElseWith defaultPaceFlePath
+            |> exitOnNone -3 "Could not find pace table file"
+            |> File.ReadAllText
+            |> parsePaceTable
+            |> exitOnError -3
+            |> Some
+        else
+            None
 
     let workoutName =
         Option.defaultValue
@@ -78,53 +81,29 @@ let evaluateInput args =
         |> Option.defaultValue (delay workoutPath workoutName)
         <| ()
 
-    { DisplayTree = args.DisplayTree;
-      PaceTablePath = paceTablePath;
+    { PaceTable = paceTable;
       WorkoutName = workoutName;
       WorkoutPath = workoutPath;
       WorkoutString = args.WorkoutString;
       EncodingMode = encodingMode }
 
 let displayTree input tree =
-    if input.DisplayTree then
+    match input.PaceTable with
+    | Some table ->
         tree
-        |> WorkoutTree.toIntervalTree
+        |> WorkoutTree.toIntervalTree table
         |> IntervalTree.toString
-        |> printf "%s" 
-        => tree
-    else
-        tree
+        |> printfn "%s"
+    | None -> ()
+    => tree
 
-let downloadWorkout input =
-    let workout =
-        input.WorkoutString
-        |> parseWorkout
-        |> function
-            | Ok tree -> tree
-            | Error error ->
-                printf "%s" error => exit -1
+let run input =
+    input.WorkoutString
+    |> parseWorkout
+    |> exitOnError -3
+    |> displayTree input
+    |> WorkoutTree.encode input.WorkoutName input.EncodingMode
+    |> FitWorkout.dumpFile input.WorkoutPath
+    => printfn "Saved workout successfully on path %s" input.WorkoutPath
 
-        |> displayTree input
-
-    let steps = WorkoutTree.toFit mode tree
-    let name = readMandatory "Enter workout name"
-
-    let defaultPath =
-        findGarmin ()
-        |> Option.defaultValue homePath
-        |> appendPath $"{name}.fit"
-
-    let encoding =
-        FitWorkout.createWorkout name
-        |> List.fold (flip FitWorkout.addStep)
-        <| steps
-
-    readOptional "Enter file path" defaultPath
-    |> FitWorkout.dumpFile encoding
-    => printfn $"Success!"
-
-let app argv =
-    parseArgs argv
-    |> Result.map evaluateInput
-    |> Result.map downloadWorkout
-    |> Result.mapError (printf "%s" >> delay exit<unit> -1)
+let app argv = parseArgs argv |> exitOnError -1 |> evaluateInput |> run
