@@ -10,6 +10,6 @@ let k x _ = x
 
 let (=>) () g = g
 
-let delay f x  = fun () -> f x
+let delay f x = fun () -> f x
 
-let thunk x () = x 
+let thunk x () = x

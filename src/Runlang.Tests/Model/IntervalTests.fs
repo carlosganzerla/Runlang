@@ -195,6 +195,6 @@ let ``Splitting Interval.Zero should yield an empty list`` () =
     let distanceSplit = DistanceSplit (Distance.create 2.5m)
     let splits1 = Interval.split timeSplit Interval.Zero
     let splits2 = Interval.split distanceSplit Interval.Zero
-    let expected: Interval list = []
+    let expected : Interval list = []
     splits1 |> should equal expected
     splits2 |> should equal expected

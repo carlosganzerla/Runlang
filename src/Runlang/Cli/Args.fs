@@ -21,6 +21,10 @@ type CliArguments =
       WorkoutName: string option;
       [<Option('p', "path", Required = false, HelpText = "Export path")>]
       WorkoutPath: string option;
+      [<Option("no-file",
+               Required = false,
+               HelpText = "Do not generate workout file")>]
+      NoExport: bool;
       [<Value(0,
               MetaName = "workout",
               Required = true,
@@ -34,7 +38,5 @@ let parseArgs argv =
     argv
     |> parse
     |> function
-        | :? Parsed<CliArguments> as parsed -> Result.Ok parsed.Value
-        | :? NotParsed<CliArguments> as notParsed ->
-            notParsed.Errors |> Seq.map str |> join "\n" |> Result.Error
-        | _ -> Result.Error "Unknown error"
+    | :? (Parsed<CliArguments>) as parsed -> Some parsed.Value
+    | _ -> None

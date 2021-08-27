@@ -15,8 +15,10 @@ open ConsoleUtils
 open Args
 open System.IO
 
+
 type AppInput =
     { EncodingMode: FitEncodingMode;
+      NoExport: bool;
       PaceTable: (RunningTerm -> Pace) option;
       WorkoutName: string;
       WorkoutPath: string;
@@ -25,10 +27,23 @@ type AppInput =
 [<Literal>]
 let PaceTableFileName = ".pacetable"
 
+[<Literal>]
+let BadArguments = -1
+
+[<Literal>]
+let BadWorkoutString = -2
+
+[<Literal>]
+let PaceTableNotFound = -3
+
+[<Literal>]
+let BadPaceTable = -3
+
+
 let homePath = Environment.GetFolderPath Environment.SpecialFolder.Personal
 
 let defaultPaceFlePath () =
-    [  PaceTableFileName; appendPath PaceTableFileName homePath ]
+    [ PaceTableFileName; appendPath PaceTableFileName homePath ]
     |> List.filter File.Exists
     |> List.tryHead
 
@@ -62,18 +77,16 @@ let evaluateInput args =
             args.PaceTablePath
             |> Option.filter File.Exists
             |> Option.orElseWith defaultPaceFlePath
-            |> exitOnNone -3 "Could not find pace table file"
+            |> exitOnNone PaceTableNotFound "Could not find pace table file"
             |> File.ReadAllText
             |> parsePaceTable
-            |> exitOnError -3
+            |> exitOnError BadPaceTable
             |> Some
         else
             None
 
     let workoutName =
-        Option.defaultValue
-            $"Runlang_{DateTime.Now:dd_MM_yyyy_hh_mm_ss}"
-            args.WorkoutName
+        Option.defaultValue $"Runlang_{DateTime.Now}" args.WorkoutName
 
     let workoutPath =
         args.WorkoutPath
@@ -82,28 +95,33 @@ let evaluateInput args =
         <| ()
 
     { PaceTable = paceTable;
+      NoExport = args.NoExport;
       WorkoutName = workoutName;
       WorkoutPath = workoutPath;
       WorkoutString = args.WorkoutString;
       EncodingMode = encodingMode }
 
-let displayTree input tree =
-    match input.PaceTable with
-    | Some table ->
-        tree
-        |> WorkoutTree.toIntervalTree table
-        |> IntervalTree.toString
-        |> printfn "%s"
-    | None -> ()
-    => tree
+let displayTree tree table =
+    tree
+    |> WorkoutTree.toIntervalTree table
+    |> IntervalTree.toString
+    |> printfn "%s"
 
 let run input =
-    input.WorkoutString
-    |> parseWorkout
-    |> exitOnError -3
-    |> displayTree input
-    |> WorkoutTree.encode input.WorkoutName input.EncodingMode
-    |> FitWorkout.dumpFile input.WorkoutPath
-    => printfn "Saved workout successfully on path %s" input.WorkoutPath
+    let tree =
+        input.WorkoutString
+        |> parseWorkout
+        |> exitOnError BadWorkoutString
 
-let app argv = parseArgs argv |> exitOnError -1 |> evaluateInput |> run
+    Option.iter (displayTree tree) input.PaceTable
+    => if not input.NoExport then
+           tree
+           |> WorkoutTree.encode input.WorkoutName input.EncodingMode
+           |> FitWorkout.dumpFile input.WorkoutPath
+           => printfn "Saved workout successfully on path %s" input.WorkoutPath
+
+let app argv =
+    parseArgs argv
+    |> exitOnNone BadArguments ""
+    |> evaluateInput
+    |> run

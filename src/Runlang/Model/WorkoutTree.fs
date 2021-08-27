@@ -9,7 +9,7 @@ type WorkoutTree =
     | Repeat of uint * WorkoutTree list
 
 [<RequireQualifiedAccess>]
-[<CompilationRepresentation (CompilationRepresentationFlags.ModuleSuffix)>]
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module WorkoutTree =
     let step = Step
 
