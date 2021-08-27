@@ -1,5 +1,6 @@
-<white> ::= " "*
-<white1> ::= " "+
+<white_char> ::= " " | "\t" | "\r" | "\n"
+<white> ::= <white_char>*
+<white1> ::= <white_char>+
 <zero_to_five> ::= "0" | "1" | "2" | "3" | "4" | "5"
 <six_to_nine> ::= "6" | "7" | "8" | "9"
 
@@ -52,11 +53,10 @@
   | <distance> <white1> <pace>
   | <distance> <white1> <progression>
 
-<repeat> ::= <step> <white> 
-  | <integer> "x" <white> "(" <white> <steps> <white> ")"
+<repeat> ::= <integer> "x" <white> "(" <white> <steps> <white> ")"
 
-<workout_step> ::= <step> | <repeat>
+<workout_step> ::= <step> <white> | <repeat> <white>
 
-<steps> ::= (<workout_step> (<plus> <white> <workout_step>)*)?
+<steps> ::= (<workout_step> (<plus> <white> <workout_step>)*)
 
 <workout> ::= <white> <steps> <white>
