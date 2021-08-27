@@ -36,16 +36,14 @@ let step =
 
 let plus = (pchar '/' <|> pchar '+') .>> ws
 
-let times = pchar 'x' .>> ws
-
 let repeatTree, repeatRef = createParserForwardedToRef ()
 
 let repeat =
-    let repeatCount = attempt (puint32 .>> times)
+    let repeatCount = attempt (puint32 .>> pchar 'x' .>> ws)
 
     preturn WorkoutTree.repeat
     <*> repeatCount
-    <*> between (pchar '(') (pchar ')') repeatTree
+    <*> between (pchar '(' .>>. ws) (pchar ')' .>>. ws) repeatTree
     .>> ws
     >>= result
 

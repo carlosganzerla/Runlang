@@ -24,6 +24,11 @@ let ``Workout with empty repeat should not be parsed`` () =
     input |> parseWorkout |> shouldBeError
 
 [<Fact>]
+let ``Workout without repeat count should not be parsed`` () =
+    let input = "(1km TR + 2km LE + 1km FO)"
+    input |> parseWorkout |> shouldBeError
+
+[<Fact>]
 let ``Distance and term pace step in km`` () =
     let input = "1km MO"
     let expected = "1.00km MO"
@@ -129,9 +134,11 @@ let ``Nested Repeat workout`` () =
 [<Fact>]
 let ``Highly complex workout`` () =
     let input =
-        "20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE)"
+        "20m TR + 3x(2x   (   20m FO +        1m FTS) + 4x  (  1m FO + 1m TR
+        ) +         1m TR + 1m LE)"
 
-    let expected = input
+    let expected = 
+        "20m TR + 3x(2x(20m FO + 1m FTS) + 4x(1m FO + 1m TR) + 1m TR + 1m LE)"
 
     input |> parseToString |> should equal expected
 

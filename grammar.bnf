@@ -1,3 +1,5 @@
+<white> ::= " "*
+<white1> ::= " "+
 <zero_to_five> ::= "0" | "1" | "2" | "3" | "4" | "5"
 <six_to_nine> ::= "6" | "7" | "8" | "9"
 
@@ -10,11 +12,11 @@
 
 <decimal_separator> ::= "," | "."
 
-<decimal> ::= <integer> <decimal_separator> <digit> <integer>
+<decimal> ::= <integer> <decimal_separator> <digit> | <integer>
 
 <distance> ::= <integer> "m" | <decimal> "km"
 
-<watch_time> ::= <watch_digits> ":" <watch_digits>
+<watch_time> ::= <base_sixty> ":" <watch_digits>
   | <integer> ":" <watch_digits> ":" <watch_digits>
 
 <time> ::= <watch_time>
@@ -45,12 +47,10 @@
 
 <plus> ::= "+" | "/"
 
-<times> ::= "x"
+<steps> ::= <time> <white1> <distance>
+  | <time> <white1> <pace>
+  | <distance> <white1> <pace>
+  | <distance> <white1> <progression>
 
-<steps> ::= <time> <distance>
-  | <time> <pace>
-  | <distance> <pace>
-  | <distance> <progression>
-
-<repeat> ::= <steps>
-  | <integer> <times> "(" <repeat> ")"
+<repeat> ::= <steps> <white>
+  | <integer> "x" <white> "(" <white> <repeat> <white> ")"
