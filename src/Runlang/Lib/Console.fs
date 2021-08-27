@@ -12,7 +12,7 @@ let exitOnError code =
 let exitOnNone code error =
     function
     | Some value -> value
-    | None -> printf "%s" error => exit code
+    | None -> printfn "%s" error => exit code
 
 let read = Console.ReadLine >> trim
 
