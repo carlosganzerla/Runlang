@@ -17,6 +17,27 @@ Runlang defines a workout definition language that is succint and simple to unde
 - FTS: Very strong pace (*Fortíssimo*). Heart zone 4 or 5, should feel very difficult. You would run up to 3km-5km at this pace.
 - MAX: Maximum pace (*Máximo*). Heart zone 5, and should be fiendishly difficult. At this pace you should be able to run at best 1km.
 
-**These are approximate correspondences based on my personal experience and may not reflect all cases. Take the 3000m test and talk to your coach or look up some articles how to calculate this**
+**These are approximate correspondences based on my personal experience and may not an absolute truth. The use of the terms is overall subject, given it's based on the Subjective Effort Perception. Take the 3000m test and talk to your coach or look up some articles how to calculate this**
 
-The syntax is based on addition of steps
+The syntax is based on steps that are composed with addtion to compose a workout. Any composition of steps can be repeated a number of times. The workout AST is called workout tree.
+
+Here are some examples of valid workout strings:
+
+- Simple workout, absolute measures:
+  ```
+  5km 6:00/km
+  ```
+  It reads as 5 kilometers, at a pace of 6 minutes per kilometer
+  
+- Another simple workout, defining a step with time and pace, which is equivalent to the above:
+  ```
+  30min 6:00/km
+  ```
+- A composed workout of multiple steps, using terms
+  ```
+  1.5km TR + 1.5km LE + 1.5km FO + 1.5km LVS
+  ```
+- A workout using repeats, with warmup and cooldown
+  ```
+  5km 6:00/km
+  ```
