@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <OutputName>runlang</OutputName>
     <Version>0.0.1</Version>
   <RootNamespace>Runlang</RootNamespace>
   </PropertyGroup>

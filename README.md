@@ -31,7 +31,7 @@ title="Repeat step" width="20%" /> <img src="./workout_5.jpeg" alt="1km
 
 ## The language
 
-Runlang defines a workout definition language that is succinct and simple to
+Runlang defines a workout description language that is succinct and simple to
 understand. It's based on the template used by the coaching staff of [G5
 Esportes](https://g5esportes.com/). Currently, it only supports metric system
 units (meters, kilometers and minutes/km). The template that the language was
@@ -184,7 +184,7 @@ Here are some examples of valid workout strings:
 The CLI is used to parse the input and export the workout. Additionally, you
 may print an interval tree, that reads your pace table (translation of your
 terms to a concrete pace value) and displays the stats of the input workout.
-For more information on the pace table see the section below.
+For more information on the pace table, see the section below.
 
 The usage of the CLi is as follows:
 
@@ -219,6 +219,31 @@ runlang [-o | --open] [-d | --display] [--table] [-n | --name] [-p | --path] [--
   a file. It's useful to just play with the syntax, or just visualizing the
   interval tree.
 
+Here's the interval tree for the first example workout:
+
+```txt
+Time: 00:48:04, Distance: 10.00km, Pace: 4:48/km
+ -  Time: 00:05:00, Distance: 1.00km, Pace: 5:00/km
+ -  Time: 00:39:04, Distance: 8.00km, Pace: 4:53/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  -  Time: 00:02:40, Distance: 800m, Pace: 3:20/km
+ -  -  Time: 00:02:13, Distance: 200m, Pace: 11:06/km
+ -  Time: 00:04:00, Distance: 1.00km, Pace: 4:00/km
+```
+
 ### Pace table file
 
 The pace table file defines the reference pace for each term, based on the
@@ -250,7 +275,7 @@ also integrating with the Garmin calendar.
 
 I didn't use the step targets because I don't find them really helpful in
 practice, since pace floats sometimes and heart zone targets are useful only
-for workout without many steps (i.e. constant pace run)
+for workout without many steps (i.e. constant pace run).
 
 The language is based on a template that I've been consuming for a while. I
 find it very simple and easy to understand. However, it's not cast in stone and
