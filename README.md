@@ -35,7 +35,7 @@ To use the tool, you must install the [.NET
 runtime](https://dotnet.microsoft.com/download).
 
 Download the latest release and unzip it wherever you like. Run the app using
-your shell. For more usage details, see below
+your shell. For more usage details, see below.
 
 If you want to download it from the source code, you also have to install the
 .NET SDK. After cloning the repo, just use the `dotnet publish` command to
