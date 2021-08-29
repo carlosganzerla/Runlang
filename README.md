@@ -29,6 +29,18 @@ title="200m CL" width="20%" /> <img src="./workout_4.jpeg" alt="Repeat step"
 title="Repeat step" width="20%" /> <img src="./workout_5.jpeg" alt="1km
 4:00/km" title="1km 4:00/km" width="20%" />
 
+## Getting started
+
+To use the tool, you must install the [.NET
+runtime](https://dotnet.microsoft.com/download).
+
+Download the latest release and unzip it wherever you like. Run the app using
+your shell. For more usage details, see below
+
+If you want to download it from the source code, you also have to install the
+.NET SDK. After cloning the repo, just use the `dotnet publish` command to
+build a release version.
+
 ## The language
 
 Runlang defines a workout description language that is succinct and simple to

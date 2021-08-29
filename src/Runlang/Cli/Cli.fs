@@ -86,7 +86,9 @@ let evaluateInput args =
             None
 
     let workoutName =
-        Option.defaultValue $"Runlang_{DateTime.Now}" args.WorkoutName
+        Option.defaultValue
+            $"Runlang_{DateTime.Now:yyMMddhhmmss}"
+            args.WorkoutName
 
     let workoutPath =
         args.WorkoutPath
